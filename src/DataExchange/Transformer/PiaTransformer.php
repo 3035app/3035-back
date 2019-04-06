@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Libre Informatique
+ * Copyright (C) 2015-2019 Libre Informatique
  *
  * This file is licensed under the GNU LGPL v3.
  * For the full copyright and license information, please view the LICENSE.md
@@ -13,7 +13,6 @@ namespace PiaApi\DataExchange\Transformer;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
 use PiaApi\DataExchange\Descriptor\PiaDescriptor;
-use PiaApi\Entity\Pia\PiaStatus;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -68,7 +67,7 @@ class PiaTransformer extends AbstractTransformer
     public function toPia(PiaDescriptor $descriptor): Pia
     {
         $pia = new Pia();
-        $pia->setStatus(PiaStatus::getStatusFromName($descriptor->getStatus()));
+        $pia->setStatus($descriptor->getStatus());
         $pia->setAuthorName($descriptor->getAuthorName());
         $pia->setEvaluatorName($descriptor->getEvaluatorName());
         $pia->setValidatorName($descriptor->getValidatorName());
