@@ -79,7 +79,7 @@ class PiaController extends RestController
 
         $criteria = [
             'processing' => $processing->getId(),
-            'structure'  => $processing->getFolder()->getStructureId(),
+            // 'structure'  => $processing->getFolder()->getStructureId(),
         ];
 
         $collection = $this->getRepository()->findBy($criteria, ['createdAt' => 'DESC']);
