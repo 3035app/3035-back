@@ -138,8 +138,8 @@ security:
 
         ROLE_DPO:
             - ROLE_USER
-            - CAN_CREATE_PROCESSINGS
-            - CAN_DELETE_PROCESSINGS
+            - CAN_CREATE_PROCESSING
+            - CAN_DELETE_PROCESSING
             - CAN_CREATE_PIA
             - CAN_DELETE_PIA
             - CAN_MANAGE_EVALUATIONS
