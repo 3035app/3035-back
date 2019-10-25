@@ -268,10 +268,10 @@ class ProcessingController extends RestController
      *         @Swg\Property(property="processing_data_types", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingDataType::class, groups={"Default"})
      *         )),
+     *         @Swg\Property(property="folder", required={"id"}, type="object",@Swg\Property(property="id", type="number")),
      *         @Swg\Property(property="recipients", type="string"),
      *         @Swg\Property(property="evaluationComment", type="string"),
      *         @Swg\Property(property="evaluationState", type="integer"),
-     *         @Swg\Property(property="folder", required={"id"}, type="object",
      *         @Swg\Property(property="id", type="number")),
      *         @Swg\Property(property="comments", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingComment::class, groups={"Default"})
@@ -295,7 +295,7 @@ class ProcessingController extends RestController
      *
      * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING')")
      *
      * @return array
      */
@@ -303,34 +303,41 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
-
-        $updatableAttributes = [
-            'folder'                    => Folder::class,
-            'name'                      => RequestDataHandler::TYPE_STRING,
-            'author'                    => RequestDataHandler::TYPE_STRING,
-            'description'               => RequestDataHandler::TYPE_STRING,
-            'processors'                => RequestDataHandler::TYPE_STRING,
-            'designated_controller'     => RequestDataHandler::TYPE_STRING,
-            'controllers'               => RequestDataHandler::TYPE_STRING,
-            'non_eu_transfer'           => RequestDataHandler::TYPE_STRING,
-            'recipients'                => RequestDataHandler::TYPE_STRING,
-            'life_cycle'                => RequestDataHandler::TYPE_STRING,
-            'storage'                   => RequestDataHandler::TYPE_STRING,
-            'standards'                 => RequestDataHandler::TYPE_STRING,
-            'context_of_implementation' => RequestDataHandler::TYPE_STRING,
-            'lawfulness'                => RequestDataHandler::TYPE_STRING,
-            'minimization'              => RequestDataHandler::TYPE_STRING,
-            'rights_guarantee'          => RequestDataHandler::TYPE_STRING,
-            'exactness'                 => RequestDataHandler::TYPE_STRING,
-            'consent'                   => RequestDataHandler::TYPE_STRING,
-            'concerned_people'          => RequestDataHandler::TYPE_STRING,
-            'status'                    => RequestDataHandler::TYPE_INT,
-            'evaluation_comment'        => RequestDataHandler::TYPE_STRING,
-            'evaluation_state'          => RequestDataHandler::TYPE_INT,
-        ];
-
+        
+        $updatableAttributes = [];
+        
+        if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
+            $updatableAttributes['folder'] = Folder::class;
+        }
+        
+        if ( $this->isGranted('CAN_EDIT_PROCESSING') ) {
+            $updatableAttributes = array_merge($updatableAttributes, [
+                'name'                      => RequestDataHandler::TYPE_STRING,
+                'author'                    => RequestDataHandler::TYPE_STRING,
+                'description'               => RequestDataHandler::TYPE_STRING,
+                'processors'                => RequestDataHandler::TYPE_STRING,
+                'designated_controller'     => RequestDataHandler::TYPE_STRING,
+                'controllers'               => RequestDataHandler::TYPE_STRING,
+                'non_eu_transfer'           => RequestDataHandler::TYPE_STRING,
+                'recipients'                => RequestDataHandler::TYPE_STRING,
+                'life_cycle'                => RequestDataHandler::TYPE_STRING,
+                'storage'                   => RequestDataHandler::TYPE_STRING,
+                'standards'                 => RequestDataHandler::TYPE_STRING,
+                'context_of_implementation' => RequestDataHandler::TYPE_STRING,
+                'lawfulness'                => RequestDataHandler::TYPE_STRING,
+                'minimization'              => RequestDataHandler::TYPE_STRING,
+                'rights_guarantee'          => RequestDataHandler::TYPE_STRING,
+                'exactness'                 => RequestDataHandler::TYPE_STRING,
+                'consent'                   => RequestDataHandler::TYPE_STRING,
+                'concerned_people'          => RequestDataHandler::TYPE_STRING,
+                'status'                    => RequestDataHandler::TYPE_INT,
+                'evaluation_comment'        => RequestDataHandler::TYPE_STRING,
+                'evaluation_state'          => RequestDataHandler::TYPE_INT,
+            ]);
+        }
+        
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
-
+        
         $this->update($processing);
 
         return $this->view($processing, Response::HTTP_OK);
