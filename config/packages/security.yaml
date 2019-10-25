@@ -58,6 +58,7 @@ security:
             - CAN_CREATE_PROCESSING
             - CAN_EDIT_PROCESSING
             - CAN_DELETE_PROCESSING
+            - CAN_MOVE_PROCESSING
 
         CAN_MANAGE_PIAS:
             - CAN_SHOW_PIA
@@ -140,6 +141,7 @@ security:
             - ROLE_USER
             - CAN_CREATE_PROCESSING
             - CAN_DELETE_PROCESSING
+            - CAN_MOVE_PROCESSING
             - CAN_CREATE_PIA
             - CAN_DELETE_PIA
             - CAN_MANAGE_EVALUATIONS
