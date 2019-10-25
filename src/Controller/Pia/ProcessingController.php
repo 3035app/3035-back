@@ -295,7 +295,7 @@ class ProcessingController extends RestController
      *
      * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING') or is_granted('CAN_EDIT_CARD_PROCESSING')")
      *
      * @return array
      */
@@ -310,13 +310,16 @@ class ProcessingController extends RestController
             $updatableAttributes['folder'] = Folder::class;
         }
         
+        if ( $this->isGranted('CAN_EDIT_CARD_PROCESSING') ) {
+            $updatableAttributes['name'] = RequestDataHandler::TYPE_STRING;
+            $updatableAttributes['author'] = RequestDataHandler::TYPE_STRING;
+            $updatableAttributes['designated_controller'] = RequestDataHandler::TYPE_STRING;
+        }
+        
         if ( $this->isGranted('CAN_EDIT_PROCESSING') ) {
             $updatableAttributes = array_merge($updatableAttributes, [
-                'name'                      => RequestDataHandler::TYPE_STRING,
-                'author'                    => RequestDataHandler::TYPE_STRING,
                 'description'               => RequestDataHandler::TYPE_STRING,
                 'processors'                => RequestDataHandler::TYPE_STRING,
-                'designated_controller'     => RequestDataHandler::TYPE_STRING,
                 'controllers'               => RequestDataHandler::TYPE_STRING,
                 'non_eu_transfer'           => RequestDataHandler::TYPE_STRING,
                 'recipients'                => RequestDataHandler::TYPE_STRING,
