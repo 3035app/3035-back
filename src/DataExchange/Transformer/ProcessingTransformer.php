@@ -84,6 +84,7 @@ class ProcessingTransformer extends AbstractTransformer
         $processing->setRightsGuarantee($descriptor->getRightsGuarantee());
         $processing->setExactness($descriptor->getExactness());
         $processing->setConsent($descriptor->getConsent());
+        $processing->setConcernedPeople($descriptor->getConcernedPeople());
         $processing->setRecipients($descriptor->getRecipients());
         $processing->setContextOfImplementation($descriptor->getContextOfImplementation());
 
@@ -109,6 +110,7 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getRightsGuarantee(),
             $processing->getExactness(),
             $processing->getConsent(),
+            $processing->getConcernedPeople(),
             $processing->getContextOfImplementation(),
             $processing->getRecipients(),
             $processing->getCreatedAt(),
