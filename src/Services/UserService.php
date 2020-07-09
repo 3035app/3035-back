@@ -10,11 +10,11 @@
 
 namespace PiaApi\Services;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use PiaApi\Entity\Oauth\User;
 use FOS\OAuthServerBundle\Model\ClientInterface;
 use PiaApi\Entity\Pia\Structure;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
@@ -48,7 +48,7 @@ class UserService extends AbstractService
     private $tokenGenerator;
 
     public function __construct(
-        RegistryInterface $doctrine,
+        ManagerRegistry $doctrine,
         EncoderFactoryInterface $encoderFactory,
         StructureService $structureService,
         ApplicationService $applicationService,

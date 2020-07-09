@@ -10,21 +10,21 @@
 
 namespace PiaApi\Auth;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use PiaApi\Entity\Oauth\User;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use OAuth2\OAuth2ServerException;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserProvider implements UserProviderInterface
 {
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     private $doctrine;
 
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }

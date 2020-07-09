@@ -10,19 +10,19 @@
 
 namespace PiaApi\Form\Portfolio\Transformer;
 
+use Doctrine\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class PortfoliosTransformer implements DataTransformerInterface
 {
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }

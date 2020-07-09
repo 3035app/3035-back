@@ -10,7 +10,7 @@
 
 namespace DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -20,13 +20,13 @@ class Version20180911134822 extends AbstractMigration implements ContainerAwareI
 {
     use ContainerAwareTrait;
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         // Change status Processing::STATUS_ARCHIVED old value (1) to new value (3)
         $this->addSql('UPDATE pia_processing SET status = 3 WHERE status = 1');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // Change status Processing::STATUS_ARCHIVED new value (3) to old value (1)
         $this->addSql('UPDATE pia_processing SET status = 1 WHERE status = 3');

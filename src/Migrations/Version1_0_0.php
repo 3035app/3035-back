@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use PiaApi\Entity\Pia\Folder;
 use PiaApi\Entity\Pia\Pia;

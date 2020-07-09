@@ -10,10 +10,10 @@
 
 namespace PiaApi\Services;
 
+use Doctrine\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\StructureType;
 use PiaApi\Entity\Pia\Portfolio;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class StructureService extends AbstractService
 {
@@ -23,7 +23,7 @@ class StructureService extends AbstractService
     private $folderService;
 
     public function __construct(
-        RegistryInterface $doctrine,
+        ManagerRegistry $doctrine,
         FolderService $folderService
     ) {
         parent::__construct($doctrine);
