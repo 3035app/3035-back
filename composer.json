@@ -6,6 +6,7 @@
         "ext-iconv": "*",
         "ext-pdo_pgsql": "*",
         "babdev/pagerfanta": "^2.3",
+        "babdev/pagerfanta-bundle": "^2.4",
         "doctrine/dbal": "^2.8",
         "doctrine/doctrine-migrations-bundle": "2.*",
         "friendsofsymfony/oauth-server-bundle": "^1.6",
