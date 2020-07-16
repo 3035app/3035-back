@@ -20,7 +20,7 @@ use PiaApi\Form\User\RemoveUserForm;
 use PiaApi\Form\User\SendResetPasswordEmailForm;
 use PiaApi\Security\Role\RoleHierarchy;
 use PiaApi\Services\UserService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

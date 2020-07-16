@@ -15,7 +15,7 @@ use PiaApi\Form\ProcessingTemplate\CreateProcessingTemplateForm;
 use PiaApi\Form\ProcessingTemplate\EditProcessingTemplateForm;
 use PiaApi\Form\ProcessingTemplate\RemoveProcessingTemplateForm;
 use PiaApi\Services\ProcessingTemplateService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

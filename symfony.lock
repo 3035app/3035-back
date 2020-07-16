@@ -1,4 +1,7 @@
 {
+    "babdev/pagerfanta": {
+        "version": "v2.3.0"
+    },
     "behat/gherkin": {
         "version": "v4.5.1"
     },
@@ -193,9 +196,6 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
-    },
-    "pagerfanta/pagerfanta": {
-        "version": "v1.0.5"
     },
     "paragonie/random_compat": {
         "version": "v2.0.12"
@@ -485,6 +485,9 @@
     "symfony/polyfill-intl-idn": {
         "version": "v1.17.1"
     },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.7.0"
     },
@@ -625,9 +628,6 @@
     },
     "webmozart/assert": {
         "version": "1.3.0"
-    },
-    "white-october/pagerfanta-bundle": {
-        "version": "v1.1.2"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"
