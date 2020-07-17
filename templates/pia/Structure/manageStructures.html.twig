@@ -17,7 +17,7 @@
 {% block body %}
     {% set cols = 2 %}
     {% set full = not is_granted('CAN_MANAGE_STRUCTURES') %}
-    {% if not is_granted('CAN_SHOW_STRUCTURE')or not is_granted('CAN_SHOW_STRUCTURE_TYPE') %}
+    {% if not is_granted('CAN_SHOW_STRUCTURE') or not is_granted('CAN_SHOW_STRUCTURE_TYPE') %}
         {% set cols = 1 %}
     {% endif %}
 
