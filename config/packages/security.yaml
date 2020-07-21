@@ -142,6 +142,7 @@ security:
 
         ROLE_CONTROLLER_MULTI:
             - ROLE_CONTROLLER
+            - CAN_MANAGE_ONLY_OWNED_PORTFOLIOS
 
         ROLE_DPO:
             - ROLE_USER
