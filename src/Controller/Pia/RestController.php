@@ -10,11 +10,11 @@
 
 namespace PiaApi\Controller\Pia;
 
-use Doctrine\Inflector\Inflector;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
+use Doctrine\Common\Util\Inflector as Inflector;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -31,15 +31,10 @@ abstract class RestController extends AbstractFOSRestController
     protected $propertyAccessor;
 
     private static $entityClasses = null;
-    /**
-     * @var Inflector
-     */
-    private $inflector;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, Inflector $inflector)
+    public function __construct(PropertyAccessorInterface $propertyAccessor)
     {
         $this->propertyAccessor = $propertyAccessor;
-        $this->inflector = $inflector;
     }
 
     /**
@@ -164,7 +159,7 @@ abstract class RestController extends AbstractFOSRestController
             return $default;
         }
         $criteria = array_merge(...array_map(function ($key, $value) {
-            return [$this->inflector->camelize($key) => $value];
+            return [Inflector::camelize($key) => $value];
         }, array_keys($query), $query));
 
         return array_merge($criteria, $default);
