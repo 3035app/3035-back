@@ -1,21 +1,20 @@
 {
     "type": "project",
     "license": "AGPL-3.0-only",
+    "name": "pialab/pialab",
+    "description": "Pialab",
     "require": {
         "php": "^7.1.3",
         "ext-iconv": "*",
         "ext-pdo_pgsql": "*",
-        "babdev/pagerfanta": "^2.3",
         "babdev/pagerfanta-bundle": "^2.4",
-        "doctrine/dbal": "^2.8",
-        "doctrine/doctrine-migrations-bundle": "2.*",
         "friendsofsymfony/oauth-server-bundle": "^1.6",
         "friendsofsymfony/rest-bundle": "^2.3",
         "friendsofsymfony/user-bundle": "^2.1",
         "jms/serializer-bundle": "^2.3",
         "nelmio/api-doc-bundle": "^3.2",
         "nelmio/cors-bundle": "^1.5",
-        "sensio/framework-extra-bundle": "^5.1",
+        "sensio/framework-extra-bundle": "5.*",
         "splitbrain/php-archive": "^1.1",
         "stof/doctrine-extensions-bundle": "^1.3",
         "symfony/asset": "^4.0",
@@ -26,21 +25,17 @@
         "symfony/flex": "^1.5",
         "symfony/form": "^4.0",
         "symfony/framework-bundle": "^4.0",
-        "symfony/lts": "^4@dev",
         "symfony/orm-pack": "^1.0",
         "symfony/swiftmailer-bundle": "^3.2",
-        "symfony/templating": "^4.0",
         "symfony/translation": "^4.0",
         "symfony/twig-bundle": "^4.0",
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
         "codeception/codeception": "2.4.0",
-        "flow/jsonpath": "^0.4.0",
         "guzzlehttp/guzzle": "^6.3",
         "symfony/phpunit-bridge": "^4.0",
-        "symfony/profiler-pack": "^1.0",
-        "symfony/web-server-bundle": "^4.0"
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {
@@ -89,7 +84,8 @@
     "extra": {
         "symfony": {
             "id": "01CBVH6DSB6PX6WNB0YVQ2KDQR",
-            "allow-contrib": false
+            "allow-contrib": false,
+            "require": "4.4.*"
         }
     },
     "version": "1.4.18"
