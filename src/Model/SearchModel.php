@@ -19,6 +19,8 @@ class SearchModel
 {
 
     /**
+     * Should not be null, pass empty string either
+     *
      * @JMS\Groups({"Default"})
      *
      * @var string
