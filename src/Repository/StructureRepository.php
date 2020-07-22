@@ -10,6 +10,7 @@
 
 namespace PiaApi\Repository;
 
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Structure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -141,6 +142,26 @@ class StructureRepository extends ServiceEntityRepository
             ->orderBy('s.id', 'DESC')
             ->where($queryBuilder->expr()->in('s.portfolio', ':portfolios'))
             ->setParameter('portfolios', $portfolios);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param string $name
+     * @param User $user
+     * @return Structure[]
+     */
+    public function findByNameSearch(string $name, User $user)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder
+            ->join('s.portfolio', 'p')
+            ->join('p.users', 'u')
+            ->where('upper(s.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
 
         return $queryBuilder->getQuery()->getResult();
     }
