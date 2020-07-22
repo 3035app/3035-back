@@ -64,6 +64,8 @@ class ProcessingRepository extends ServiceEntityRepository
             ->join('p.users', 'u')
             ->where('upper(pp.name) LIKE :name')
             ->andWhere('u.id = :userId')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name')
             ->setParameter('userId', $user->getId())
             ->setParameter('name', "%$name%");
 

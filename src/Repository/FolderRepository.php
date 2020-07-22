@@ -31,7 +31,10 @@ class FolderRepository extends NestedTreeRepository
             ->join('p.users', 'u')
             ->where('upper(f.name) LIKE :name')
             ->andWhere('u.id = :userId')
+            ->andWhere('f.name != :root')
+            ->orWhere('upper(s.name) LIKE :name AND f.name != :root')
             ->setParameter('userId', $user->getId())
+            ->setParameter('root', "root")
             ->setParameter('name', "%$name%");
 
         return $queryBuilder->getQuery()->getResult();
