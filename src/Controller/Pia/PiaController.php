@@ -11,6 +11,7 @@
 namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\DataExchange\Transformer\PiaTransformer;
 use PiaApi\DataHandler\RequestDataHandler;
@@ -39,9 +40,10 @@ class PiaController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        PiaTransformer $piaTransformer
+        PiaTransformer $piaTransformer,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->piaTransformer = $piaTransformer;
     }
 

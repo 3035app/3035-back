@@ -11,6 +11,7 @@
 namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
@@ -31,10 +32,15 @@ abstract class RestController extends AbstractFOSRestController
     protected $propertyAccessor;
 
     private static $entityClasses = null;
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, SerializerInterface $serializer)
     {
         $this->propertyAccessor = $propertyAccessor;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -177,7 +183,7 @@ abstract class RestController extends AbstractFOSRestController
 
     protected function newFromArray($data, $piaId = null)
     {
-        $entity = $this->get('jms_serializer')->fromArray($data, $this->getEntityClass());
+        $entity = $this->serializer->fromArray($data, $this->getEntityClass());
         if ($piaId !== null) {
             $entity->setPia($this->getEntityManager()->getReference(Pia::class, $piaId));
         }
@@ -187,7 +193,7 @@ abstract class RestController extends AbstractFOSRestController
 
     protected function newFromRequest(Request $request, $piaId = null, $processingId = null)
     {
-        $entity = $this->get('jms_serializer')->deserialize($request->getContent(), $this->getEntityClass(), 'json');
+        $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         if ($piaId !== null) {
             $entity->setPia($this->getEntityManager()->getReference(Pia::class, $piaId));
         }

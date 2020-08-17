@@ -10,6 +10,7 @@
 
 namespace PiaApi\Controller\Pia;
 
+use JMS\Serializer\SerializerInterface;
 use PiaApi\Services\PiaSearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
@@ -27,9 +28,9 @@ class PiaSearchController extends RestController
      */
     private $searchService;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, PiaSearchService $searchService)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, SerializerInterface $serializer, PiaSearchService $searchService)
     {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->searchService = $searchService;
     }
 

@@ -54,7 +54,7 @@ class ProcessingController extends RestController
         ProcessingTransformer $processingTransformer,
         SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
 
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;

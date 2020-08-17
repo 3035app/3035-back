@@ -12,6 +12,7 @@ namespace PiaApi\Controller\Pia;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\UserProfile;
 use PiaApi\Security\Role\RoleHierarchy;
@@ -27,9 +28,9 @@ class UserProfileController extends RestController
      */
     private $roleHierarchy;
 
-    public function __construct(PropertyAccessorInterface $propertyAccessor, RoleHierarchy $roleHierarchy)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, RoleHierarchy $roleHierarchy, SerializerInterface $serializer)
     {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->roleHierarchy = $roleHierarchy;
     }
 
