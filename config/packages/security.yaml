@@ -134,6 +134,7 @@ security:
             - CAN_MANAGE_COMMENTS
             - CAN_MANAGE_ATTACHMENTS
             - CAN_MANAGE_EVALUATIONS
+            - CAN_EXPORT_PIA
 
         ROLE_DPO:
             - ROLE_CONTROLLER
@@ -159,6 +160,7 @@ security:
             - CAN_MANAGE_PORTFOLIOS
             - CAN_MANAGE_STRUCTURES
             - CAN_MANAGE_STRUCTURE_TYPES
+            - CAN_EXPORT_PIA
 
 
         ROLE_TECHNICAL_ADMIN:
