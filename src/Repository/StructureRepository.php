@@ -153,16 +153,29 @@ class StructureRepository extends ServiceEntityRepository
      */
     public function findByNameSearch(string $name, User $user)
     {
-        $queryBuilder = $this->createQueryBuilder('s');
+        $qbOwnedByUser = $this->createQueryBuilder('s');
 
-        $queryBuilder
-            ->join('s.portfolio', 'p')
-            ->join('p.users', 'u')
-            ->where('upper(s.name) LIKE :name')
+        $qbOwnedByUser
+            ->join('s.users', 'u')
+            ->orWhere('upper(s.name) LIKE :name')
             ->andWhere('u.id = :userId')
             ->setParameter('userId', $user->getId())
             ->setParameter('name', "%$name%");
 
-        return $queryBuilder->getQuery()->getResult();
+        $ownedByUserResults = $qbOwnedByUser->getQuery()->getResult();
+
+        $qbOwnedThroughPortfolio = $this->createQueryBuilder('s');
+
+        $qbOwnedThroughPortfolio
+            ->join('s.portfolio', 'p')
+            ->join('p.users', 'u')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedThroughPortfolioResults = $qbOwnedThroughPortfolio->getQuery()->getResult();
+
+        return array_merge($ownedByUserResults, $ownedThroughPortfolioResults);
     }
 }

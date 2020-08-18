@@ -23,20 +23,34 @@ class FolderRepository extends NestedTreeRepository
      */
     public function findByNameSearch(string $name, User $user)
     {
-        $queryBuilder = $this->createQueryBuilder('f');
+        $qbOwnedByUser = $this->createQueryBuilder('f');
 
-        $queryBuilder
+        $qbOwnedByUser
+            ->join('f.structure', 's')
+            ->join('s.users', 'u')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name AND f.name != \'root\'')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedByUserResults = $qbOwnedByUser->getQuery()->getResult();
+
+        $qbOwnedThroughPortfolio = $this->createQueryBuilder('f');
+
+        $qbOwnedThroughPortfolio
             ->join('f.structure', 's')
             ->join('s.portfolio', 'p')
             ->join('p.users', 'u')
-            ->where('upper(f.name) LIKE :name')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name AND f.name != \'root\'')
             ->andWhere('u.id = :userId')
-            ->andWhere('f.name != :root')
-            ->orWhere('upper(s.name) LIKE :name AND f.name != :root')
             ->setParameter('userId', $user->getId())
-            ->setParameter('root', "root")
             ->setParameter('name', "%$name%");
 
-        return $queryBuilder->getQuery()->getResult();
+        $ownedThroughPortfolioResults = $qbOwnedThroughPortfolio->getQuery()->getResult();
+
+
+        return array_merge($ownedByUserResults, $ownedThroughPortfolioResults);
     }
 }

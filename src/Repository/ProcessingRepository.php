@@ -55,20 +55,37 @@ class ProcessingRepository extends ServiceEntityRepository
      */
     public function findByNameSearch(string $name, User $user)
     {
-        $queryBuilder = $this->createQueryBuilder('pp');
+        $qbOwnedByUser = $this->createQueryBuilder('pp');
 
-        $queryBuilder
+        $qbOwnedByUser
+            ->join('pp.folder', 'f')
+            ->join('f.structure', 's')
+            ->join('s.users', 'u')
+            ->where('upper(pp.name) LIKE :name')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedByUserResults = $qbOwnedByUser->getQuery()->getResult();
+
+        $qbOwnedThroughPortfolio = $this->createQueryBuilder('pp');
+
+        $qbOwnedThroughPortfolio
             ->join('pp.folder', 'f')
             ->join('f.structure', 's')
             ->join('s.portfolio', 'p')
             ->join('p.users', 'u')
             ->where('upper(pp.name) LIKE :name')
-            ->andWhere('u.id = :userId')
             ->orWhere('upper(s.name) LIKE :name')
             ->orWhere('upper(f.name) LIKE :name')
+            ->andWhere('u.id = :userId')
             ->setParameter('userId', $user->getId())
             ->setParameter('name', "%$name%");
 
-        return $queryBuilder->getQuery()->getResult();
+        $ownedThroughPortfolioResults = $qbOwnedThroughPortfolio->getQuery()->getResult();
+
+        return array_merge($ownedByUserResults, $ownedThroughPortfolioResults);
     }
 }
