@@ -10,14 +10,14 @@
 
 namespace PiaApi\Services;
 
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\ProcessingTemplate;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProcessingTemplateService extends AbstractService
 {
     public function __construct(
-        RegistryInterface $doctrine
+        ManagerRegistry $doctrine
     ) {
         parent::__construct($doctrine);
     }

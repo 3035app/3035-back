@@ -10,6 +10,7 @@
 
 namespace PiaApi\Repository;
 
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -45,5 +46,46 @@ class ProcessingRepository extends ServiceEntityRepository
         $pagerfanta->setCurrentPage($page);
 
         return $pagerfanta->getCurrentPageResults()->getArrayCopy();
+    }
+
+    /**
+     * @param string $name
+     * @param User $user
+     * @return Processing[]
+     */
+    public function findByNameSearch(string $name, User $user)
+    {
+        $qbOwnedByUser = $this->createQueryBuilder('pp');
+
+        $qbOwnedByUser
+            ->join('pp.folder', 'f')
+            ->join('f.structure', 's')
+            ->join('s.users', 'u')
+            ->where('upper(pp.name) LIKE :name')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedByUserResults = $qbOwnedByUser->getQuery()->getResult();
+
+        $qbOwnedThroughPortfolio = $this->createQueryBuilder('pp');
+
+        $qbOwnedThroughPortfolio
+            ->join('pp.folder', 'f')
+            ->join('f.structure', 's')
+            ->join('s.portfolio', 'p')
+            ->join('p.users', 'u')
+            ->where('upper(pp.name) LIKE :name')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->orWhere('upper(f.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedThroughPortfolioResults = $qbOwnedThroughPortfolio->getQuery()->getResult();
+
+        return array_merge($ownedByUserResults, $ownedThroughPortfolioResults);
     }
 }

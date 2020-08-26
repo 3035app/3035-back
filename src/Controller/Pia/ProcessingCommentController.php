@@ -10,6 +10,7 @@
 
 namespace PiaApi\Controller\Pia;
 
+use JMS\Serializer\SerializerInterface;
 use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\Entity\Pia\ProcessingComment;
 use PiaApi\Entity\Pia\Processing;
@@ -24,9 +25,9 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class ProcessingCommentController extends RestController
 {
-    public function __construct(PropertyAccessorInterface $propertyAccessor)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, SerializerInterface $serializer)
     {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
     }
 
     protected function getEntityClass()

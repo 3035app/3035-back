@@ -10,13 +10,12 @@
 
 namespace PiaApi\Controller\BackOffice;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Pagerfanta\PagerfantaInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 
-class BackOfficeAbstractController extends Controller
+class BackOfficeAbstractController extends AbstractController
 {
     protected function buildPager(
         Request $request,
@@ -24,7 +23,7 @@ class BackOfficeAbstractController extends Controller
         ?int $defaultLimit = 20,
         ?string $pageParameter = 'page',
         ?string $limitParameter = 'limit'
-    ): PagerfantaInterface {
+    ): Pagerfanta {
         $queryBuilder = $this->getDoctrine()->getRepository($entityClass)->createQueryBuilder('e');
 
         $queryBuilder

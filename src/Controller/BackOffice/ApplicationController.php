@@ -16,10 +16,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use PiaApi\Form\Application\CreateApplicationForm;
 use PiaApi\Form\Application\EditApplicationForm;
 use PiaApi\Form\Application\RemoveApplicationForm;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use PiaApi\Services\ApplicationService;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ApplicationController extends BackOfficeAbstractController
 {

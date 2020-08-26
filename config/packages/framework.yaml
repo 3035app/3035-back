@@ -33,6 +33,3 @@ framework:
 
     templating:
         engines: ['twig']
-
-sensio_framework_extra:
-    view: { annotations: false }

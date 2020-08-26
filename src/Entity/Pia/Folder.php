@@ -23,7 +23,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity
  * @ORM\Table(name="pia_folder")
- * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\Entity(repositoryClass="PiaApi\Repository\FolderRepository")
  */
 class Folder implements Timestampable
 {

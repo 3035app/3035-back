@@ -11,6 +11,7 @@
 namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use Pagerfanta\Pagerfanta;
 use PiaApi\Entity\Oauth\Client;
@@ -35,9 +36,10 @@ class UserController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        UserService $userService
+        UserService $userService,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->userService = $userService;
     }
 

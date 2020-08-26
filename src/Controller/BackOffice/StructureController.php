@@ -22,7 +22,7 @@ use PiaApi\Form\Structure\RemoveStructureTypeForm;
 use PiaApi\Form\User\CreateUserForm;
 use PiaApi\Services\StructureService;
 use PiaApi\Services\StructureTypeService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
