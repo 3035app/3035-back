@@ -11,7 +11,7 @@
 namespace PiaApi\Form\Portfolio\Transformer;
 
 use PiaApi\Entity\Pia\Portfolio;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 

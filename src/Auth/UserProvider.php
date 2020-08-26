@@ -13,7 +13,7 @@ namespace PiaApi\Auth;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use PiaApi\Entity\Oauth\User;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 use OAuth2\OAuth2ServerException;
 use Symfony\Component\HttpFoundation\Response;
 

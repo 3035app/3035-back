@@ -13,7 +13,7 @@ namespace PiaApi\Services;
 use FOS\OAuthServerBundle\Model\ClientManagerInterface;
 use PiaApi\Entity\Oauth\Client;
 use FOS\OAuthServerBundle\Model\ClientInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 
 class ApplicationService extends AbstractService
 {
