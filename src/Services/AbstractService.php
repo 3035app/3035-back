@@ -11,8 +11,7 @@
 namespace PiaApi\Services;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 abstract class AbstractService
 {

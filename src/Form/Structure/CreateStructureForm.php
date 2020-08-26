@@ -10,13 +10,13 @@
 
 namespace PiaApi\Form\Structure;
 
-use Doctrine\Persistence\ManagerRegistry;
 use PiaApi\Form\BaseForm;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Form\Portfolio\Type\PortfolioChoiceType;
 use PiaApi\Form\Structure\Type\StructureTypeChoiceType;
 

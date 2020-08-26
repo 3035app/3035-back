@@ -10,10 +10,10 @@
 
 namespace PiaApi\Auth;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use PiaApi\Entity\Oauth\User;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use OAuth2\OAuth2ServerException;
 use Symfony\Component\HttpFoundation\Response;
 

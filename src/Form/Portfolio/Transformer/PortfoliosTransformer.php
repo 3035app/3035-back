@@ -10,8 +10,8 @@
 
 namespace PiaApi\Form\Portfolio\Transformer;
 
-use Doctrine\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 

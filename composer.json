@@ -29,7 +29,10 @@
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/translation": "^4.0",
         "symfony/twig-bundle": "^4.0",
-        "symfony/yaml": "^4.0"
+        "symfony/yaml": "^4.0",
+        "white-october/pagerfanta-bundle": "^1.1",
+        "cocur/slugify": "^3.2",
+        "alom/graphviz": "^1.1"
     },
     "require-dev": {
         "codeception/codeception": "2.4.0",

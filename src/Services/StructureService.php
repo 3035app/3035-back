@@ -10,10 +10,10 @@
 
 namespace PiaApi\Services;
 
-use Doctrine\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\StructureType;
 use PiaApi\Entity\Pia\Portfolio;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class StructureService extends AbstractService
 {

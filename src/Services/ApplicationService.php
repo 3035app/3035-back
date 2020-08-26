@@ -10,10 +10,10 @@
 
 namespace PiaApi\Services;
 
-use Doctrine\Persistence\ManagerRegistry;
 use FOS\OAuthServerBundle\Model\ClientManagerInterface;
 use PiaApi\Entity\Oauth\Client;
 use FOS\OAuthServerBundle\Model\ClientInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class ApplicationService extends AbstractService
 {

@@ -10,8 +10,8 @@
 
 namespace PiaApi\Form\User\DataTransformer;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\DataTransformerInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\UserProfile;
 
 class UserProfileTransformer implements DataTransformerInterface

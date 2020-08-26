@@ -10,11 +10,11 @@
 
 namespace PiaApi\Services;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use PiaApi\Entity\Oauth\User;
 use FOS\OAuthServerBundle\Model\ClientInterface;
 use PiaApi\Entity\Pia\Structure;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
