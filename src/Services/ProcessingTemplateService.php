@@ -10,7 +10,7 @@
 
 namespace PiaApi\Services;
 
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 use PiaApi\Entity\Pia\ProcessingTemplate;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
