@@ -260,7 +260,7 @@ class Pia implements Timestampable
     {
         $currentAnswerCount = count($this->answers ?? []);
 
-        $progress = round((100 / self::QUESTION_NUMBER) * $currentAnswerCount);
+        $progress = round(($currentAnswerCount * 100) / self::QUESTION_NUMBER );
 
         return $progress;
     }

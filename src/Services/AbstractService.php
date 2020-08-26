@@ -11,16 +11,16 @@
 namespace PiaApi\Services;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 abstract class AbstractService
 {
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrineRegistry;
 
-    public function __construct(RegistryInterface $doctrineRegistry)
+    public function __construct(ManagerRegistry $doctrineRegistry)
     {
         $this->doctrineRegistry = $doctrineRegistry;
     }

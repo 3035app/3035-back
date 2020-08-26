@@ -14,7 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Folder;
 
 class RecoverFolderTreeCommand extends Command
@@ -22,7 +22,7 @@ class RecoverFolderTreeCommand extends Command
     const NAME = 'pia:folders:recover';
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
@@ -32,7 +32,7 @@ class RecoverFolderTreeCommand extends Command
     protected $io;
 
     public function __construct(
-        RegistryInterface $doctrine
+        ManagerRegistry $doctrine
     ) {
         parent::__construct();
         $this->doctrine = $doctrine;

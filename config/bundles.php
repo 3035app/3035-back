@@ -1,13 +1,5 @@
 <?php
 
-/*
- * Copyright (C) 2015-2018 Libre Informatique
- *
- * This file is licensed under the GNU LGPL v3.
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
- */
-
 return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class                => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class                  => ['all' => true],
@@ -22,11 +14,4 @@ return [
     JMS\SerializerBundle\JMSSerializerBundle::class                      => ['all' => true],
     Nelmio\CorsBundle\NelmioCorsBundle::class                            => ['all' => true],
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
-    Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class    => ['all' => true],
-    WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle::class    => ['all' => true],
-    Symfony\Bundle\MonologBundle\MonologBundle::class                    => ['all' => true],
-    Symfony\Bundle\DebugBundle\DebugBundle::class                        => ['dev' => true, 'test' => true],
-    FOS\UserBundle\FOSUserBundle::class                                  => ['all' => true],
-    Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle::class            => ['all' => true],
-    Nelmio\ApiDocBundle\NelmioApiDocBundle::class                        => ['all' => true],
 ];

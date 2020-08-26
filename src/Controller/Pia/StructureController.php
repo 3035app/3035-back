@@ -11,6 +11,7 @@
 namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\Entity\Pia\Portfolio;
@@ -33,9 +34,10 @@ class StructureController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        StructureService $structureService
+        StructureService $structureService,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->structureService = $structureService;
     }
 

@@ -18,7 +18,7 @@ use PiaApi\Form\Portfolio\RemovePortfolioForm;
 use PiaApi\Form\Structure\CreateStructureForm;
 use PiaApi\Form\Structure\StructurePortfolioAssocForm;
 use PiaApi\Services\PortfolioService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

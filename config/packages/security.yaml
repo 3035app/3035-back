@@ -144,6 +144,10 @@ security:
             - CAN_CREATE_COMMENT
             - CAN_CREATE_ATTACHMENT
 
+        ROLE_CONTROLLER_MULTI:
+            - ROLE_CONTROLLER
+            - CAN_MANAGE_ONLY_OWNED_PORTFOLIOS
+
         ROLE_DPO:
             - ROLE_USER
             - CAN_CREATE_PROCESSING
@@ -168,6 +172,7 @@ security:
         ROLE_ADMIN:
             - CAN_ACCESS_BACK_OFFICE
             - ROLE_SHARED_DPO
+            - ROLE_CONTROLLER_MULTI
             #includes - ROLE_DPO
             #includes - CAN_ACCESS_BACK_OFFICE
             - CAN_MANAGE_USERS

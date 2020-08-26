@@ -14,7 +14,7 @@ use Doctrine\DBAL\Schema\Schema;
 
 trait MigrationTrait
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
@@ -23,14 +23,14 @@ trait MigrationTrait
         }
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema): void
     {
         foreach ($this->migrations['data'] as $migration) {
             $this->executeVersion($migration, 'up', $schema);
         }
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
@@ -39,7 +39,7 @@ trait MigrationTrait
         }
     }
 
-    public function preDown(Schema $schema)
+    public function preDown(Schema $schema): void
     {
         foreach (array_reverse($this->migrations['data']) as $migration) {
             $this->executeVersion($migration, 'down', $schema);

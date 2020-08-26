@@ -10,11 +10,12 @@
 
 namespace PiaApi\Repository;
 
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Structure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
-use Pagerfanta\PagerfantaInterface;
+use Pagerfanta\Pagerfante;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -52,13 +53,13 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null  $defaultLimit
      * @param int|null  $page
      *
-     * @return PagerfantaInterface
+     * @return Pagerfante
      */
     public function getPaginatedStructuresByPortfolio(
         Portfolio $portfolio,
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): PagerfantaInterface {
+    ): Pagerfante {
         $queryBuilder = $this->createQueryBuilder('e');
 
         $queryBuilder
@@ -80,13 +81,13 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null $defaultLimit
      * @param int|null $page
      *
-     * @return PagerfantaInterface
+     * @return Pagerfante
      */
     public function getPaginatedStructuresForPortfolios(
         array $portfolios,
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): PagerfantaInterface {
+    ): Pagerfante {
         $queryBuilder = $this->createQueryBuilder('s');
 
         $queryBuilder
@@ -107,12 +108,12 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null $defaultLimit
      * @param int|null $page
      *
-     * @return PagerfantaInterface
+     * @return Pagerfante
      */
     public function getPaginatedStructures(
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): PagerfantaInterface {
+    ): Pagerfante {
         $queryBuilder = $this->createQueryBuilder('e');
 
         $queryBuilder
@@ -143,5 +144,38 @@ class StructureRepository extends ServiceEntityRepository
             ->setParameter('portfolios', $portfolios);
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param string $name
+     * @param User $user
+     * @return Structure[]
+     */
+    public function findByNameSearch(string $name, User $user)
+    {
+        $qbOwnedByUser = $this->createQueryBuilder('s');
+
+        $qbOwnedByUser
+            ->join('s.users', 'u')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedByUserResults = $qbOwnedByUser->getQuery()->getResult();
+
+        $qbOwnedThroughPortfolio = $this->createQueryBuilder('s');
+
+        $qbOwnedThroughPortfolio
+            ->join('s.portfolio', 'p')
+            ->join('p.users', 'u')
+            ->orWhere('upper(s.name) LIKE :name')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('name', "%$name%");
+
+        $ownedThroughPortfolioResults = $qbOwnedThroughPortfolio->getQuery()->getResult();
+
+        return array_merge($ownedByUserResults, $ownedThroughPortfolioResults);
     }
 }

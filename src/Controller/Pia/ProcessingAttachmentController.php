@@ -10,6 +10,7 @@
 
 namespace PiaApi\Controller\Pia;
 
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -23,8 +24,8 @@ use PiaApi\Entity\Pia\ProcessingAttachment;
 
 class ProcessingAttachmentController extends RestController
 {
-    public function __construct(PropertyAccessorInterface $propertyAccessor) {
-        parent::__construct($propertyAccessor);
+    public function __construct(PropertyAccessorInterface $propertyAccessor, SerializerInterface $serializer) {
+        parent::__construct($propertyAccessor, $serializer);
     }
 
     protected function getEntityClass()

@@ -44,11 +44,7 @@ class RoleHierarchy
 
     protected function getUserRoles(User $user): array
     {
-        $userRoles = array_map(function ($roleName) {
-            return new Role($roleName);
-        }, $user->getRoles());
-
-        return $userRoles;
+        return $user->getRoles();
     }
 
     protected function getReachableRoles(User $user): array
@@ -56,9 +52,7 @@ class RoleHierarchy
         // Core roleHierarchy needs a Role array but we use string array
         $userRoles = $this->getUserRoles($user);
 
-        $reachableRoleNames = array_map(function ($role) {
-            return $role->getRole();
-        }, $this->roleHierarchy->getReachableRoles($userRoles));
+        $reachableRoleNames = $this->roleHierarchy->getReachableRoleNames($userRoles);
 
         return $reachableRoleNames;
     }

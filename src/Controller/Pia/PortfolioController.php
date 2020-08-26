@@ -12,6 +12,7 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Portfolio;
 use PiaApi\Services\PortfolioService;
@@ -33,9 +34,10 @@ class PortfolioController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        PortfolioService $portfolioService
+        PortfolioService $portfolioService,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->portfolioService = $portfolioService;
     }
 

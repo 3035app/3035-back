@@ -10,16 +10,30 @@
 
 namespace PiaApi\Controller\Pia;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\UserProfile;
+use PiaApi\Security\Role\RoleHierarchy;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserProfileController extends RestController
 {
+    /**
+     * @var RoleHierarchy
+     */
+    private $roleHierarchy;
+
+    public function __construct(PropertyAccessorInterface $propertyAccessor, RoleHierarchy $roleHierarchy, SerializerInterface $serializer)
+    {
+        parent::__construct($propertyAccessor, $serializer);
+        $this->roleHierarchy = $roleHierarchy;
+    }
+
     /**
      * Shows the current User's profile.
      *
@@ -49,6 +63,11 @@ class UserProfileController extends RestController
     public function profileAction(UserInterface $user = null)
     {
         $this->canAccessRouteOr403();
+
+        if (!$this->roleHierarchy->isGranted($user,"ROLE_CONTROLLER_MULTI") &&
+            !$this->roleHierarchy->isGranted($user,"ROLE_SHARED_DPO") && !empty($user->getPortfolios())){
+            $this->propertyAccessor->setValue($user, "portfolios", new ArrayCollection());
+        }
 
         return $this->view($user->getProfile(), Response::HTTP_OK);
     }

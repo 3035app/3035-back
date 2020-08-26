@@ -12,6 +12,7 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Command\ImportProcessingTemplatesCommand;
 use PiaApi\DataExchange\Transformer\JsonToEntityTransformer;
@@ -37,9 +38,10 @@ class ProcessingTemplateController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        JsonToEntityTransformer $jsonToEntityTransformer
+        JsonToEntityTransformer $jsonToEntityTransformer,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->jsonToEntityTransformer = $jsonToEntityTransformer;
     }
 
