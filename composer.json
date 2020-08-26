@@ -23,14 +23,15 @@
         "symfony/flex": "^1.0",
         "symfony/form": "^4.0",
         "symfony/framework-bundle": "^4.0",
-        "symfony/lts": "^4@dev",
         "symfony/orm-pack": "^1.0",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/templating": "^4.0",
         "symfony/translation": "^4.0",
         "symfony/twig-bundle": "^4.0",
         "symfony/yaml": "^4.0",
-        "white-october/pagerfanta-bundle": "^1.1"
+        "white-october/pagerfanta-bundle": "^1.1",
+        "cocur/slugify": "^3.2",
+        "alom/graphviz": "^1.1"
     },
     "require-dev": {
         "codeception/codeception": "2.4.0",
@@ -87,7 +88,8 @@
     "extra": {
         "symfony": {
             "id": "01CBVH6DSB6PX6WNB0YVQ2KDQR",
-            "allow-contrib": false
+            "allow-contrib": false,
+            "require": "~4.1.0"
         }
     },
     "version": "1.4.18"

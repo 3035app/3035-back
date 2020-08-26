@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 use PiaApi\Form\Portfolio\Type\PortfolioChoiceType;
 use PiaApi\Form\Structure\Type\StructureTypeChoiceType;
 use PiaApi\Entity\Pia\Portfolio;

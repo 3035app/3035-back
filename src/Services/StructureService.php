@@ -13,7 +13,7 @@ namespace PiaApi\Services;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\StructureType;
 use PiaApi\Entity\Pia\Portfolio;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
 
 class StructureService extends AbstractService
 {
