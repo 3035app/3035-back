@@ -12,6 +12,7 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\Entity\Pia\Folder;
@@ -35,9 +36,10 @@ class FolderController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        FolderService $folderService
+        FolderService $folderService,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->folderService = $folderService;
     }
 

@@ -11,21 +11,20 @@
 namespace PiaApi\Form\User\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\UserProfile;
-use PiaApi\Entity\Oauth\User;
 
 class UserProfileTransformer implements DataTransformerInterface
 {
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
     /**
-     * @param RegistryInterface $doctrine
+     * @param ManagerRegistry $doctrine
      */
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }

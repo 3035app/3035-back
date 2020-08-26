@@ -14,7 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
 use PiaApi\Entity\Oauth\User;
-use Pagerfanta\PagerfantaInterface;
+use Pagerfanta\Pagerfante;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -28,9 +28,9 @@ class PortfolioRepository extends ServiceEntityRepository
     /**
      * @param User $user
      *
-     * @return PagerfantaInterface
+     * @return Pagerfante
      */
-    public function getPaginatedByUser(User $user): PagerfantaInterface
+    public function getPaginatedByUser(User $user): Pagerfante
     {
         $queryBuilder = $this->createQueryBuilder('e');
 

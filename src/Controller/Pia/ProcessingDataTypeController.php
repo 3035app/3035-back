@@ -10,6 +10,7 @@
 
 namespace PiaApi\Controller\Pia;
 
+use JMS\Serializer\SerializerInterface;
 use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\Services\ProcessingDataTypeService;
 use PiaApi\Entity\Pia\ProcessingDataType;
@@ -32,9 +33,10 @@ class ProcessingDataTypeController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
-        ProcessingDataTypeService $processingDataTypeService
+        ProcessingDataTypeService $processingDataTypeService,
+        SerializerInterface $serializer
     ) {
-        parent::__construct($propertyAccessor);
+        parent::__construct($propertyAccessor, $serializer);
         $this->processingDataTypeService = $processingDataTypeService;
     }
 

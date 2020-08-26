@@ -13,7 +13,7 @@ namespace PiaApi\Services;
 use FOS\OAuthServerBundle\Model\ClientManagerInterface;
 use PiaApi\Entity\Oauth\Client;
 use FOS\OAuthServerBundle\Model\ClientInterface;
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class ApplicationService extends AbstractService
 {
@@ -23,7 +23,7 @@ class ApplicationService extends AbstractService
     private $clientManager;
 
     public function __construct(
-        RegistryInterface $doctrine,
+        ManagerRegistry $doctrine,
         ClientManagerInterface $clientManager
     ) {
         parent::__construct($doctrine);

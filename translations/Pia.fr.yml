@@ -279,6 +279,7 @@ pia:
             roles:
                 ROLE_USER : Invité
                 ROLE_CONTROLLER : Responsable de Traitement
+                ROLE_CONTROLLER_MULTI : Responsable de Traitement multistructures
                 ROLE_DPO : DPO
                 ROLE_SHARED_DPO : DPO Mutualisé
                 ROLE_ADMIN : Administrateur Fonctionnel

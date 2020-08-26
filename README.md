@@ -13,6 +13,8 @@ cd pialab-back
 
 **Note:**
 
+Symfony cli is required to start server.
+
 The informations about the database connection and the SMTP server are stored as environment variables called DATABASE_URL and MAILER_URL respectively. For development, you can find and customize them inside .env.
 
 ```bash
@@ -21,7 +23,7 @@ composer install
 bin/console doctrine:database:create
 bin/console doctrine:migrations:migrate --no-interaction
 
-bin/console server:start
+symfony server:start
 ```
 
 ## User creation

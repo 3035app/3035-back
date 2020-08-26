@@ -11,7 +11,7 @@
 namespace PiaApi\Form\Portfolio\Transformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry as RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
 
 class PortfolioTransformer implements DataTransformerInterface
@@ -21,7 +21,7 @@ class PortfolioTransformer implements DataTransformerInterface
      */
     protected $doctrine;
 
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
