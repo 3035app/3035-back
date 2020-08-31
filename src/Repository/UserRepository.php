@@ -15,7 +15,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Oauth\User;
-use Pagerfanta\Pagerfante;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -45,13 +44,13 @@ class UserRepository extends ServiceEntityRepository
      * @param int|null  $defaultLimit
      * @param int|null  $page
      *
-     * @return Pagerfante
+     * @return Pagerfanta
      */
     public function getPaginatedUsersByStructure(
         Structure $structure,
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): Pagerfante {
+    ): Pagerfanta {
         $queryBuilder = $this->createQueryBuilder('e');
 
         $queryBuilder
@@ -98,9 +97,9 @@ class UserRepository extends ServiceEntityRepository
      * @param int|null $defaultLimit
      * @param int|null $page
      *
-     * @return Pagerfante
+     * @return Pagerfanta
      */
-    public function getPaginatedUsers(?int $defaultLimit = 20, ?int $page = 1): Pagerfante
+    public function getPaginatedUsers(?int $defaultLimit = 20, ?int $page = 1): Pagerfanta
     {
         $queryBuilder = $this->createQueryBuilder('e');
 
