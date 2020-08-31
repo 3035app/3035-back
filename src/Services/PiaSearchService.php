@@ -38,7 +38,7 @@ class PiaSearchService
         /** @var User $user */
         $user = $this->security->getUser();
 
-        $name = strtoupper($name);
+        $name = mb_strtoupper($name);
 
         $searchModelResults = [];
 

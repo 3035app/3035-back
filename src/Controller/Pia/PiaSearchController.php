@@ -61,7 +61,8 @@ class PiaSearchController extends RestController
      */
     public function searchAction(Request $request)
     {
-        $results = $this->searchService->search($request->get('value'));
+        $name = $request->get('value');
+        $results = $this->searchService->search($name);
 
         return $this->view($results, Response::HTTP_OK);
     }
