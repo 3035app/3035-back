@@ -372,4 +372,12 @@ class Folder implements Timestampable
             })->getValues()
         );
     }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }
