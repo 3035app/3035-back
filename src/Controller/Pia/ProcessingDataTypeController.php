@@ -168,7 +168,7 @@ class ProcessingDataTypeController extends RestController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_CREATE_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING')")
      *
      * @return array
      */
