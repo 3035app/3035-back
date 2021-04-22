@@ -109,7 +109,7 @@ class ProcessingCommentController extends RestController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_SHOW_PROCESSING')")
+     * @Security("is_granted('CAN_SHOW_COMMENT')")
      *
      * @return View
      */
@@ -156,7 +156,7 @@ class ProcessingCommentController extends RestController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_CREATE_PROCESSING')")
+     * @Security("is_granted('CAN_CREATE_COMMENT')")
      *
      * @return array
      */
@@ -215,7 +215,7 @@ class ProcessingCommentController extends RestController
      *
      * @FOSRest\Put("/processing-comments/{id}", requirements={"id"="\d+"})
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_COMMENT')")
      *
      * @return array
      */
@@ -263,7 +263,7 @@ class ProcessingCommentController extends RestController
      *     description="Empty content"
      * )
      *
-     * @Security("is_granted('CAN_DELETE_PROCESSING')")
+     * @Security("is_granted('CAN_DELETE_COMMENT')")
      *
      * @return array
      */
