@@ -355,7 +355,7 @@ class PiaController extends RestController
      */
     public function deleteAction(Request $request, $id)
     {
-        $pia = $this->getRepository()->find($id);
+        $pia = $this->getResource($id);
         $this->canAccessResourceOr403($pia);
         $this->remove($pia);
 
@@ -479,7 +479,7 @@ class PiaController extends RestController
         if (!$resource instanceof Pia) {
             throw new AccessDeniedHttpException();
         }
-        $resourceStructure = $resource->getStructure();
+        $resourceStructure = $resource->getProcessing()->getFolder()->getStructure();
         $structures = array_merge(
             [$this->getUser()->getStructure()],
             $this->getUser()->getProfile()->getPortfolioStructures()

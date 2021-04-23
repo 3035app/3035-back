@@ -133,16 +133,15 @@ security:
 
         ROLE_CONTROLLER:
             - ROLE_USER
+            - CAN_EDIT_PROCESSING
             - CAN_MANAGE_MEASURES
             - CAN_MANAGE_ANSWERS
             - CAN_MANAGE_COMMENTS
             - CAN_MANAGE_ATTACHMENTS
-            - CAN_MANAGE_EVALUATIONS
+            #- CAN_MANAGE_EVALUATIONS
             - CAN_EXPORT_PIA
-            - CAN_EDIT_PROCESSING
-            - CAN_EDIT_PIA
+            #- CAN_EDIT_PIA
             - CAN_CREATE_COMMENT
-            - CAN_CREATE_ATTACHMENT
 
         ROLE_CONTROLLER_MULTI:
             - ROLE_CONTROLLER
@@ -154,12 +153,12 @@ security:
             - CAN_DELETE_PROCESSING
             - CAN_MOVE_PROCESSING
             - CAN_EDIT_CARD_PROCESSING
-            - CAN_CREATE_PIA
-            - CAN_DELETE_PIA
-            - CAN_MANAGE_EVALUATIONS
-            - CAN_MANAGE_ATTACHMENTS
-            - CAN_SHOW_PROCESSING_TEMPLATE
+            - CAN_MANAGE_PIAS
             - CAN_IMPORT_PIA
+            - CAN_MANAGE_EVALUATIONS
+            - CAN_SHOW_ATTACHMENT
+            - CAN_CREATE_ATTACHMENT
+            - CAN_SHOW_PROCESSING_TEMPLATE
             - CAN_MANAGE_FOLDERS
             - CAN_MANAGE_ONLY_OWNED_USERS
         
