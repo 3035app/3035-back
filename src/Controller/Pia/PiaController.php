@@ -287,7 +287,7 @@ class PiaController extends RestController
      * )
      *
      *
-     * @Security("is_granted('CAN_EDIT_PIA')")
+     * @Security("is_granted('CAN_EDIT_PIA') or is_granted('CAN_VALIDATE_PIA')")
      *
      * @return array
      */
@@ -295,28 +295,37 @@ class PiaController extends RestController
     {
         $pia = $this->getResource($id);
         $this->canAccessResourceOr403($pia);
+        $updatableAttributes = [];
 
-        $updatableAttributes = [
-            'author_name'                        => RequestDataHandler::TYPE_STRING,
-            'evaluator_name'                     => RequestDataHandler::TYPE_STRING,
-            'validator_name'                     => RequestDataHandler::TYPE_STRING,
-            'dpo_status'                         => RequestDataHandler::TYPE_INT,
-            'concerned_people_status'            => RequestDataHandler::TYPE_INT,
-            'status'                             => RequestDataHandler::TYPE_INT,
-            'dpo_opinion'                        => RequestDataHandler::TYPE_STRING,
-            'concerned_people_opinion'           => RequestDataHandler::TYPE_STRING,
-            'concerned_people_searched_opinion'  => RequestDataHandler::TYPE_BOOL,
-            'concerned_people_searched_content'  => RequestDataHandler::TYPE_STRING,
-            'rejection_reason'                   => RequestDataHandler::TYPE_STRING,
-            'applied_adjustments'                => RequestDataHandler::TYPE_STRING,
-            'dpos_names'                         => RequestDataHandler::TYPE_STRING,
-            'people_names'                       => RequestDataHandler::TYPE_STRING,
-            'type'                               => RequestDataHandler::TYPE_STRING,
-            'processing'                         => Processing::class,
-        ];
+        if ( $this->isGranted('CAN_VALIDATE_PIA') ) {
+            $updatableAttributes = array_merge($updatableAttributes, [
+                'status'                            => RequestDataHandler::TYPE_INT,
+                'rejection_reason'                  => RequestDataHandler::TYPE_STRING,
+            ]);
+        }
+
+        if ( $this->isGranted('CAN_EDIT_PIA') ) {
+            $updatableAttributes = array_merge($updatableAttributes, [
+                'author_name'                       => RequestDataHandler::TYPE_STRING,
+                'evaluator_name'                    => RequestDataHandler::TYPE_STRING,
+                'validator_name'                    => RequestDataHandler::TYPE_STRING,
+                'dpo_status'                        => RequestDataHandler::TYPE_INT,
+                'concerned_people_status'           => RequestDataHandler::TYPE_INT,
+                'status'                            => RequestDataHandler::TYPE_INT,
+                'dpo_opinion'                       => RequestDataHandler::TYPE_STRING,
+                'concerned_people_opinion'          => RequestDataHandler::TYPE_STRING,
+                'concerned_people_searched_opinion' => RequestDataHandler::TYPE_BOOL,
+                'concerned_people_searched_content' => RequestDataHandler::TYPE_STRING,
+                'rejection_reason'                  => RequestDataHandler::TYPE_STRING,
+                'applied_adjustments'               => RequestDataHandler::TYPE_STRING,
+                'dpos_names'                        => RequestDataHandler::TYPE_STRING,
+                'people_names'                      => RequestDataHandler::TYPE_STRING,
+                'type'                              => RequestDataHandler::TYPE_STRING,
+                'processing'                        => Processing::class,
+            ]);
+        }
 
         $this->mergeFromRequest($pia, $updatableAttributes, $request);
-
         $this->update($pia);
 
         return $this->view($pia, Response::HTTP_OK);
