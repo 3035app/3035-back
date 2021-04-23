@@ -139,6 +139,7 @@ security:
             - CAN_MANAGE_COMMENTS
             - CAN_MANAGE_ATTACHMENTS
             #- CAN_MANAGE_EVALUATIONS
+            - CAN_VALIDATE_PIA
             - CAN_EXPORT_PIA
             #- CAN_EDIT_PIA
             - CAN_CREATE_COMMENT
