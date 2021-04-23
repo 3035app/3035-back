@@ -298,6 +298,7 @@ class PiaController extends RestController
         $updatableAttributes = [];
 
         if ( $this->isGranted('CAN_VALIDATE_PIA') ) {
+            error_log('CAN_VALIDATE_PIA');
             $updatableAttributes = array_merge($updatableAttributes, [
                 'status'                            => RequestDataHandler::TYPE_INT,
                 'rejection_reason'                  => RequestDataHandler::TYPE_STRING,
@@ -305,13 +306,13 @@ class PiaController extends RestController
         }
 
         if ( $this->isGranted('CAN_EDIT_PIA') ) {
+            error_log('CAN_EDIT_PIA');
             $updatableAttributes = array_merge($updatableAttributes, [
                 'author_name'                       => RequestDataHandler::TYPE_STRING,
                 'evaluator_name'                    => RequestDataHandler::TYPE_STRING,
                 'validator_name'                    => RequestDataHandler::TYPE_STRING,
                 'dpo_status'                        => RequestDataHandler::TYPE_INT,
                 'concerned_people_status'           => RequestDataHandler::TYPE_INT,
-                'status'                            => RequestDataHandler::TYPE_INT,
                 'dpo_opinion'                       => RequestDataHandler::TYPE_STRING,
                 'concerned_people_opinion'          => RequestDataHandler::TYPE_STRING,
                 'concerned_people_searched_opinion' => RequestDataHandler::TYPE_BOOL,
