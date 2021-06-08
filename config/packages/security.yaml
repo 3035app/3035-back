@@ -129,10 +129,12 @@ security:
         #ROLE DEFINITIONS
 
         ROLE_USER:
+            - CAN_SHOW_STRUCTURE
             - CAN_EXPLORE_PIAS
 
         ROLE_CONTROLLER:
             - ROLE_USER
+            - CAN_EDIT_STRUCTURE
             - CAN_EDIT_PROCESSING
             - CAN_MANAGE_MEASURES
             - CAN_MANAGE_ANSWERS
