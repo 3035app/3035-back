@@ -295,7 +295,7 @@ class ProcessingController extends RestController
      *
      * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING') or is_granted('CAN_EDIT_CARD_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING') or is_granted('CAN_EDIT_CARD_PROCESSING') or is_granted('CAN_EDIT_EVALUATION')")
      *
      * @return array
      */
@@ -333,6 +333,12 @@ class ProcessingController extends RestController
                 'exactness'                 => RequestDataHandler::TYPE_STRING,
                 'consent'                   => RequestDataHandler::TYPE_STRING,
                 'concerned_people'          => RequestDataHandler::TYPE_STRING,
+                'status'                    => RequestDataHandler::TYPE_INT,
+            ]);
+        }
+
+        if ( $this->isGranted('CAN_EDIT_EVALUATION') ) {
+            $updatableAttributes = array_merge($updatableAttributes, [
                 'status'                    => RequestDataHandler::TYPE_INT,
                 'evaluation_comment'        => RequestDataHandler::TYPE_STRING,
                 'evaluation_state'          => RequestDataHandler::TYPE_INT,

@@ -140,10 +140,11 @@ security:
             - CAN_MANAGE_ANSWERS
             - CAN_MANAGE_COMMENTS
             - CAN_MANAGE_ATTACHMENTS
-            #- CAN_MANAGE_EVALUATIONS
+            - CAN_SHOW_EVALUATION
+            - CAN_CREATE_EVALUATION
+            - CAN_DELETE_EVALUATION
             - CAN_VALIDATE_PIA
             - CAN_EXPORT_PIA
-            #- CAN_EDIT_PIA
             - CAN_CREATE_COMMENT
 
         ROLE_CONTROLLER_MULTI:
@@ -165,6 +166,8 @@ security:
             - CAN_MANAGE_FOLDERS
             - CAN_MANAGE_ONLY_OWNED_USERS
             - CAN_EXPORT_PIA
+            - CAN_SHOW_COMMENT
+            - CAN_CREATE_COMMENT
         
         ROLE_SHARED_DPO:
             - ROLE_DPO
