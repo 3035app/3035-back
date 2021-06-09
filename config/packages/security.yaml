@@ -164,6 +164,7 @@ security:
             - CAN_SHOW_PROCESSING_TEMPLATE
             - CAN_MANAGE_FOLDERS
             - CAN_MANAGE_ONLY_OWNED_USERS
+            - CAN_EXPORT_PIA
         
         ROLE_SHARED_DPO:
             - ROLE_DPO
