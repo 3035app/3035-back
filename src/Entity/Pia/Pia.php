@@ -296,6 +296,14 @@ class Pia implements Timestampable
     {
         $this->answers = $answers;
     }
+    
+    /**
+     * @param Comment $comment
+     */
+    public function addComment(Comment $comment): void
+    {
+        $this->comments[] = $comment;
+    }
 
     /**
      * @return Collection|Comment[]
@@ -346,6 +354,14 @@ class Pia implements Timestampable
     }
 
     /**
+     * @param Measure $measure
+     */
+    public function addMeasure(Measure $measure): void
+    {
+        $this->measures[] = $measure;
+    }
+
+    /**
      * @return Collection|Attachment[]
      */
     public function getAttachments(): Collection
@@ -359,6 +375,14 @@ class Pia implements Timestampable
     public function setAttachments(Collection $attachments): void
     {
         $this->attachments = $attachments;
+    }
+
+    /**
+     * @param Attachment $attachment
+     */
+    public function addAttachment(Attachment $attachment): void
+    {
+        $this->attachments[] = $attachment;
     }
 
     /**
