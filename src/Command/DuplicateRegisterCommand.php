@@ -83,10 +83,6 @@ class DuplicateRegisterCommand extends Command
             $roots[$structure] = $this->findRootFolder($structures[$structure]);
         }
 
-        foreach ( $roots as $type => $folder ) {
-            echo $type.': '.$folder->getId();
-        }
-
         // Process records starting with root folder
         $this->processFolder($roots['source'], $roots['dest']);
 
