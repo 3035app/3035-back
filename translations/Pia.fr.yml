@@ -277,6 +277,7 @@ pia:
     labels:
       roles:
         ROLE_USER: Invité
+        ROLE_REDACTOR: Rédacteur
         ROLE_EVALUATOR: Evaluateur
         ROLE_CONTROLLER: Responsable de Traitement
         ROLE_CONTROLLER_MULTI: Responsable de Traitement multistructures
