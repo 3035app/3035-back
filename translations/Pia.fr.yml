@@ -1,342 +1,343 @@
 pia:
-    app_name: PiaLab
+  app_name: PiaLab
 
-    http_error:
-        503: >
-            L'application est en cours de maintenance.
-        500: >
-            Une erreur interne vient de se produire.
-        404: >
-            Page non trouvée. Vérifiez que l'URL est valide et que la page existe encore.
-        403: >
-            Cet accès est restreint, vous ne possedez pas les privilièges suffisant pour accéder à cette page.
-        401: >
-            Les identifiants sont invalides. Veuillez recommencer
+  http_error:
+    503: >
+      L'application est en cours de maintenance.
+    500: >
+      Une erreur interne vient de se produire.
+    404: >
+      Page non trouvée. Vérifiez que l'URL est valide et que la page existe encore.
+    403: >
+      Cet accès est restreint, vous ne possedez pas les privilièges suffisant pour accéder à cette page.
+    401: >
+      Les identifiants sont invalides. Veuillez recommencer
 
-    layout:
-        title: "Interface d'Administration"
+  layout:
+    title: "Interface d'Administration"
 
-        navbar:
-            users: Utilisateurs
-            applications: Applications
-            portfolios: Portefeuilles
-            structures: Structures
-            templates: Gabarits
-            logged_in_as: Connecté en tant que
-            logout: Déconnexion
+    navbar:
+      users: Utilisateurs
+      applications: Applications
+      portfolios: Portefeuilles
+      structures: Structures
+      templates: Gabarits
+      logged_in_as: Connecté en tant que
+      logout: Déconnexion
 
-    actions:
-        show: Voir
-        add: Ajouter
-        display: Afficher
-        edit: Modifier
-        remove: Supprimer
-        dissociate: Dissocier
+  actions:
+    show: Voir
+    add: Ajouter
+    display: Afficher
+    edit: Modifier
+    remove: Supprimer
+    dissociate: Dissocier
+
+  labels:
+    yes: Oui
+    no: Non
+    n_a: N/A
+
+  flashes:
+    a_functional_administrator_must_be_assigned_to_a_structure: Un administrateur fonctionnel doit être assigné à une structure
+    user_emails_must_be_unique: Un utilisateur avec cette addresse email existe déjà. Les addresses emails doivent être uniques
+
+  applications:
+    title: Applications
+
+    list:
+      id: "#"
+      name: Nom
+      url: URL
+      urls: URLs
+      grant_types: Autorisations
+      client_id: Client ID
+      client_secret: Client Secret
+
+    add:
+      title: Ajouter une application
+
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer cette application ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          title: Application
+          name: Nom
+          url: URL
+          urls: URLs de redirection
+          user_number: "Utilisateurs associés"
+          tokens: Jetons de connexion
+          currently_valid: en cours de validité
+
+    forms:
+      create:
+        name: Nom
+        url: URL
+        allowedGrantTypes: "Types d'autorisations"
+        redirectUris: URIs de redirection
+        submit: "Créer l'application"
+      edit:
+        cancel: Annuler
+        submit: "Enregistrer l'application"
+      remove:
+        submit: "Supprimer l'application"
 
     labels:
-        yes: Oui
-        no: Non
-        n_a: N/A
+      grant_types:
+        authorization_code: "Code d'autorisation"
+        token: Jeton
+        password: Mot de passe
+        client_credentials: Identifiants client
+        refresh_token: Jeton de rafraichissement
+        extensions: Extension
 
-    flashes:
-        a_functional_administrator_must_be_assigned_to_a_structure: Un administrateur fonctionnel doit être assigné à une structure
-        user_emails_must_be_unique: Un utilisateur avec cette addresse email existe déjà. Les addresses emails doivent être uniques
+  templates:
+    title: Gabarits de Traitement
 
-    applications:
-        title: Applications
+    list:
+      id: "#"
+      name: Nom
+      description: Description
+      enabled: Actif ?
+      data_size: Taille des données
+      filename: Nom du fichier
+      created_at: Créé le
+      updated_at: Mis à jour le
+      structures_number: Structures
+      structure_types_number: Types de structure
 
-        list:
-            id: "#"
-            name: Nom
-            url: URL
-            urls: URLs
-            grant_types: Autorisations
-            client_id: Client ID
-            client_secret: Client Secret
+    add:
+      title: Ajouter un gabarit
 
-        add:
-            title: Ajouter une application
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer ce gabarit ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          template: Gabarit
+          name: Nom
+          processing_number: Traitements issues de ce gabarit
 
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer cette application ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    title: Application
-                    name: Nom
-                    url: URL
-                    urls: URLs de redirection
-                    user_number: "Utilisateurs associés"
-                    tokens: Jetons de connexion
-                    currently_valid: en cours de validité
+    forms:
+      create:
+        name: Nom
+        description: Description
+        data: "Fichier d'export"
+        submit: Créer le gabarit
+      edit:
+        enabled: Actif
+        enabled_help: Un gabarit inactif ne sera visible de personne.
+        importedFileName: Nom du fichier actuel
+        newData: "Nouveau fichier d'export"
+        newData_help: "Laissez ce champ vide si vous n'avez pas besoin de changer les données du gabarit"
+        cancel: Annuler
+        submit: Enregistrer le gabarit
+      remove:
+        submit: Supprimer le gabarit
 
-        forms:
-            create:
-                name: Nom
-                url: URL
-                allowedGrantTypes: "Types d'autorisations"
-                redirectUris: URIs de redirection
-                submit: "Créer l'application"
-            edit:
-                cancel: Annuler
-                submit: "Enregistrer l'application"
-            remove:
-                submit: "Supprimer l'application"
+  structures:
+    title: Structures
 
-        labels:
-            grant_types:
-                authorization_code: "Code d'autorisation"
-                token: Jeton
-                password: Mot de passe
-                client_credentials: Identifiants client
-                refresh_token: Jeton de rafraichissement
-                extensions: Extension
+    list:
+      id: "#"
+      name: Nom
+      type: Type
+      users_number: "Utilisateurs"
+      processing_number: Traitements
+      created_at: Créé le
 
+    add:
+      title: Ajouter une structure
 
-    templates:
-        title: Gabarits de Traitement
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer cette structure ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          structure: Structure
+          name: Nom
+          users_number: "Utilisateurs associés"
+          processing_number: Traitements associés
 
-        list:
-            id: "#"
-            name: Nom
-            description: Description
-            enabled: Actif ?
-            data_size: Taille des données
-            filename: Nom du fichier
-            created_at: Créé le
-            updated_at: Mis à jour le
-            structures_number: Structures
-            structure_types_number: Types de structure
+    forms:
+      create:
+        name: Nom
+        type: Type de structure
+        portfolio: Portefeuille client
+        submit: Créer la structure
+      assoc:
+        portfolio: Portefeuille client
+        structures: Structures à associer
+        submit: Associer les structures
+      edit:
+        templates: Gabarits de Traitement disponibles
+        templates_help: Les gabarits sélectionnés seront accessibles à cette structure
 
-        add:
-            title: Ajouter un gabarit
+        cancel: Annuler
+        submit: Enregistrer la structure
+      remove:
+        submit: Supprimer la structure
 
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer ce gabarit ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    template: Gabarit
-                    name: Nom
-                    processing_number: Traitements issues de ce gabarit
+  structure_types:
+    title: Types de structure
 
-        forms:
-            create:
-                name: Nom
-                description: Description
-                data: "Fichier d'export"
-                submit: Créer le gabarit
-            edit:
-                enabled: Actif
-                enabled_help: Un gabarit inactif ne sera visible de personne.
-                importedFileName: Nom du fichier actuel
-                newData: "Nouveau fichier d'export"
-                newData_help: "Laissez ce champ vide si vous n'avez pas besoin de changer les données du gabarit"
-                cancel: Annuler
-                submit: Enregistrer le gabarit
-            remove:
-                submit: Supprimer le gabarit
+    list:
+      id: "#"
+      name: Nom
+      structures_number: "Structures"
 
-    structures:
-        title: Structures
+    add:
+      title: Ajouter un type de structure
 
-        list:
-            id: "#"
-            name: Nom
-            type: Type
-            users_number: "Utilisateurs"
-            processing_number: Traitements
-            created_at: Créé le
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer ce type de structure ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          structure_type: Type de structure
+          name: Nom
+          structures_number: Structures associées
 
-        add:
-            title: Ajouter une structure
+    forms:
+      create:
+        name: Nom
+        submit: Créer le type de structure
+      edit:
+        templates: Gabarits de Traitement disponibles
+        templates_help: Les gabarits sélectionnés seront accessibles à toutes les structures de ce type de structure
+        cancel: Annuler
+        submit: Enregistrer le type de structure
+      remove:
+        submit: Supprimer le type de structure
 
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer cette structure ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    structure: Structure
-                    name: Nom
-                    users_number: "Utilisateurs associés"
-                    processing_number: Traitements associés
+  users:
+    title: Utilisateurs
 
-        forms:
-            create:
-                name: Nom
-                type: Type de structure
-                portfolio: Portefeuille client
-                submit: Créer la structure
-            assoc:
-                portfolio: Portefeuille client
-                structures: Structures à associer
-                submit: Associer les structures
-            edit:
-                templates: Gabarits de Traitement disponibles
-                templates_help: Les gabarits sélectionnés seront accessibles à cette structure
+    actions:
+      send_reset_email: "Envoyer l'e-mail de réinitialisation de mot de passe"
 
-                cancel: Annuler
-                submit: Enregistrer la structure
-            remove:
-                submit: Supprimer la structure
+    list:
+      id: "#"
+      application: Application
+      structure: Structure
+      username: Alias
+      email: E-mail
+      roles: Roles
+      enabled: Actif
+      locked: Verrouillé
+      created_at: Créé le
+      expires_at: Expire le
 
-    structure_types:
-        title: Types de structure
+    add:
+      title: Ajouter un utilisateur
 
-        list:
-            id: "#"
-            name: Nom
-            structures_number: "Structures"
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer cet utilisateur ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          user: Utilisateur
+          username: "Alias"
+          email: E-mail
+          created_at: Créé le
+          expires_at: Expire le
+          application: Application
+          structure: Structure
+          roles: Rôles
 
-        add:
-            title: Ajouter un type de structure
+    forms:
+      create:
+        application: Application
+        structure: Structure
+        email: Adresse email
+        password: Mot de passe
+        roles: Rôles
+        portfolios: Portefeuilles client
+        sendResettingEmail: "Envoyer l'email de RàZ de mot de passe ?"
+        sendResettingEmail_help: "Envoyer automatiquement l'email de réinitialisation de mot de passe à l'adresse email saisie"
+        submit: "Créer l'utilisateur"
+      edit:
+        username: "Alias"
+        roles: Rôles
+        expirationDate: "Date d'expiration du compte"
+        enabled: Actif
+        locked: Verrouillé
+        cancel: Annuler
+        submit: "Enregistrer l'utilisateur"
+      remove:
+        submit: "Supprimer l'utilisateur"
+      reset:
+        cancel: Annuler
+        submit: "Envoyer l'email"
+      profile:
+        firstName: Prénom
+        lastName: Nom
 
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer ce type de structure ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    structure_type: Type de structure
-                    name: Nom
-                    structures_number: Structures associées
+    labels:
+      roles:
+        ROLE_USER: Invité
+        ROLE_REDACTOR: Rédacteur
+        ROLE_EVALUATOR: Evaluateur
+        ROLE_CONTROLLER: Responsable de Traitement
+        ROLE_CONTROLLER_MULTI: Responsable de Traitement multistructures
+        ROLE_DPO: DPO
+        ROLE_SHARED_DPO: DPO Mutualisé
+        ROLE_ADMIN: Administrateur Fonctionnel
+        ROLE_TECHNICAL_ADMIN: Administrateur Technique
+        ROLE_SUPER_ADMIN: Super Administrateur
 
-        forms:
-            create:
-                name: Nom
-                submit: Créer le type de structure
-            edit:
-                templates: Gabarits de Traitement disponibles
-                templates_help: Les gabarits sélectionnés seront accessibles à toutes les structures de ce type de structure
-                cancel: Annuler
-                submit: Enregistrer le type de structure
-            remove:
-                submit: Supprimer le type de structure
+    resetting:
+      send_email:
+        title: Envoi de l'email de réinitialisation de mot de passe
+        instructions: >
+          <p>
+              Un email de réinitialisation de mot de passe va être envoyé à l'adresse
+              <b>%email%</b>.
+          </p>
+          <p>
+              Cet email contiendra les instructions de réinitialisation du mot de passe pour le compte associé à cet email.
+          </p>
+        reset_url: URL de réinitialisation
+        warning: >
+          "ATTENTION: Ouvrez ce lien dans un onglet de navigation privée pour ne pas être déconnecté de votre compte d'administration une fois le mot de passe changé.<br/>
+          Si vous ne le faites pas, vous allez être connecté en tant que cet utilisateur."
+      success:
+        title: Mot de passe oublié
+        password_reset_successfully: >
+          Votre mot de passe à été modifié avec succès. <br/>
+          Vous pouvez retourner sur l'application pour vous connecter
+        return_to_application: Retouner vers l'application
+      request:
+        back: Retour
 
-    users:
-        title: Utilisateurs
+  portfolios:
+    title: Portefeuilles
 
-        actions:
-            send_reset_email: "Envoyer l'e-mail de réinitialisation de mot de passe"
+    list:
+      id: "#"
+      name: Libellé
+      structures_number: "Structures"
 
-        list:
-            id: "#"
-            application: Application
-            structure: Structure
-            username: Alias
-            email: E-mail
-            roles: Roles
-            enabled: Actif
-            locked: Verrouillé
-            created_at: Créé le
-            expires_at: Expire le
+    add:
+      title: Ajouter un portefeuille
 
-        add:
-            title: Ajouter un utilisateur
+    modals:
+      remove:
+        title: Êtes vous certain de vouloir supprimer ce portefeuille ?
+        sub_title: (cliquez sur ce message pour annuler)
+        resume:
+          structure_type: portefeuille
+          name: Libellé
+          structures_number: Structures associées
 
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer cet utilisateur ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    user: Utilisateur
-                    username: "Alias"
-                    email: E-mail
-                    created_at: Créé le
-                    expires_at: Expire le
-                    application: Application
-                    structure: Structure
-                    roles: Rôles
-
-        forms:
-            create:
-                application: Application
-                structure: Structure
-                email: Adresse email
-                password: Mot de passe
-                roles: Rôles
-                portfolios: Portefeuilles client
-                sendResettingEmail: "Envoyer l'email de RàZ de mot de passe ?"
-                sendResettingEmail_help: "Envoyer automatiquement l'email de réinitialisation de mot de passe à l'adresse email saisie"
-                submit: "Créer l'utilisateur"
-            edit:
-                username: "Alias"
-                roles: Rôles
-                expirationDate: "Date d'expiration du compte"
-                enabled: Actif
-                locked: Verrouillé
-                cancel: Annuler
-                submit: "Enregistrer l'utilisateur"
-            remove:
-                submit: "Supprimer l'utilisateur"
-            reset:
-                cancel: Annuler
-                submit: "Envoyer l'email"
-            profile:
-                firstName: Prénom
-                lastName: Nom
-
-        labels:
-            roles:
-                ROLE_USER : Invité
-                ROLE_CONTROLLER : Responsable de Traitement
-                ROLE_CONTROLLER_MULTI : Responsable de Traitement multistructures
-                ROLE_DPO : DPO
-                ROLE_SHARED_DPO : DPO Mutualisé
-                ROLE_ADMIN : Administrateur Fonctionnel
-                ROLE_TECHNICAL_ADMIN  : Administrateur Technique
-                ROLE_SUPER_ADMIN  : Super Administrateur
-
-        resetting:
-            send_email:
-                title: Envoi de l'email de réinitialisation de mot de passe
-                instructions: >
-                    <p>
-                        Un email de réinitialisation de mot de passe va être envoyé à l'adresse
-                        <b>%email%</b>.
-                    </p>
-                    <p>
-                        Cet email contiendra les instructions de réinitialisation du mot de passe pour le compte associé à cet email.
-                    </p>
-                reset_url: URL de réinitialisation
-                warning: >
-                    "ATTENTION: Ouvrez ce lien dans un onglet de navigation privée pour ne pas être déconnecté de votre compte d'administration une fois le mot de passe changé.<br/>
-                    Si vous ne le faites pas, vous allez être connecté en tant que cet utilisateur."
-            success:
-                title: Mot de passe oublié
-                password_reset_successfully: >
-                    Votre mot de passe à été modifié avec succès. <br/>
-                    Vous pouvez retourner sur l'application pour vous connecter
-                return_to_application: Retouner vers l'application
-            request:
-                back: Retour
-
-    portfolios:
-        title: Portefeuilles
-
-        list:
-            id: "#"
-            name: Libellé
-            structures_number: "Structures"
-
-        add:
-            title: Ajouter un portefeuille
-
-        modals:
-            remove:
-                title: Êtes vous certain de vouloir supprimer ce portefeuille ?
-                sub_title: (cliquez sur ce message pour annuler)
-                resume:
-                    structure_type: portefeuille
-                    name: Libellé
-                    structures_number: Structures associées
-
-        forms:
-            create:
-                name: Libellé
-                structures: Structures associées
-                submit: Créer le portefeuille
-            edit:
-                cancel: Annuler
-                submit: Enregistrer le portefeuille
-            remove:
-                submit: Supprimer le portefeuille
+    forms:
+      create:
+        name: Libellé
+        structures: Structures associées
+        submit: Créer le portefeuille
+      edit:
+        cancel: Annuler
+        submit: Enregistrer le portefeuille
+      remove:
+        submit: Supprimer le portefeuille
