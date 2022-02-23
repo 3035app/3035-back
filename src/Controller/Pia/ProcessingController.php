@@ -188,6 +188,12 @@ class ProcessingController extends RestController
      *         @Swg\Property(property="attachments", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
+     *         @Swg\Property(property="informed_concerned_people", type="string"),
+     *         @Swg\Property(property="consent_concerned_people", type="string"),
+     *         @Swg\Property(property="access_concerned_people", type="string"),
+     *         @Swg\Property(property="delete_concerned_people", type="string"),
+     *         @Swg\Property(property="limit_concerned_people", type="string"),
+     *         @Swg\Property(property="subcontractors_obligations", type="string"),
      *     ),
      *     description="The Processing content"
      * )
@@ -279,7 +285,13 @@ class ProcessingController extends RestController
      *         @Swg\Property(property="attachments", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
-     *         @Swg\Property(property="recipients", type="string")
+     *         @Swg\Property(property="recipients", type="string"),
+     *         @Swg\Property(property="informed_concerned_people", type="string"),
+     *         @Swg\Property(property="consent_concerned_people", type="string"),
+     *         @Swg\Property(property="access_concerned_people", type="string"),
+     *         @Swg\Property(property="delete_concerned_people", type="string"),
+     *         @Swg\Property(property="limit_concerned_people", type="string"),
+     *         @Swg\Property(property="subcontractors_obligations", type="string"),
      *     ),
      *     description="The Processing content"
      * )
@@ -318,22 +330,28 @@ class ProcessingController extends RestController
         
         if ( $this->isGranted('CAN_EDIT_PROCESSING') ) {
             $updatableAttributes = array_merge($updatableAttributes, [
-                'description'               => RequestDataHandler::TYPE_STRING,
-                'processors'                => RequestDataHandler::TYPE_STRING,
-                'controllers'               => RequestDataHandler::TYPE_STRING,
-                'non_eu_transfer'           => RequestDataHandler::TYPE_STRING,
-                'recipients'                => RequestDataHandler::TYPE_STRING,
-                'life_cycle'                => RequestDataHandler::TYPE_STRING,
-                'storage'                   => RequestDataHandler::TYPE_STRING,
-                'standards'                 => RequestDataHandler::TYPE_STRING,
-                'context_of_implementation' => RequestDataHandler::TYPE_STRING,
-                'lawfulness'                => RequestDataHandler::TYPE_STRING,
-                'minimization'              => RequestDataHandler::TYPE_STRING,
-                'rights_guarantee'          => RequestDataHandler::TYPE_STRING,
-                'exactness'                 => RequestDataHandler::TYPE_STRING,
-                'consent'                   => RequestDataHandler::TYPE_STRING,
-                'concerned_people'          => RequestDataHandler::TYPE_STRING,
-                'status'                    => RequestDataHandler::TYPE_INT,
+                'description'                => RequestDataHandler::TYPE_STRING,
+                'processors'                 => RequestDataHandler::TYPE_STRING,
+                'controllers'                => RequestDataHandler::TYPE_STRING,
+                'non_eu_transfer'            => RequestDataHandler::TYPE_STRING,
+                'recipients'                 => RequestDataHandler::TYPE_STRING,
+                'life_cycle'                 => RequestDataHandler::TYPE_STRING,
+                'storage'                    => RequestDataHandler::TYPE_STRING,
+                'standards'                  => RequestDataHandler::TYPE_STRING,
+                'context_of_implementation'  => RequestDataHandler::TYPE_STRING,
+                'lawfulness'                 => RequestDataHandler::TYPE_STRING,
+                'minimization'               => RequestDataHandler::TYPE_STRING,
+                'rights_guarantee'           => RequestDataHandler::TYPE_STRING,
+                'exactness'                  => RequestDataHandler::TYPE_STRING,
+                'consent'                    => RequestDataHandler::TYPE_STRING,
+                'concerned_people'           => RequestDataHandler::TYPE_STRING,
+                'status'                     => RequestDataHandler::TYPE_INT,
+                'informed_concerned_people'  => RequestDataHandler::TYPE_STRING,
+                'consent_concerned_people'   => RequestDataHandler::TYPE_STRING,
+                'access_concerned_people'    => RequestDataHandler::TYPE_STRING,
+                'delete_concerned_people'    => RequestDataHandler::TYPE_STRING,
+                'limit_concerned_people'     => RequestDataHandler::TYPE_STRING,
+                'subcontractors_obligations' => RequestDataHandler::TYPE_STRING,
             ]);
         }
 
@@ -346,7 +364,7 @@ class ProcessingController extends RestController
         }
         
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
-        
+        var_dump($request->getContent());
         $this->update($processing);
 
         return $this->view($processing, Response::HTTP_OK);
