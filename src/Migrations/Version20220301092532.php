@@ -11,7 +11,7 @@ class Version20220301092532 extends AbstractMigration implements ContainerAwareI
 {
     use ContainerAwareTrait;
 
-    public function up(Schema $schema)
+    public function up(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
@@ -24,7 +24,7 @@ class Version20220301092532 extends AbstractMigration implements ContainerAwareI
         $this->addSql('ALTER TABLE pia_processing ADD subcontractors_obligations TEXT DEFAULT NULL');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
