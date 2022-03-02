@@ -1,5 +1,0 @@
-maker:
-  # tell MakerBundle that all of your classes live in an
-  # PiaApi namespace, instead of the default App
-  # (e.g. PiaApi\Entity\Article, PiaApi\Command\MyCommand, etc)
-  root_namespace: "PiaApi"
