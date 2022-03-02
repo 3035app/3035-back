@@ -273,6 +273,54 @@ class Processing
     }
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $informedConcernedPeople;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $consentConcernedPeople;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $accessConcernedPeople;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $deleteConcernedPeople;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $limitConcernedPeople;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $subcontractorsObligations;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -851,5 +899,101 @@ class Processing
     public function setEvaluationComment(?string $evaluationComment = null): void
     {
         $this->evaluationComment = $evaluationComment;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getInformedConcernedPeople(): ?array
+    {
+        return $this->informedConcernedPeople;
+    }
+
+    /**
+     * @param array|null $informedConcernedPeople
+     */
+    public function setInformedConcernedPeople(?array $informedConcernedPeople = null): void
+    {
+        $this->informedConcernedPeople = $informedConcernedPeople;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getConsentConcernedPeople(): ?array
+    {
+        return $this->consentConcernedPeople;
+    }
+
+    /**
+     * @param array|null $consentConcernedPeople
+     */
+    public function setConsentConcernedPeople(?array $consentConcernedPeople = null): void
+    {
+        $this->consentConcernedPeople = $consentConcernedPeople;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAccessConcernedPeople(): ?array
+    {
+        return $this->accessConcernedPeople;
+    }
+
+    /**
+     * @param array|null $accessConcernedPeople
+     */
+    public function setAccessConcernedPeople(?array $accessConcernedPeople = null): void
+    {
+        $this->accessConcernedPeople = $accessConcernedPeople;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getDeleteConcernedPeople(): ?array
+    {
+        return $this->deleteConcernedPeople;
+    }
+
+    /**
+     * @param array|null $deleteConcernedPeople
+     */
+    public function setDeleteConcernedPeople(?array $deleteConcernedPeople = null): void
+    {
+        $this->deleteConcernedPeople = $deleteConcernedPeople;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLimitConcernedPeople(): ?array
+    {
+        return $this->limitConcernedPeople;
+    }
+
+    /**
+     * @param array|null $limitConcernedPeople
+     */
+    public function setLimitConcernedPeople(?array $limitConcernedPeople = null): void
+    {
+        $this->limitConcernedPeople = $limitConcernedPeople;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getSubcontractorsObligations(): ?array
+    {
+        return $this->subcontractorsObligations;
+    }
+
+    /**
+     * @param array|null $subcontractorsObligations
+     */
+    public function setSubcontractorsObligations(?array $subcontractorsObligations = null): void
+    {
+        $this->subcontractorsObligations = $subcontractorsObligations;
     }
 }
