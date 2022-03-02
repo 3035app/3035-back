@@ -198,6 +198,54 @@ class ProcessingDescriptor extends AbstractDescriptor
      */
     protected $processingDataTypes = [];
 
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $informedConcernedPeople = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $consentConcernedPeople = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $accessConcernedPeople = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $deleteConcernedPeople = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $limitConcernedPeople = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var array|null
+     */
+    protected $subcontractorsObligations = [];
+
     public function __construct(
         string $name,
         string $author,
@@ -219,7 +267,13 @@ class ProcessingDescriptor extends AbstractDescriptor
         string $contextOfImplementation = null,
         string $recipients = null,
         \DateTime $createdAt = null,
-        \DateTime $updatedAt = null
+        \DateTime $updatedAt = null,
+        array $informedConcernedPeople = null,
+        array $consentConcernedPeople = null,
+        array $accessConcernedPeople = null,
+        array $deleteConcernedPeople = null,
+        array $limitConcernedPeople = null,
+        array $subcontractorsObligations = null
     ) {
         $this->name = $name;
         $this->author = $author;
@@ -242,6 +296,12 @@ class ProcessingDescriptor extends AbstractDescriptor
         $this->recipients = $recipients;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->informedConcernedPeople = $informedConcernedPeople;
+        $this->consentConcernedPeople = $consentConcernedPeople;
+        $this->accessConcernedPeople = $accessConcernedPeople;
+        $this->deleteConcernedPeople = $deleteConcernedPeople;
+        $this->limitConcernedPeople = $limitConcernedPeople;
+        $this->subcontractorsObligations = $subcontractorsObligations;
     }
 
     public function mergePias(array $pias)
