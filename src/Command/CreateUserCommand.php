@@ -129,10 +129,11 @@ class CreateUserCommand extends Command
             }
         }
 
-        # check if user already exists!
+        $this->io->note(sprintf('check if user %s already exists!', $email));
         $class = $this->userService->getEntityClass();
         $userEntity = $this->entityManager->getRepository($class)->findOneBy(['email' => $email]);
-        if ($userEntity === null) {
+        if ($userEntity !== null) {
+            $this->io->note(sprintf('User %s already exists!', $email));
             return 0;
         }
 
