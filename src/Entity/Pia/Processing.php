@@ -273,50 +273,50 @@ class Processing
     }
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $informedConcernedPeople;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $consentConcernedPeople;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $accessConcernedPeople;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $deleteConcernedPeople;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $limitConcernedPeople;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
     protected $subcontractorsObligations;
 
@@ -902,97 +902,97 @@ class Processing
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getInformedConcernedPeople(): ?string
+    public function getInformedConcernedPeople(): ?array
     {
         return $this->informedConcernedPeople;
     }
 
     /**
-     * @param string|null $informedConcernedPeople
+     * @param array|null $informedConcernedPeople
      */
-    public function setInformedConcernedPeople(?string $informedConcernedPeople = null): void
+    public function setInformedConcernedPeople(?array $informedConcernedPeople = null): void
     {
         $this->informedConcernedPeople = $informedConcernedPeople;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getConsentConcernedPeople(): ?string
+    public function getConsentConcernedPeople(): ?array
     {
         return $this->consentConcernedPeople;
     }
 
     /**
-     * @param string|null $consentConcernedPeople
+     * @param array|null $consentConcernedPeople
      */
-    public function setConsentConcernedPeople(?string $consentConcernedPeople = null): void
+    public function setConsentConcernedPeople(?array $consentConcernedPeople = null): void
     {
         $this->consentConcernedPeople = $consentConcernedPeople;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getAccessConcernedPeople(): ?string
+    public function getAccessConcernedPeople(): ?array
     {
         return $this->accessConcernedPeople;
     }
 
     /**
-     * @param string|null $accessConcernedPeople
+     * @param array|null $accessConcernedPeople
      */
-    public function setAccessConcernedPeople(?string $accessConcernedPeople = null): void
+    public function setAccessConcernedPeople(?array $accessConcernedPeople = null): void
     {
         $this->accessConcernedPeople = $accessConcernedPeople;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getDeleteConcernedPeople(): ?string
+    public function getDeleteConcernedPeople(): ?array
     {
         return $this->deleteConcernedPeople;
     }
 
     /**
-     * @param string|null $deleteConcernedPeople
+     * @param array|null $deleteConcernedPeople
      */
-    public function setDeleteConcernedPeople(?string $deleteConcernedPeople = null): void
+    public function setDeleteConcernedPeople(?array $deleteConcernedPeople = null): void
     {
         $this->deleteConcernedPeople = $deleteConcernedPeople;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getLimitConcernedPeople(): ?string
+    public function getLimitConcernedPeople(): ?array
     {
         return $this->limitConcernedPeople;
     }
 
     /**
-     * @param string|null $limitConcernedPeople
+     * @param array|null $limitConcernedPeople
      */
-    public function setLimitConcernedPeople(?string $limitConcernedPeople = null): void
+    public function setLimitConcernedPeople(?array $limitConcernedPeople = null): void
     {
         $this->limitConcernedPeople = $limitConcernedPeople;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getSubcontractorsObligations(): ?string
+    public function getSubcontractorsObligations(): ?array
     {
         return $this->subcontractorsObligations;
     }
 
     /**
-     * @param string|null $subcontractorsObligations
+     * @param array|null $subcontractorsObligations
      */
-    public function setSubcontractorsObligations(?string $subcontractorsObligations = null): void
+    public function setSubcontractorsObligations(?array $subcontractorsObligations = null): void
     {
         $this->subcontractorsObligations = $subcontractorsObligations;
     }

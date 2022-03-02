@@ -199,52 +199,52 @@ class ProcessingDescriptor extends AbstractDescriptor
     protected $processingDataTypes = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $informedConcernedPeople = '';
+    protected $informedConcernedPeople = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $consentConcernedPeople = '';
+    protected $consentConcernedPeople = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $accessConcernedPeople = '';
+    protected $accessConcernedPeople = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $deleteConcernedPeople = '';
+    protected $deleteConcernedPeople = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $limitConcernedPeople = '';
+    protected $limitConcernedPeople = [];
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var array|null
      */
-    protected $subcontractorsObligations = '';
+    protected $subcontractorsObligations = [];
 
     public function __construct(
         string $name,
@@ -268,12 +268,12 @@ class ProcessingDescriptor extends AbstractDescriptor
         string $recipients = null,
         \DateTime $createdAt = null,
         \DateTime $updatedAt = null,
-        string $informedConcernedPeople = null,
-        string $consentConcernedPeople = null,
-        string $accessConcernedPeople = null,
-        string $deleteConcernedPeople = null,
-        string $limitConcernedPeople = null,
-        string $subcontractorsObligations = null
+        array $informedConcernedPeople = null,
+        array $consentConcernedPeople = null,
+        array $accessConcernedPeople = null,
+        array $deleteConcernedPeople = null,
+        array $limitConcernedPeople = null,
+        array $subcontractorsObligations = null
     ) {
         $this->name = $name;
         $this->author = $author;

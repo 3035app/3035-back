@@ -114,12 +114,12 @@ class ProcessingCest
         'evaluation_state'           => 'integer',
         'created_at'                 => 'string',
         'updated_at'                 => 'string',
-        'informed_concerned_people'  => 'string|null',
-        'consent_concerned_people'   => 'string|null',
-        'access_concerned_people'    => 'string|null',
-        'delete_concerned_people'    => 'string|null',
-        'limit_concerned_people'     => 'string|null',
-        'subcontractors_obligations' => 'string|null',
+        'informed_concerned_people'  => 'array|null',
+        'consent_concerned_people'   => 'array|null',
+        'access_concerned_people'    => 'array|null',
+        'delete_concerned_people'    => 'array|null',
+        'limit_concerned_people'     => 'array|null',
+        'subcontractors_obligations' => 'array|null',
     ];
 
     public function import_processing_with_pia_test(\ApiTester $I)

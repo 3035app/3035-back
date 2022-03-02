@@ -188,12 +188,12 @@ class ProcessingController extends RestController
      *         @Swg\Property(property="attachments", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
-     *         @Swg\Property(property="informed_concerned_people", type="string"),
-     *         @Swg\Property(property="consent_concerned_people", type="string"),
-     *         @Swg\Property(property="access_concerned_people", type="string"),
-     *         @Swg\Property(property="delete_concerned_people", type="string"),
-     *         @Swg\Property(property="limit_concerned_people", type="string"),
-     *         @Swg\Property(property="subcontractors_obligations", type="string"),
+     *         @Swg\Property(property="informed_concerned_people", type="array"),
+     *         @Swg\Property(property="consent_concerned_people", type="array"),
+     *         @Swg\Property(property="access_concerned_people", type="array"),
+     *         @Swg\Property(property="delete_concerned_people", type="array"),
+     *         @Swg\Property(property="limit_concerned_people", type="array"),
+     *         @Swg\Property(property="subcontractors_obligations", type="array"),
      *     ),
      *     description="The Processing content"
      * )
@@ -286,12 +286,12 @@ class ProcessingController extends RestController
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
      *         @Swg\Property(property="recipients", type="string"),
-     *         @Swg\Property(property="informed_concerned_people", type="string"),
-     *         @Swg\Property(property="consent_concerned_people", type="string"),
-     *         @Swg\Property(property="access_concerned_people", type="string"),
-     *         @Swg\Property(property="delete_concerned_people", type="string"),
-     *         @Swg\Property(property="limit_concerned_people", type="string"),
-     *         @Swg\Property(property="subcontractors_obligations", type="string"),
+     *         @Swg\Property(property="informed_concerned_people", type="array"),
+     *         @Swg\Property(property="consent_concerned_people", type="array"),
+     *         @Swg\Property(property="access_concerned_people", type="array"),
+     *         @Swg\Property(property="delete_concerned_people", type="array"),
+     *         @Swg\Property(property="limit_concerned_people", type="array"),
+     *         @Swg\Property(property="subcontractors_obligations", type="array"),
      *     ),
      *     description="The Processing content"
      * )
@@ -346,12 +346,12 @@ class ProcessingController extends RestController
                 'consent'                    => RequestDataHandler::TYPE_STRING,
                 'concerned_people'           => RequestDataHandler::TYPE_STRING,
                 'status'                     => RequestDataHandler::TYPE_INT,
-                'informed_concerned_people'  => RequestDataHandler::TYPE_STRING,
-                'consent_concerned_people'   => RequestDataHandler::TYPE_STRING,
-                'access_concerned_people'    => RequestDataHandler::TYPE_STRING,
-                'delete_concerned_people'    => RequestDataHandler::TYPE_STRING,
-                'limit_concerned_people'     => RequestDataHandler::TYPE_STRING,
-                'subcontractors_obligations' => RequestDataHandler::TYPE_STRING,
+                'informed_concerned_people'  => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                'consent_concerned_people'   => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                'access_concerned_people'    => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                'delete_concerned_people'    => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                'limit_concerned_people'     => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                'subcontractors_obligations' => RequestDataHandler::TYPE_NULLABLE_ARRAY,
             ]);
         }
 
@@ -364,7 +364,6 @@ class ProcessingController extends RestController
         }
         
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
-        var_dump($request->getContent());
         $this->update($processing);
 
         return $this->view($processing, Response::HTTP_OK);
