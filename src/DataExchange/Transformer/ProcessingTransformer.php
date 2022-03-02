@@ -87,6 +87,12 @@ class ProcessingTransformer extends AbstractTransformer
         $processing->setConcernedPeople($descriptor->getConcernedPeople());
         $processing->setRecipients($descriptor->getRecipients());
         $processing->setContextOfImplementation($descriptor->getContextOfImplementation());
+        $processing->setInformedConcernedPeople($descriptor->getInformedConcernedPeople());
+        $processing->setConsentConcernedPeople($descriptor->getConsentConcernedPeople());
+        $processing->setAccessConcernedPeople($descriptor->getAccessConcernedPeople());
+        $processing->setDeleteConcernedPeople($descriptor->getDeleteConcernedPeople());
+        $processing->setLimitConcernedPeople($descriptor->getLimitConcernedPeople());
+        $processing->setSubcontractorsObligations($descriptor->getSubcontractorsObligations());
 
         return $processing;
     }
@@ -114,7 +120,13 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getContextOfImplementation(),
             $processing->getRecipients(),
             $processing->getCreatedAt(),
-            $processing->getUpdatedAt()
+            $processing->getUpdatedAt(),
+            $processing->getInformedConcernedPeople(),
+            $processing->getConsentConcernedPeople(),
+            $processing->getAccessConcernedPeople(),
+            $processing->getDeleteConcernedPeople(),
+            $processing->getLimitConcernedPeople(),
+            $processing->getSubcontractorsObligations()
         );
 
         $descriptor->mergePias(
