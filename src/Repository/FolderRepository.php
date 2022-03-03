@@ -13,31 +13,9 @@ namespace PiaApi\Repository;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Folder;
-use PiaApi\Entity\Pia\Folder;
 
 class FolderRepository extends NestedTreeRepository
 {
-    /**
-     * @param string $name
-     * @param User $user
-     * @return Folder[]
-     */
-    public function findByStructure(User $user)
-    {
-        $qb = $this
-            ->createQueryBuilder('f')
-            ->join('f.structure', 's')
-            ->join('s.users', 'u')
-            ->orWhere('upper(s.name) LIKE :structure')
-            ->orWhere('upper(f.name) LIKE :structure AND f.name != \'root\'')
-            ->andWhere('u.id = :userId')
-            ->orderBy('name', 'ASC')
-            ->setParameter('userId', $user->getId())
-            ->setParameter('structure', sprintf('%%s%', $user->getStructure()->getId()))
-            ;
-        return $qb->getQuery()->getResult();
-    }
-
     /**
      * @param string $name
      * @param User $user
