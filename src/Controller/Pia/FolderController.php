@@ -74,7 +74,8 @@ class FolderController extends RestController
     public function listAction(Request $request)
     {
         $structureId = $this->getUser()->getStructure() !== null ? $this->getUser()->getStructure()->getId() : null;
-        $collection = $this->getRepository()->findBy(['structure' => $structureId, 'parent' => null], ['name' => 'ASC']);
+        // $collection = $this->getRepository()->findBy(['structure' => $structureId, 'parent' => null], ['name' => 'ASC']);
+        $collection = $this->getRepository()->findByStructure($this->getUser())
 
         return $this->view($collection, Response::HTTP_OK);
     }
