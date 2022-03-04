@@ -90,11 +90,10 @@ class ProcessingUserController extends LayerRestController
             throw new AccessDeniedHttpException();
         }
 
-$can_access = true;
-/*
-        if ($this->getSecurity()->isGranted('CAN_MANAGE_FOLDERS')) {
+        if ($this->getSecurity()->isGranted('CAN_MANAGE_PROCESSINGS')) {
             $can_access = true;
         } else {
+/*
             $can_access = false;
             foreach ($resource->getUsers() as $user) {
                 if ($user === $this->getUser()) {
@@ -102,8 +101,8 @@ $can_access = true;
                     break;
                 }
             }
-        }
 */
+        }
 
         if ($resource !== null && !$can_access) {
             throw new AccessDeniedHttpException();
