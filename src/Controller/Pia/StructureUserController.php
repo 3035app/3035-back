@@ -12,7 +12,6 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
-use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Structure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -20,17 +19,9 @@ use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class StructureUserController extends RestController
+class StructureUserController extends LayerRestController
 {
-    public function __construct(
-        PropertyAccessorInterface $propertyAccessor,
-        SerializerInterface $serializer
-    ) {
-        parent::__construct($propertyAccessor, $serializer);
-    }
-
     /**
      * Lists all users of a specific Structure.
      *
@@ -102,11 +93,21 @@ class StructureUserController extends RestController
         if (!$resource instanceof Structure) {
             throw new AccessDeniedHttpException();
         }
-        $structures = array_merge(
-            [$this->getUser()->getStructure()],
-            $this->getUser()->getProfile()->getPortfolioStructures()
-        );
-        if ($resource === null || !in_array($resource, $structures)) {
+
+        if ($this->getSecurity()->isGranted('CAN_MANAGE_STRUCTURES')) {
+            $can_access = true;
+        } else {
+            $can_access = false;
+            $structures = array_merge(
+                [$this->getUser()->getStructure()],
+                $this->getUser()->getProfile()->getPortfolioStructures()
+            );
+            if (in_array($resource, $structures)) {
+                $can_access = true;
+            }
+        }
+
+        if ($resource !== null && !$can_access) {
             throw new AccessDeniedHttpException();
         }
     }

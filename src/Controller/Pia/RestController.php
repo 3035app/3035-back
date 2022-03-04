@@ -77,7 +77,7 @@ abstract class RestController extends AbstractFOSRestController
     }
 
     /**
-     * Gest resource entity manager.
+     * Gets resource entity manager.
      *
      * @return EntityManager
      */

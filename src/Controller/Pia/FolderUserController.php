@@ -12,28 +12,16 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
-use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Folder;
-use PiaApi\Entity\Pia\Structure;
-use PiaApi\Exception\Folder\NonEmptyFolderCannotBeDeletedException;
-use PiaApi\Exception\Folder\RootFolderCannotBeDeletedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class FolderUserController extends RestController
+class FolderUserController extends LayerRestController
 {
-    public function __construct(
-        PropertyAccessorInterface $propertyAccessor,
-        SerializerInterface $serializer
-    ) {
-        parent::__construct($propertyAccessor, $serializer);
-    }
-
     /**
      * Lists all users of a specific Folder.
      *
@@ -104,12 +92,15 @@ class FolderUserController extends RestController
             throw new AccessDeniedHttpException();
         }
 
-        $can_access = false;
-
-        foreach ($resource->getUsers() as $user) {
-            if ($user === $this->getUser()) {
-                $can_access = true;
-                break;
+        if ($this->getSecurity()->isGranted('CAN_MANAGE_FOLDERS')) {
+            $can_access = true;
+        } else {
+            $can_access = false;
+            foreach ($resource->getUsers() as $user) {
+                if ($user === $this->getUser()) {
+                    $can_access = true;
+                    break;
+                }
             }
         }
 
