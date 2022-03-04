@@ -85,8 +85,8 @@ class FolderUserController extends RestController
         foreach ($folder->getUsers() as $user) {
             array_push($users, [
                 'id' => $user->getId(),
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName(),
+                'firstName' => $user->getProfile()->getFirstName(),
+                'lastName' => $user->getProfile()->getLastName(),
             ]);
         }
 

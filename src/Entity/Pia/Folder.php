@@ -141,7 +141,6 @@ class Folder implements Timestampable
 
         $this->children = new ArrayCollection();
         $this->processings = new ArrayCollection();
-        $this->users = new ArrayCollection();
     }
 
     /**
