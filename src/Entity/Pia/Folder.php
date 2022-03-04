@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -123,7 +124,7 @@ class Folder implements Timestampable
 
     /**
      * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="UserProfile", mappedBy="folders")
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User", mappedBy="folders")
      * 
      * @var Collection
      */
@@ -383,11 +384,11 @@ class Folder implements Timestampable
     }
 
     /**
-     * @param UserProfile $user
+     * @param User $user
      *
      * @throws \InvalidArgumentException
      */
-    public function addUser(UserProfile $user): void
+    public function addUser(User $user): void
     {
         if ($this->processings->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
@@ -397,11 +398,11 @@ class Folder implements Timestampable
     }
 
     /**
-     * @param UserProfile $user
+     * @param User $user
      *
      * @throws \InvalidArgumentException
      */
-    public function removeUser(UserProfile $user): void
+    public function removeUser(User $user): void
     {
         if ($this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is not in Folder « #%d »', $user, $this->getId()));
@@ -410,9 +411,9 @@ class Folder implements Timestampable
     }
 
     /**
-     * @return array|UserProfile[]
+     * @return Collection
      */
-    public function getUsers(): array
+    public function getUsers(): Collection
     {
         return $this->users;
     }
