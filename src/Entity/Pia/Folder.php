@@ -121,14 +121,6 @@ class Folder implements Timestampable
      */
     protected $structure;
 
-    /**
-     * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="UserProfile", mappedBy="folders")
-     * 
-     * @var Collection
-     */
-    protected $users;
-
     public function __construct(string $name, ?Structure $structure = null)
     {
         $this->name = $name;
@@ -140,7 +132,6 @@ class Folder implements Timestampable
 
         $this->children = new ArrayCollection();
         $this->processings = new ArrayCollection();
-        $this->users = new ArrayCollection();
     }
 
     /**
@@ -380,41 +371,6 @@ class Folder implements Timestampable
                 return $folder->flatCollectProcessings();
             })->getValues()
         );
-    }
-
-    /**
-     * @param UserProfile $user
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function addUser(UserProfile $user): void
-    {
-        if ($this->processings->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
-        }
-        $user->addFolder($this); // synchronously updating inverse side
-        $this->users->add($user);
-    }
-
-    /**
-     * @param UserProfile $user
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function removeUser(UserProfile $user): void
-    {
-        if ($this->users->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is not in Folder « #%d »', $user, $this->getId()));
-        }
-        $this->users->removeElement($user);
-    }
-
-    /**
-     * @return array|UserProfile[]
-     */
-    public function getUsers(): array
-    {
-        return $this->users;
     }
 
     /**
