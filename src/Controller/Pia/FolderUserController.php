@@ -105,15 +105,14 @@ class FolderUserController extends RestController
         }
 
         $can_access = false;
-        $can_access = true;
-/*
+
         foreach ($resource->getUsers() as $user) {
             if ($user === $this->getUser()) {
                 $can_access = true;
                 break;
             }
         }
-*/
+
         if ($resource !== null && !$can_access) {
             throw new AccessDeniedHttpException();
         }
