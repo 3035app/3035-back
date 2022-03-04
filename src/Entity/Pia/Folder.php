@@ -141,6 +141,7 @@ class Folder implements Timestampable
 
         $this->children = new ArrayCollection();
         $this->processings = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -389,7 +390,7 @@ class Folder implements Timestampable
      */
     public function addUser(User $user): void
     {
-        if ($this->processings->contains($user)) {
+        if ($this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
         }
         $user->addFolder($this); // synchronously updating inverse side

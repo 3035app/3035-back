@@ -17,6 +17,7 @@ use FOS\UserBundle\Model\User as BaseUser;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Pia\Folder;
 use PiaApi\Entity\Pia\Portfolio;
+use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\UserProfile;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -115,6 +116,13 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     private $folders;
 
+    /**
+     * many users have many processings.
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Pia\Processing", inversedBy="users")
+     * @ORM\JoinTable(name="users_processings")
+     */
+    private $processings;
+
     public function __construct(?string $email = null)
     {
         $this->email = $email;
@@ -126,6 +134,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         $this->profile = new UserProfile();
         $this->portfolios = new ArrayCollection();
         $this->folders = new ArrayCollection();
+        $this->processings = new ArrayCollection();
     }
 
     /**
@@ -468,5 +477,39 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     public function getFolders(): Collection
     {
         return $this->folders;
+    }
+
+    /**
+     * @param Processing $processing
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addProcessing(Processing $processing): void
+    {
+        if ($this->processings->contains($processing)) {
+            throw new \InvalidArgumentException(sprintf('Processing « %s » is already attached with User « %d »', $processing, $this->getEmail()));
+        }
+        $this->processings->add($processing);
+    }
+
+    /**
+     * @param Processing $processing
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeProcessing(Processing $processing): void
+    {
+        if ($this->processings->contains($processing)) {
+            throw new \InvalidArgumentException(sprintf('Processing « %s » is not attached with User « %d »', $processing, $this->getEmail()));
+        }
+        $this->processings->removeElement($processing);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProcessings(): Collection
+    {
+        return $this->processings;
     }
 }
