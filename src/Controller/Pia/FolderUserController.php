@@ -191,13 +191,8 @@ class FolderUserController extends LayerRestController
         // get folder
         $folder = $this->getResource($folderId);
         $this->canAccessResourceOr403($folder);
-
         // get user
-        $user = $this->getResource($userId, User::class);
-        if ($user === null) {
-            return $this->view($user, Response::HTTP_NOT_FOUND);
-        }
-
+        $user = $this->getUserResource($userId);
         return [$folder, $user];
     }
 

@@ -187,13 +187,8 @@ class ProcessingUserController extends LayerRestController
         // get processing
         $processing = $this->getResource($processingId);
         $this->canAccessResourceOr403($processing);
-
         // get user
-        $user = $this->getResource($userId, User::class);
-        if ($user === null) {
-            return $this->view($user, Response::HTTP_NOT_FOUND);
-        }
-
+        $user = $this->getUserResource($userId);
         return [$processing, $user];
     }
 
