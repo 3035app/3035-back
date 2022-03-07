@@ -185,6 +185,14 @@ class FolderController extends RestController
         $this->getRepository()->recover();
         $this->getDoctrine()->getManager()->flush();
 
+        // attach users' parent to that folder
+        $controller = 'PiaApi\Controller\Pia\FolderUserController::attachAction';
+        $path['_controller'] = $controller;
+        foreach ($parent->getUsers() as $user) {
+            $query = ['folderId' => $parent->getId(), 'userId' => $user->getId()]);
+            $this->forward($controller, $path, $query);
+        }
+
         return $this->view($folder, Response::HTTP_OK);
     }
 
