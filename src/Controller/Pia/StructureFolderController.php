@@ -200,12 +200,16 @@ class StructureFolderController extends RestController
             $parent,
             $request->get('person_in_charge')
         );
+
         $this->canAccessResourceOr403($folder);
-
         $this->persist($folder);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
+
+        // attach users' parent to that folder
+        foreach ($folder->getParent()->getUsers() as $user) {
+            $folder->inheritUser($user);
+        }
 
         $this->getDoctrine()->getManager()->flush();
 
