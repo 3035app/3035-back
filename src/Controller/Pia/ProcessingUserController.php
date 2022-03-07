@@ -79,6 +79,60 @@ class ProcessingUserController extends LayerRestController
     }
 
     /**
+     * Attach a Processing to a user.
+     *
+     * @Swg\Tag(name="ProcessingUser")
+     *
+     * @FOSRest\Put("/processings/{processingId}/users/{userId}", requirements={"processingId"="\d+","userId"="\d+"})
+     *
+     * @Swg\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     required=true,
+     *     description="The API token. e.g.: Bearer <TOKEN>"
+     * )
+     * @Swg\Parameter(
+     *     name="processingId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the Processing"
+     * )
+     * @Swg\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the User"
+     * )
+     *
+     * @Swg\Response(
+     *     response=200,
+     *     description="Returns the updated Processing",
+     *     @Swg\Schema(
+     *         type="object",
+     *         ref=@Nelmio\Model(type=Processing::class, groups={"Default"})
+     *     )
+     * )
+     *
+     * @Security("is_granted('CAN_EDIT_PROCESSING')")
+     *
+     * @return View
+     */
+    public function attachAction(Request $request, $processingId, $userId)
+    {
+        // get processing and user
+        list($processing, $user) = $this->getResources($processingId, $userId);
+
+        // attach user to processing
+        $processing->addUser($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view($processing, Response::HTTP_OK);
+    }
+
+    /**
      * detach a Processing from a user.
      *
      * @Swg\Tag(name="ProcessingUser")
@@ -112,7 +166,7 @@ class ProcessingUserController extends LayerRestController
      *     description="Empty content"
      * )
      *
-     * @Security("is_granted('CAN_EDIT_FOLDER')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING')")
      *
      * @return View
      */
@@ -123,13 +177,6 @@ class ProcessingUserController extends LayerRestController
 
         // detach user from processing
         $processing->removeUser($user);
-
-        // propagate inherit children (only processings)
-        foreach ($processing->getChildren() as $child)
-        {
-            $child->removeUser($user);
-        }
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view([], Response::HTTP_OK);
