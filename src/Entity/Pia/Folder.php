@@ -420,6 +420,48 @@ class Folder implements Timestampable
     }
 
     /**
+     * Propagate user's inheriting to children.
+     * 
+     * @param User $user
+     */
+    public function inheritUser(User $user): void
+    {
+        // attach user to folder
+        $this->addUser($user);
+        // propagate user's inheriting to subfolders
+        foreach ($this->getChildren() as $subfolder)
+        {
+            $subfolder->inheritUser($user);
+        }
+        // propagate user's inheriting to processings
+        foreach ($this->getProcessings() as $processing)
+        {
+            $processing->addUser($user);
+        }
+    }
+
+    /**
+     * Remove user's inheriting of children.
+     * 
+     * @param User $user
+     */
+    public function removeInheritUser(User $user): void
+    {
+        // detach user from folder
+        $this->removeUser($user);
+        // remove user's inheriting of subfolders
+        foreach ($this->getChildren() as $subfolder)
+        {
+            $subfolder->removeInheritUser($user);
+        }
+        // remove user's inheriting of processings
+        foreach ($this->getProcessings() as $processing)
+        {
+            $processing->removeUser($user);
+        }
+    }
+
+    /**
      * @return string
      **/
     public function __toString()
