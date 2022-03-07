@@ -132,12 +132,10 @@ class FolderUserController extends LayerRestController
         // attach user to folder
         $folder->addUser($user);
 
-        // propagate inherit children (folders and processings)
-        foreach ($folder->getChildren() as $child) {
+        // propagate inherit children (only folders)
+        foreach ($folder->getChildren() as $child)
+        {
             $child->addUser($user);
-        }
-        foreach ($folder->getProcessings() as $childProcessing) {
-            $childProcessing->addUser($user);
         }
 
         $this->getDoctrine()->getManager()->flush();
@@ -191,13 +189,10 @@ class FolderUserController extends LayerRestController
         // detach user from folder
         $folder->removeUser($user);
 
-        // propagate inherit children (folders and processings)
-        foreach ($folder->getChildren() as $child) {
-            $child->removeUser($user);
-        }
-        foreach ($folder->getProcessings() as $childProcessing)
+        // propagate inherit children (only folders)
+        foreach ($folder->getChildren() as $child)
         {
-            $childProcessing->removeUser($user);
+            $child->removeUser($user);
         }
 
         $this->getDoctrine()->getManager()->flush();
