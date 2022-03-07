@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -1027,9 +1028,10 @@ class Processing
      */
     public function removeUser(User $user): void
     {
-        if ($this->users->contains($user)) {
+        if (!$this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is not attached with Processing « #%d »', $user, $this->getId()));
         }
+        $user->removeProcessing($this); // synchronously updating inverse side
         $this->users->removeElement($user);
     }
 

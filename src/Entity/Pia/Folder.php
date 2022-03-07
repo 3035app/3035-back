@@ -404,9 +404,10 @@ class Folder implements Timestampable
      */
     public function removeUser(User $user): void
     {
-        if ($this->users->contains($user)) {
+        if (!$this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is not in Folder « #%d »', $user, $this->getId()));
         }
+        $user->removeFolder($this); // synchronously updating inverse side
         $this->users->removeElement($user);
     }
 

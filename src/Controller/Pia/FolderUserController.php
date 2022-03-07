@@ -14,6 +14,7 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Folder;
+use PiaApi\Entity\Oauth\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,6 +80,145 @@ class FolderUserController extends LayerRestController
         }
 
         return $this->view($users, Response::HTTP_OK);
+    }
+
+    /**
+     * Attach a Folder to a user.
+     *
+     * @Swg\Tag(name="FolderUser")
+     *
+     * @FOSRest\Put("/folders/{folderId}/users/{userId}", requirements={"folderId"="\d+","userId"="\d+"})
+     *
+     * @Swg\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     required=true,
+     *     description="The API token. e.g.: Bearer <TOKEN>"
+     * )
+     * @Swg\Parameter(
+     *     name="folderId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the Folder"
+     * )
+     * @Swg\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the User"
+     * )
+     *
+     * @Swg\Response(
+     *     response=200,
+     *     description="Returns the updated Folder",
+     *     @Swg\Schema(
+     *         type="object",
+     *         ref=@Nelmio\Model(type=Folder::class, groups={"Default"})
+     *     )
+     * )
+     *
+     * @Security("is_granted('CAN_EDIT_FOLDER')")
+     *
+     * @return View
+     */
+    public function attachAction(Request $request, $folderId, $userId)
+    {
+        // get folder and user
+        list($folder, $user) = $this->getResources($folderId, $userId);
+
+        // attach user to folder
+        $folder->addUser($user);
+
+        // propagate inherit children (folders and processings)
+        foreach ($folder->getChildren() as $child) {
+            $child->addUser($user);
+        }
+        foreach ($folder->getProcessings() as $childProcessing) {
+            $childProcessing->addUser($user);
+        }
+
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view($folder, Response::HTTP_OK);
+    }
+
+    /**
+     * detach a Folder from a user.
+     *
+     * @Swg\Tag(name="FolderUser")
+     *
+     * @FOSRest\Delete("/folders/{folderId}/users/{userId}", requirements={"folderId"="\d+","userId"="\d+"})
+     *
+     * @Swg\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     required=true,
+     *     description="The API token. e.g.: Bearer <TOKEN>"
+     * )
+     * @Swg\Parameter(
+     *     name="folderId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the Folder"
+     * )
+     * @Swg\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the User"
+     * )
+     *
+     * @Swg\Response(
+     *     response=200,
+     *     description="Empty content"
+     * )
+     *
+     * @Security("is_granted('CAN_EDIT_FOLDER')")
+     *
+     * @return View
+     */
+    public function detachAction(Request $request, $folderId, $userId)
+    {
+        // get folder and user
+        list($folder, $user) = $this->getResources($folderId, $userId);
+
+        // detach user from folder
+        $folder->removeUser($user);
+
+        // propagate inherit children (folders and processings)
+        foreach ($folder->getChildren() as $child) {
+            $child->removeUser($user);
+        }
+        foreach ($folder->getProcessings() as $childProcessing)
+        {
+            $childProcessing->removeUser($user);
+        }
+
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view([], Response::HTTP_OK);
+    }
+
+    protected function getResources($folderId, $userId)
+    {
+        // get folder
+        $folder = $this->getResource($folderId);
+        $this->canAccessResourceOr403($folder);
+
+        // get user
+        $user = $this->getRepository(User::class)->find($userId);
+
+        if ($user === null) {
+            return $this->view($user, Response::HTTP_NOT_FOUND);
+        }
+
+        return [$folder, $user];
     }
 
     protected function getEntityClass()

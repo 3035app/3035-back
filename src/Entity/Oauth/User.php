@@ -453,7 +453,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     public function addFolder(Folder $folder): void
     {
         if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is already attached with User « %d »', $folder, $this->getEmail()));
+            throw new \InvalidArgumentException(sprintf('Folder « %s » is already attached with User « %d »', $folder, $this->getUsername()));
         }
         $this->folders->add($folder);
     }
@@ -465,8 +465,8 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function removeFolder(Folder $folder): void
     {
-        if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is not attached with User « %d »', $folder, $this->getEmail()));
+        if (!$this->folders->contains($folder)) {
+            throw new \InvalidArgumentException(sprintf('Folder « %s » is not attached with User « %d »', $folder, $this->getUsername()));
         }
         $this->folders->removeElement($folder);
     }
@@ -487,7 +487,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     public function addProcessing(Processing $processing): void
     {
         if ($this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is already attached with User « %d »', $processing, $this->getEmail()));
+            throw new \InvalidArgumentException(sprintf('Processing « %s » is already attached with User « %d »', $processing, $this->getUsername()));
         }
         $this->processings->add($processing);
     }
@@ -499,8 +499,8 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function removeProcessing(Processing $processing): void
     {
-        if ($this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is not attached with User « %d »', $processing, $this->getEmail()));
+        if (!$this->processings->contains($processing)) {
+            throw new \InvalidArgumentException(sprintf('Processing « %s » is not attached with User « %d »', $processing, $this->getUsername()));
         }
         $this->processings->removeElement($processing);
     }
