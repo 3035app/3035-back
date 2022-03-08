@@ -337,17 +337,6 @@ class Processing
      */
     protected $subcontractorsObligations;
 
-
-
-
-
-
-// isDoing()
-if ($processing->getStatus() == Processing::STATUS_DOING) { $underValidation[] = $processing->getStatus(); }
-
-
-
-
     /**
      * @return string
      */
