@@ -223,6 +223,9 @@ class ProcessingController extends RestController
             $request->get('designated_controller')
         );
 
+        // attach connected user (creator) to that processing
+        $processing->addUser($this->getUser());
+
         $this->persist($processing);
 
         return $this->view($processing, Response::HTTP_OK);
