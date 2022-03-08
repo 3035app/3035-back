@@ -324,9 +324,13 @@ class ProcessingController extends RestController
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
 
-$underValidation = [];
-// isDoing()
-if ($processing->getStatus() == Processing::STATUS_DOING) { $underValidation[] = $processing->getStatus(); }
+        // detect when redactor requests a validation for his PIA (1st step)
+        $underValidation = [];
+        if ($processing->isDoing()) {
+print_r($processing->getId());
+print_r($processing->isDoing());
+            $underValidation[] = $processing->getStatus();
+        }
 
         $updatableAttributes = [];
 
@@ -378,12 +382,14 @@ if ($processing->getStatus() == Processing::STATUS_DOING) { $underValidation[] =
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->update($processing);
 
-// isUnderValidation()
-// /!\ needs 2 steps
-if ($processing->getStatus() == Processing::STATUS_UNDER_VALIDATION) { $underValidation[] = $processing->getStatus(); }
+        // detect when redactor requests a validation for his PIA (2nd step)
+        // /!\ needs 2 steps
+        if ($processing->isUnderValidation()) {
+            $underValidation[] = $processing->getStatus();
 
-// notify redactors
-if ($underValidation == [Processing::STATUS_DOING, Processing::STATUS_UNDER_VALIDATION]) { $this->processingService->notify(); }
+            // notify redactors
+            if ($underValidation == [Processing::STATUS_DOING, Processing::STATUS_UNDER_VALIDATION]) { $this->processingService->notify(); }
+        }
 
         return $this->view($processing, Response::HTTP_OK);
     }

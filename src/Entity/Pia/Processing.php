@@ -273,22 +273,6 @@ class Processing
      */
     protected $canShow;
 
-    public function __construct(
-        string $name,
-        Folder $folder,
-        string $author,
-        string $designatedController
-    ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
-
-        $this->processingDataTypes = new ArrayCollection();
-        $this->pias = new ArrayCollection();
-        $this->users = new ArrayCollection();
-    }
-
     /**
      * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
@@ -336,6 +320,61 @@ class Processing
      * @var array|null
      */
     protected $subcontractorsObligations;
+
+    public function __construct(
+        string $name,
+        Folder $folder,
+        string $author,
+        string $designatedController
+    ) {
+        $this->name = $name;
+        $this->folder = $folder;
+        $this->author = $author;
+        $this->designatedController = $designatedController;
+
+        $this->processingDataTypes = new ArrayCollection();
+        $this->pias = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDoing(): bool
+    {
+        return $this->getStatus() == self::STATUS_DOING;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnderValidation(): bool
+    {
+        return $this->getStatus() == self::STATUS_UNDER_VALIDATION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnderValidation(): bool
+    {
+        return [Processing::STATUS_DOING, Processing::STATUS_UNDER_VALIDATION];
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("isRoot")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @return bool
+     */
+    public function isRoot(): bool
+    {
+        return $this->root === null || $this->root === $this;
+    }
+
+
+
 
     /**
      * @return string
