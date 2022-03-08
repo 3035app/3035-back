@@ -216,6 +216,11 @@ class ProcessingController extends RestController
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
 
+        // prevent creating processing by the root
+        if ($folder->isRoot()) {
+            throw new \InvalidArgumentException('can not create processing by the root.');
+        }
+
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
             $folder,
