@@ -323,27 +323,19 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
-
-        // detect when redactor requests a validation for his PIA (1st step)
-        $underValidation = [];
-        if ($processing->isDoing()) {
-print_r($processing->getId());
-print_r($processing->isDoing());
-            $underValidation[] = $processing->getStatus();
-        }
-
+        
         $updatableAttributes = [];
-
+        
         if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
             $updatableAttributes['folder'] = Folder::class;
         }
-
+        
         if ( $this->isGranted('CAN_EDIT_CARD_PROCESSING') ) {
             $updatableAttributes['name'] = RequestDataHandler::TYPE_STRING;
             $updatableAttributes['author'] = RequestDataHandler::TYPE_STRING;
             $updatableAttributes['designated_controller'] = RequestDataHandler::TYPE_STRING;
         }
-
+        
         if ( $this->isGranted('CAN_EDIT_PROCESSING') ) {
             $updatableAttributes = array_merge($updatableAttributes, [
                 'description'                => RequestDataHandler::TYPE_STRING,
@@ -378,18 +370,9 @@ print_r($processing->isDoing());
                 'evaluation_state'          => RequestDataHandler::TYPE_INT,
             ]);
         }
-
+        
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->update($processing);
-
-        // detect when redactor requests a validation for his PIA (2nd step)
-        // /!\ needs 2 steps
-        if ($processing->isUnderValidation()) {
-            $underValidation[] = $processing->getStatus();
-
-            // notify redactors
-            if ($underValidation == [Processing::STATUS_DOING, Processing::STATUS_UNDER_VALIDATION]) { $this->processingService->notify(); }
-        }
 
         return $this->view($processing, Response::HTTP_OK);
     }
