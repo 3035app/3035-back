@@ -120,7 +120,7 @@ class FolderUserController extends LayerRestController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_EDIT_FOLDER')")
+     * @Security("is_granted('CAN_ASSIGN_FOLDER_USER')")
      *
      * @return View
      */
@@ -170,7 +170,7 @@ class FolderUserController extends LayerRestController
      *     description="Empty content"
      * )
      *
-     * @Security("is_granted('CAN_EDIT_FOLDER')")
+     * @Security("is_granted('CAN_REMOVE_FOLDER_USER')")
      *
      * @return View
      */
@@ -204,22 +204,6 @@ class FolderUserController extends LayerRestController
     public function canAccessResourceOr403($resource): void
     {
         if (!$resource instanceof Folder) {
-            throw new AccessDeniedHttpException();
-        }
-
-        if ($this->getSecurity()->isGranted('CAN_MANAGE_FOLDERS')) {
-            $can_access = true;
-        } else {
-            $can_access = false;
-            foreach ($resource->getUsers() as $user) {
-                if ($user === $this->getUser()) {
-                    $can_access = true;
-                    break;
-                }
-            }
-        }
-
-        if ($resource !== null && !$can_access) {
             throw new AccessDeniedHttpException();
         }
     }
