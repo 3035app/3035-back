@@ -266,6 +266,13 @@ class Processing
      */
     protected $users;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * 
+     * @var bool
+     */
+    protected $canShow;
+
     public function __construct(
         string $name,
         Folder $folder,
@@ -1047,6 +1054,14 @@ class Processing
     public function canShow(User $user): bool
     {
         return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCanShow(User $user): void
+    {
+        $this->canShow = $this->canShow($user);
     }
 
     /**

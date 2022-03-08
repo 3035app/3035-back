@@ -81,7 +81,8 @@ class StructureFolderController extends RestController
     public function listAction(Request $request, $structureId)
     {
         $collection = $this->getRepository()->findBy(['structure' => $structureId, 'parent' => null], ['name' => 'ASC']);
-        $collection = $this->setFolderPropertyCanAccess($collection);
+        // indicates if user can access folders (no processings by the root)
+        $collection = $this->setFoldersAccessingProperties($collection);
         return $this->view($collection, Response::HTTP_OK);
     }
 
@@ -134,6 +135,9 @@ class StructureFolderController extends RestController
             return $this->view($folder, Response::HTTP_NOT_FOUND);
         }
         $this->canAccessResourceOr403($folder);
+
+        // indicates if user can access folders or can show processings
+        $folder = $this->setAccessingProperties($folder);
 
         return $this->view($folder, Response::HTTP_OK);
     }
@@ -360,17 +364,32 @@ class StructureFolderController extends RestController
     }
 
     /**
-     * Set property "can_access" indicating if user can access the folders children.
+     * Wrapper for setting data.
      */
-    protected function setFolderPropertyCanAccess($collection)
+    protected function setFoldersAccessingProperties($collection)
+    {
+        $data = [];
+        foreach ($collection as $folder) {
+            $data[] = $this->setAccessingProperties($folder);
+        }
+        return $data;
+    }
+
+    /**
+     * Set properties can_access/can_show indicating if user:
+     * - can access folders
+     * - can show processings.
+     */
+    protected function setAccessingProperties($folder)
     {
         $connectedUser = $this->getUser();
-        foreach ($collection as $folder) {
-            foreach ($folder->getChildren() as $child) {
-                $child->setCanAccess($connectedUser);
-            }
+        foreach ($folder->getChildren() as $child) {
+            $child->setCanAccess($connectedUser);
         }
-        return $collection;
+        foreach ($folder->getProcessings() as $processing) {
+            $processing->setCanShow($connectedUser);
+        }
+        return $folder;
     }
 
     protected function getEntityClass()
