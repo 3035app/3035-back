@@ -1014,11 +1014,10 @@ class Processing
      */
     public function addUser(User $user): void
     {
-        if ($this->users->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is already attached with Processing « #%d »', $user, $this->getId()));
+        if (!$this->users->contains($user)) {
+            $user->addProcessing($this); // synchronously updating inverse side
+            $this->users->add($user);
         }
-        $user->addProcessing($this); // synchronously updating inverse side
-        $this->users->add($user);
     }
 
     /**
@@ -1028,11 +1027,10 @@ class Processing
      */
     public function removeUser(User $user): void
     {
-        if (!$this->users->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is not attached with Processing « #%d »', $user, $this->getId()));
+        if ($this->users->contains($user)) {
+            $user->removeProcessing($this); // synchronously updating inverse side
+            $this->users->removeElement($user);
         }
-        $user->removeProcessing($this); // synchronously updating inverse side
-        $this->users->removeElement($user);
     }
 
     /**

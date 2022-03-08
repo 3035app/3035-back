@@ -211,6 +211,9 @@ class StructureFolderController extends RestController
             $folder->inheritUser($user);
         }
 
+        // attach connected user (creator) to that folder
+        $folder->inheritUser($this->getUser());
+
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view($folder, Response::HTTP_OK);

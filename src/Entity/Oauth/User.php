@@ -452,10 +452,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function addFolder(Folder $folder): void
     {
-        if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is already attached with User « %d »', $folder, $this->getUsername()));
+        if (!$this->folders->contains($folder)) {
+            $this->folders->add($folder);
         }
-        $this->folders->add($folder);
     }
 
     /**
@@ -465,10 +464,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function removeFolder(Folder $folder): void
     {
-        if (!$this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is not attached with User « %d »', $folder, $this->getUsername()));
+        if ($this->folders->contains($folder)) {
+            $this->folders->removeElement($folder);
         }
-        $this->folders->removeElement($folder);
     }
 
     /**
@@ -486,10 +484,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function addProcessing(Processing $processing): void
     {
-        if ($this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is already attached with User « %d »', $processing, $this->getUsername()));
+        if (!$this->processings->contains($processing)) {
+            $this->processings->add($processing);
         }
-        $this->processings->add($processing);
     }
 
     /**
@@ -499,10 +496,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     public function removeProcessing(Processing $processing): void
     {
-        if (!$this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is not attached with User « %d »', $processing, $this->getUsername()));
+        if ($this->processings->contains($processing)) {
+            $this->processings->removeElement($processing);
         }
-        $this->processings->removeElement($processing);
     }
 
     /**

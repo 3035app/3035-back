@@ -390,11 +390,10 @@ class Folder implements Timestampable
      */
     public function addUser(User $user): void
     {
-        if ($this->users->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
+        if (!$this->users->contains($user)) {
+            $user->addFolder($this); // synchronously updating inverse side
+            $this->users->add($user);
         }
-        $user->addFolder($this); // synchronously updating inverse side
-        $this->users->add($user);
     }
 
     /**
@@ -404,11 +403,10 @@ class Folder implements Timestampable
      */
     public function removeUser(User $user): void
     {
-        if (!$this->users->contains($user)) {
-            throw new \InvalidArgumentException(sprintf('User « %s » is not in Folder « #%d »', $user, $this->getId()));
+        if ($this->users->contains($user)) {
+            $user->removeFolder($this); // synchronously updating inverse side
+            $this->users->removeElement($user);
         }
-        $user->removeFolder($this); // synchronously updating inverse side
-        $this->users->removeElement($user);
     }
 
     /**
