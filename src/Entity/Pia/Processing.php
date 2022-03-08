@@ -1040,4 +1040,20 @@ class Processing
     {
         return $this->users;
     }
+
+    /**
+     * @return bool
+     */
+    public function canShow(User $user): bool
+    {
+        return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

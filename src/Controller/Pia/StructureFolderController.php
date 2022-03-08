@@ -81,7 +81,7 @@ class StructureFolderController extends RestController
     public function listAction(Request $request, $structureId)
     {
         $collection = $this->getRepository()->findBy(['structure' => $structureId, 'parent' => null], ['name' => 'ASC']);
-
+        $collection = $this->setFolderPropertyCanAccess($collection);
         return $this->view($collection, Response::HTTP_OK);
     }
 
@@ -357,6 +357,20 @@ class StructureFolderController extends RestController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view([], Response::HTTP_OK);
+    }
+
+    /**
+     * Set property "can_access" indicating if user can access the folders children.
+     */
+    protected function setFolderPropertyCanAccess($collection)
+    {
+        $connectedUser = $this->getUser();
+        foreach ($collection as $folder) {
+            foreach ($folder->getChildren() as $child) {
+                $child->setCanAccess($connectedUser);
+            }
+        }
+        return $collection;
     }
 
     protected function getEntityClass()
