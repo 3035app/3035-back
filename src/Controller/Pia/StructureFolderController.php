@@ -447,7 +447,7 @@ class StructureFolderController extends RestController
         // prevent deleting folder if no access to folder
         if (!$resource->canAccess($this->getUser())) {
             // you are not allowed to delete this folder.
-            throw new AccessDeniedHttpException('messages.http.403.6', null, 6);
+            throw new AccessDeniedHttpException('messages.http.403.6');
         }
     }
 }
