@@ -1031,7 +1031,6 @@ class Processing
         if (!$this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is not attached with Processing « #%d »', $user, $this->getId()));
         }
-        $user->removeProcessing($this); // synchronously updating inverse side
         $this->users->removeElement($user);
     }
 
