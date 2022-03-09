@@ -259,7 +259,8 @@ class Processing
 
     /**
      * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User", mappedBy="processings")
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__processings")
      * 
      * @var Collection
      */
@@ -1039,5 +1040,13 @@ class Processing
     public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
