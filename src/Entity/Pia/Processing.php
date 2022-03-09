@@ -262,6 +262,7 @@ class Processing
      * many folders have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__processings")
+     * @JMS\Exclude()
      * 
      * @var Collection
      */
@@ -273,22 +274,6 @@ class Processing
      * @var bool
      */
     protected $canShow;
-
-    public function __construct(
-        string $name,
-        Folder $folder,
-        string $author,
-        string $designatedController
-    ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
-
-        $this->processingDataTypes = new ArrayCollection();
-        $this->pias = new ArrayCollection();
-        $this->users = new ArrayCollection();
-    }
 
     /**
      * @ORM\Column(type="array", nullable=true)
@@ -337,6 +322,22 @@ class Processing
      * @var array|null
      */
     protected $subcontractorsObligations;
+
+    public function __construct(
+        string $name,
+        Folder $folder,
+        string $author,
+        string $designatedController
+    ) {
+        $this->name = $name;
+        $this->folder = $folder;
+        $this->author = $author;
+        $this->designatedController = $designatedController;
+
+        $this->processingDataTypes = new ArrayCollection();
+        $this->pias = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return string

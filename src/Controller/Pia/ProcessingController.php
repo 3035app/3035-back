@@ -55,7 +55,6 @@ class ProcessingController extends RestController
         SerializerInterface $serializer
     ) {
         parent::__construct($propertyAccessor, $serializer);
-
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;
         $this->serializer = $serializer;
@@ -219,6 +218,11 @@ class ProcessingController extends RestController
         // prevent creating processing by the root
         if ($folder->isRoot()) {
             throw new \InvalidArgumentException('can not create processing by the root.');
+        }
+
+        // prevent creating processing if no access to folder
+        if (!$folder->canAccess($this->getUser())) {
+            throw new \InvalidArgumentException('can not create processing if no access to its folder.');
         }
 
         $processing = $this->processingService->createProcessing(

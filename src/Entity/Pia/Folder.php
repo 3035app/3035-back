@@ -126,6 +126,7 @@ class Folder implements Timestampable
      * many folders have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__folders")
+     * @JMS\Exclude()
      * 
      * @var Collection
      */
