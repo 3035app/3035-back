@@ -238,6 +238,51 @@ abstract class RestController extends AbstractFOSRestController
         // Each controllers should define this method to perform a fine access control
     }
 
+    /**
+     * Checks permissions while creating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canCreateResourceOr403($resource, $child=false): void
+    {
+        $target = $child ? $resource->getFolder() : $resource;
+
+        // prevent creating folder if no access to folder
+        if (!$target->canAccess($this->getUser())) {
+            // you are not allowed to create a folder in that folder.
+            throw new AccessDeniedHttpException('messages.http.403.5');
+        }
+    }
+
+    /**
+     * Checks permissions while updating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canUpdateResourceOr403($resource, $child=false): void
+    {
+        $target = $child ? $resource->getFolder() : $resource;
+
+        // prevent updating folder if no access to folder
+        if (!$target->canAccess($this->getUser())) {
+            // you are not allowed to update this folder.
+            throw new AccessDeniedHttpException('messages.http.403.2');
+        }
+    }
+
+    /**
+     * Checks permissions while deleting folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canDeleteResourceOr403($resource, $child=false): void
+    {
+        $target = $child ? $resource->getFolder() : $resource;
+
+        // prevent deleting folder if no access to folder
+        if (!$target->canAccess($this->getUser())) {
+            // you are not allowed to delete this folder.
+            throw new AccessDeniedHttpException('messages.http.403.6');
+        }
+    }
+
     public function showEntity(int $id): View
     {
         $entity = $this->getRepository()->find($id);

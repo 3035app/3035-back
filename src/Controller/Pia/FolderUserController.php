@@ -128,6 +128,7 @@ class FolderUserController extends LayerRestController
     {
         // get folder and user
         list($folder, $user) = $this->getResources($folderId, $userId);
+        $this->canUpdateResourceOr403($folder);
 
         // propagate user's inheriting to children (folder, subfolders and processings)
         $folder->inheritUser($user);
@@ -178,6 +179,7 @@ class FolderUserController extends LayerRestController
     {
         // get folder and user
         list($folder, $user) = $this->getResources($folderId, $userId);
+        $this->canDeleteResourceOr403($folder);
 
         // remove user's inheriting of children (folder, subfolders and processings)
         $folder->removeInheritUser($user);
