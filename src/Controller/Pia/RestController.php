@@ -17,6 +17,7 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\SerializerInterface;
 use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,6 +111,21 @@ abstract class RestController extends AbstractFOSRestController
         }
 
         return $repo->find($id);
+    }
+
+    /**
+     * Gives User resource for specific ID.
+     *
+     * @param int $id
+     */
+    protected function getUserResource(int $userId)
+    {
+        // get user
+        $user = $this->getResource($userId, User::class);
+        if ($user === null) {
+            return $this->view($user, Response::HTTP_NOT_FOUND);
+        }
+        return $user;
     }
 
     /**
