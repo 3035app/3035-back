@@ -109,20 +109,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     protected $portfolios;
 
-    /**
-     * many users have many folders.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Pia\Folder", inversedBy="users")
-     * @ORM\JoinTable(name="users_folders")
-     */
-    private $folders;
-
-    /**
-     * many users have many processings.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Pia\Processing", inversedBy="users")
-     * @ORM\JoinTable(name="users_processings")
-     */
-    private $processings;
-
     public function __construct(?string $email = null)
     {
         $this->email = $email;
@@ -133,8 +119,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         $this->enabled = true;
         $this->profile = new UserProfile();
         $this->portfolios = new ArrayCollection();
-        $this->folders = new ArrayCollection();
-        $this->processings = new ArrayCollection();
     }
 
     /**
@@ -443,73 +427,5 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         }
 
         return $allStructures->toArray();
-    }
-
-    /**
-     * @param Folder $folder
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function addFolder(Folder $folder): void
-    {
-        if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is already attached with User « %d »', $folder, $this->getUsername()));
-        }
-        $this->folders->add($folder);
-    }
-
-    /**
-     * @param Folder $folder
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function removeFolder(Folder $folder): void
-    {
-        if (!$this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is not attached with User « %d »', $folder, $this->getUsername()));
-        }
-        $this->folders->removeElement($folder);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getFolders(): Collection
-    {
-        return $this->folders;
-    }
-
-    /**
-     * @param Processing $processing
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function addProcessing(Processing $processing): void
-    {
-        if ($this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is already attached with User « %d »', $processing, $this->getUsername()));
-        }
-        $this->processings->add($processing);
-    }
-
-    /**
-     * @param Processing $processing
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function removeProcessing(Processing $processing): void
-    {
-        if (!$this->processings->contains($processing)) {
-            throw new \InvalidArgumentException(sprintf('Processing « %s » is not attached with User « %d »', $processing, $this->getUsername()));
-        }
-        $this->processings->removeElement($processing);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProcessings(): Collection
-    {
-        return $this->processings;
     }
 }

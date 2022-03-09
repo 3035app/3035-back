@@ -124,7 +124,8 @@ class Folder implements Timestampable
 
     /**
      * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User", mappedBy="folders")
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__folders")
      * 
      * @var Collection
      */
@@ -393,7 +394,6 @@ class Folder implements Timestampable
         if ($this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
         }
-        $user->addFolder($this); // synchronously updating inverse side
         $this->users->add($user);
     }
 
