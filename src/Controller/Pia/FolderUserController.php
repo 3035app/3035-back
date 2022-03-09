@@ -206,5 +206,10 @@ class FolderUserController extends LayerRestController
         if (!$resource instanceof Folder) {
             throw new AccessDeniedHttpException();
         }
+
+        // check that folder is in user's structure
+        if ($resource->getStructure() !== $this->getUser()->getStructure()) {
+            throw new AccessDeniedHttpException();
+        }
     }
 }
