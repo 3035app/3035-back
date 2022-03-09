@@ -81,7 +81,8 @@ class StructureFolderController extends RestController
     public function listAction(Request $request, $structureId)
     {
         $collection = $this->getRepository()->findBy(['structure' => $structureId, 'parent' => null], ['name' => 'ASC']);
-
+        // indicates if user can access folders (no processings by the root)
+        $collection = $this->setFoldersAccessingProperties($collection);
         return $this->view($collection, Response::HTTP_OK);
     }
 
@@ -134,6 +135,9 @@ class StructureFolderController extends RestController
             return $this->view($folder, Response::HTTP_NOT_FOUND);
         }
         $this->canAccessResourceOr403($folder);
+
+        // indicates if user can access folders or can show processings
+        $folder = $this->setAccessingProperties($folder);
 
         return $this->view($folder, Response::HTTP_OK);
     }
@@ -191,6 +195,11 @@ class StructureFolderController extends RestController
         $parent = $request->get('parent') !== null
             ? $this->getResource($request->get('parent')['id'], Folder::class)
             : null;
+
+        // do not check can access if by the root
+        if (!$parent->isRoot()) {
+            $this->canCreateResourceOr403($parent);
+        }
 
         $structure = $this->getResource($structureId, Structure::class);
 
@@ -279,8 +288,8 @@ class StructureFolderController extends RestController
         if ($folder === null) {
             return $this->view($folder, Response::HTTP_NOT_FOUND);
         }
-
         $this->canAccessResourceOr403($folder);
+        $this->canUpdateResourceOr403($folder);
 
         $updatableAttributes = [
             'name'   => RequestDataHandler::TYPE_STRING,
@@ -289,10 +298,8 @@ class StructureFolderController extends RestController
         ];
 
         $this->mergeFromRequest($folder, $updatableAttributes, $request);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
-
         $this->update($folder);
 
         return $this->view($folder, Response::HTTP_OK);
@@ -340,6 +347,7 @@ class StructureFolderController extends RestController
     {
         $folder = $this->getRepository()->findOneBy(['structure' => $structureId, 'id' => $id]);
         $this->canAccessResourceOr403($folder);
+        $this->canDeleteResourceOr403($folder);
 
         if (count($folder->getProcessings())) {
             throw new NonEmptyFolderCannotBeDeletedException();
@@ -359,6 +367,35 @@ class StructureFolderController extends RestController
         return $this->view([], Response::HTTP_OK);
     }
 
+    /**
+     * Wrapper for setting data.
+     */
+    protected function setFoldersAccessingProperties($collection)
+    {
+        $data = [];
+        foreach ($collection as $folder) {
+            $data[] = $this->setAccessingProperties($folder);
+        }
+        return $data;
+    }
+
+    /**
+     * Set properties can_access/can_show indicating if user:
+     * - can access folders
+     * - can show processings.
+     */
+    protected function setAccessingProperties($folder)
+    {
+        $connectedUser = $this->getUser();
+        foreach ($folder->getChildren() as $child) {
+            $child->setCanAccess($connectedUser);
+        }
+        foreach ($folder->getProcessings() as $processing) {
+            $processing->setCanShow($connectedUser);
+        }
+        return $folder;
+    }
+
     protected function getEntityClass()
     {
         return Folder::class;
@@ -376,6 +413,45 @@ class StructureFolderController extends RestController
 
         if ($resourceStructure === null || !in_array($resourceStructure, $structures)) {
             throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
+     * Checks permissions while creating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canCreateResourceOr403($resource): void
+    {
+        // prevent creating folder if no access to folder
+        if (!$resource->canAccess($this->getUser())) {
+            // you are not allowed to create a folder in that folder.
+            throw new AccessDeniedHttpException('messages.http.403.5');
+        }
+    }
+
+    /**
+     * Checks permissions while updating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canUpdateResourceOr403($resource): void
+    {
+        // prevent updating folder if no access to folder
+        if (!$resource->canAccess($this->getUser())) {
+            // you are not allowed to update this folder.
+            throw new AccessDeniedHttpException('messages.http.403.2');
+        }
+    }
+
+    /**
+     * Checks permissions while deleting folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canDeleteResourceOr403($resource): void
+    {
+        // prevent deleting folder if no access to folder
+        if (!$resource->canAccess($this->getUser())) {
+            // you are not allowed to delete this folder.
+            throw new AccessDeniedHttpException('messages.http.403.6');
         }
     }
 }

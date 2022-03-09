@@ -126,10 +126,18 @@ class Folder implements Timestampable
      * many folders have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__folders")
+     * @JMS\Exclude()
      * 
      * @var Collection
      */
     protected $users;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * 
+     * @var bool
+     */
+    protected $canAccess;
 
     public function __construct(string $name, ?Structure $structure = null)
     {
@@ -456,6 +464,22 @@ class Folder implements Timestampable
         {
             $processing->removeUser($user);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAccess(User $user): bool
+    {
+        return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCanAccess(User $user): void
+    {
+        $this->canAccess = $this->canAccess($user);
     }
 
     /**
