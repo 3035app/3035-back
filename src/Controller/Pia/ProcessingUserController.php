@@ -124,6 +124,7 @@ class ProcessingUserController extends LayerRestController
     {
         // get processing and user
         list($processing, $user) = $this->getResources($processingId, $userId);
+        $this->canUpdateResourceOr403($folder);
 
         // attach user to processing
         $processing->addUser($user);
@@ -174,6 +175,7 @@ class ProcessingUserController extends LayerRestController
     {
         // get processing and user
         list($processing, $user) = $this->getResources($processingId, $userId);
+        $this->canDeleteResourceOr403($folder);
 
         // detach user from processing
         $processing->removeUser($user);
@@ -206,6 +208,32 @@ class ProcessingUserController extends LayerRestController
         // check that folder is in user's structure
         if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure()) {
             throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
+     * Checks permissions while updating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canUpdateResourceOr403($resource): void
+    {
+        // prevent updating folder if no access to folder
+        if (!$resource->canShow($this->getUser()) || !$this->isGranted('CAN_ASSIGN_PROCESSING_USER')) {
+            // you are not allowed to update this folder.
+            throw new AccessDeniedHttpException('messages.http.403.2');
+        }
+    }
+
+    /**
+     * Checks permissions while deleting folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canDeleteResourceOr403($resource): void
+    {
+        // prevent deleting folder if no access to folder
+        if (!$resource->canShow($this->getUser()) || !$this->isGranted('CAN_REMOVE_PROCESSING_USER')) {
+            // you are not allowed to delete this folder.
+            throw new AccessDeniedHttpException('messages.http.403.6');
         }
     }
 }
