@@ -394,7 +394,6 @@ class Folder implements Timestampable
         if ($this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is already in Folder « #%d »', $user, $this->getId()));
         }
-        $user->addFolder($this); // synchronously updating inverse side
         $this->users->add($user);
     }
 
