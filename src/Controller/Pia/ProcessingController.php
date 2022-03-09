@@ -224,6 +224,11 @@ class ProcessingController extends RestController
             $request->get('designated_controller')
         );
 
+        // attach users' parent to that processing
+        foreach ($processing->getFolder()->getUsers() as $user) {
+            $processing->addUser($user);
+        }
+
         // attach connected user (creator) to that processing
         $processing->addUser($this->getUser());
 
