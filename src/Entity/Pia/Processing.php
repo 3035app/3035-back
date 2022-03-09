@@ -262,26 +262,18 @@ class Processing
      * many folders have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__processings")
+     * @JMS\Exclude()
      * 
      * @var Collection
      */
     protected $users;
 
-    public function __construct(
-        string $name,
-        Folder $folder,
-        string $author,
-        string $designatedController
-    ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
-
-        $this->processingDataTypes = new ArrayCollection();
-        $this->pias = new ArrayCollection();
-        $this->users = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * 
+     * @var bool
+     */
+    protected $canShow;
 
     /**
      * @ORM\Column(type="array", nullable=true)
@@ -330,6 +322,22 @@ class Processing
      * @var array|null
      */
     protected $subcontractorsObligations;
+
+    public function __construct(
+        string $name,
+        Folder $folder,
+        string $author,
+        string $designatedController
+    ) {
+        $this->name = $name;
+        $this->folder = $folder;
+        $this->author = $author;
+        $this->designatedController = $designatedController;
+
+        $this->processingDataTypes = new ArrayCollection();
+        $this->pias = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -1038,6 +1046,22 @@ class Processing
     public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canShow(User $user): bool
+    {
+        return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCanShow(User $user): void
+    {
+        $this->canShow = $this->canShow($user);
     }
 
     /**
