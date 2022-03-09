@@ -202,5 +202,10 @@ class ProcessingUserController extends LayerRestController
         if (!$resource instanceof Processing) {
             throw new AccessDeniedHttpException();
         }
+
+        // check that folder is in user's structure
+        if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure()) {
+            throw new AccessDeniedHttpException();
+        }
     }
 }
