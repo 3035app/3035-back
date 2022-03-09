@@ -104,6 +104,12 @@ security:
       - CAN_EDIT_USER
       - CAN_DELETE_USER
 
+    CAN_ASSIGN_OBJECTS_USERS:
+      - CAN_ASSIGN_FOLDER_USER
+      - CAN_REMOVE_FOLDER_USER
+      - CAN_ASSIGN_PROCESSING_USER
+      - CAN_REMOVE_PROCESSING_USER
+
     #Special permission which limit to owned users  (from the same structure)
     CAN_MANAGE_ONLY_OWNED_USERS:
       - CAN_SHOW_USER
@@ -171,6 +177,7 @@ security:
       - CAN_SHOW_PROCESSING_TEMPLATE
       - CAN_SHOW_COMMENT
       - CAN_CREATE_COMMENT
+      - CAN_ASSIGN_OBJECTS_USERS
 
     ROLE_SHARED_DPO:
       - ROLE_DPO
