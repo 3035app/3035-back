@@ -610,7 +610,7 @@ class ProcessingController extends RestController
         // prevent creating processing by the root
         if ($folder->isRoot()) {
             // can not create processing by the root.
-            throw new AccessDeniedHttpException('messages.http.403.1', null, 1);
+            throw new AccessDeniedHttpException('messages.http.403.1', null, 1, ['code' => 1]);
         }
 
         // prevent creating processing if no access to folder
