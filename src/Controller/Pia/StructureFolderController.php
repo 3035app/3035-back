@@ -195,7 +195,11 @@ class StructureFolderController extends RestController
         $parent = $request->get('parent') !== null
             ? $this->getResource($request->get('parent')['id'], Folder::class)
             : null;
-        $this->canCreateResourceOr403($parent);
+
+        // do not check can access if by the root
+        if (!$parent->isRoot()) {
+            $this->canCreateResourceOr403($parent);
+        }
 
         $structure = $this->getResource($structureId, Structure::class);
 
