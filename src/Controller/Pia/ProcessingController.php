@@ -605,12 +605,16 @@ class ProcessingController extends RestController
         return $this->view($processing, Response::HTTP_OK);
     }
 
+    /**
+     * Checks permissions while creating processing.
+     * the error code sent is managed by front for translation.
+     */
     public function canCreateResourceOr403($folder): void
     {
         // prevent creating processing by the root
         if ($folder->isRoot()) {
             // can not create processing by the root.
-            throw new AccessDeniedHttpException('messages.http.403.1', null, 1, ['code' => 1]);
+            throw new AccessDeniedHttpException('messages.http.403.1');
         }
 
         // prevent creating processing if no access to folder
@@ -620,6 +624,10 @@ class ProcessingController extends RestController
         }
     }
 
+    /**
+     * Checks permissions while updating processing.
+     * the error code sent is managed by front for translation.
+     */
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
@@ -629,6 +637,10 @@ class ProcessingController extends RestController
         }
     }
 
+    /**
+     * Checks permissions while deleting processing.
+     * the error code sent is managed by front for translation.
+     */
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder

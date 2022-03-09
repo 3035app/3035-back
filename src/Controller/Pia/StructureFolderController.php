@@ -412,7 +412,10 @@ class StructureFolderController extends RestController
         }
     }
 
-
+    /**
+     * Checks permissions while creating folder.
+     * the error code sent is managed by front for translation.
+     */
     public function canCreateResourceOr403($resource): void
     {
         // prevent creating folder if no access to folder
@@ -422,6 +425,10 @@ class StructureFolderController extends RestController
         }
     }
 
+    /**
+     * Checks permissions while updating folder.
+     * the error code sent is managed by front for translation.
+     */
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
@@ -431,6 +438,10 @@ class StructureFolderController extends RestController
         }
     }
 
+    /**
+     * Checks permissions while deleting folder.
+     * the error code sent is managed by front for translation.
+     */
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
