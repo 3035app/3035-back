@@ -14,6 +14,7 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Processing;
+use PiaApi\Entity\Oauth\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class ProcessingUserController extends LayerRestController
 {
     /**
-     * Lists all Attachments for a specific Processing.
+     * Lists all users of a specific Processing.
      *
      * @Swg\Tag(name="ProcessingUser")
      *
@@ -54,15 +55,13 @@ class ProcessingUserController extends LayerRestController
      * )
      *
      * @Security("is_granted('CAN_SHOW_PROCESSING')")
+     * 
+     * @return View
      */
     public function listAction(Request $request, $processingId)
     {
-        $processing = $this->getRepository()->find($processingId);
-
-        if ($processing === null) {
-            return $this->view($processing, Response::HTTP_NOT_FOUND);
-        }
-
+        // get processing
+        $processing = $this->getResource($processingId);
         $this->canAccessResourceOr403($processing);
 
         // get users assigned to this processing
@@ -79,6 +78,120 @@ class ProcessingUserController extends LayerRestController
         return $this->view($users, Response::HTTP_OK);
     }
 
+    /**
+     * Attach a Processing to a user.
+     *
+     * @Swg\Tag(name="ProcessingUser")
+     *
+     * @FOSRest\Put("/processings/{processingId}/users/{userId}", requirements={"processingId"="\d+","userId"="\d+"})
+     *
+     * @Swg\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     required=true,
+     *     description="The API token. e.g.: Bearer <TOKEN>"
+     * )
+     * @Swg\Parameter(
+     *     name="processingId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the Processing"
+     * )
+     * @Swg\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the User"
+     * )
+     *
+     * @Swg\Response(
+     *     response=200,
+     *     description="Returns the updated Processing",
+     *     @Swg\Schema(
+     *         type="object",
+     *         ref=@Nelmio\Model(type=Processing::class, groups={"Default"})
+     *     )
+     * )
+     *
+     * @Security("is_granted('CAN_ASSIGN_PROCESSING_USER')")
+     *
+     * @return View
+     */
+    public function attachAction(Request $request, $processingId, $userId)
+    {
+        // get processing and user
+        list($processing, $user) = $this->getResources($processingId, $userId);
+
+        // attach user to processing
+        $processing->addUser($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view($processing, Response::HTTP_OK);
+    }
+
+    /**
+     * detach a Processing from a user.
+     *
+     * @Swg\Tag(name="ProcessingUser")
+     *
+     * @FOSRest\Delete("/processings/{processingId}/users/{userId}", requirements={"processingId"="\d+","userId"="\d+"})
+     *
+     * @Swg\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     required=true,
+     *     description="The API token. e.g.: Bearer <TOKEN>"
+     * )
+     * @Swg\Parameter(
+     *     name="processingId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the Processing"
+     * )
+     * @Swg\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="string",
+     *     required=true,
+     *     description="The ID of the User"
+     * )
+     *
+     * @Swg\Response(
+     *     response=200,
+     *     description="Empty content"
+     * )
+     *
+     * @Security("is_granted('CAN_REMOVE_PROCESSING_USER')")
+     *
+     * @return View
+     */
+    public function detachAction(Request $request, $processingId, $userId)
+    {
+        // get processing and user
+        list($processing, $user) = $this->getResources($processingId, $userId);
+
+        // detach user from processing
+        $processing->removeUser($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view([], Response::HTTP_OK);
+    }
+
+    protected function getResources($processingId, $userId)
+    {
+        // get processing
+        $processing = $this->getResource($processingId);
+        $this->canAccessResourceOr403($processing);
+        // get user
+        $user = $this->getUserResource($userId);
+        return [$processing, $user];
+    }
+
     protected function getEntityClass()
     {
         return Processing::class;
@@ -90,19 +203,8 @@ class ProcessingUserController extends LayerRestController
             throw new AccessDeniedHttpException();
         }
 
-        if ($this->getSecurity()->isGranted('CAN_MANAGE_PROCESSINGS')) {
-            $can_access = true;
-        } else {
-            $can_access = false;
-            foreach ($resource->getUsers() as $user) {
-                if ($user === $this->getUser()) {
-                    $can_access = true;
-                    break;
-                }
-            }
-        }
-
-        if ($resource !== null && !$can_access) {
+        // check that folder is in user's structure
+        if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure()) {
             throw new AccessDeniedHttpException();
         }
     }
