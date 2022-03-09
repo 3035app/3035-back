@@ -124,7 +124,8 @@ class Folder implements Timestampable
 
     /**
      * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User", mappedBy="folders")
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__folders")
      * 
      * @var Collection
      */
@@ -391,7 +392,6 @@ class Folder implements Timestampable
     public function addUser(User $user): void
     {
         if (!$this->users->contains($user)) {
-            $user->addFolder($this); // synchronously updating inverse side
             $this->users->add($user);
         }
     }
@@ -404,7 +404,6 @@ class Folder implements Timestampable
     public function removeUser(User $user): void
     {
         if ($this->users->contains($user)) {
-            $user->removeFolder($this); // synchronously updating inverse side
             $this->users->removeElement($user);
         }
     }
