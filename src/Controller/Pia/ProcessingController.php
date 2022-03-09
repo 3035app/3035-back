@@ -215,16 +215,7 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
-
-        // prevent creating processing by the root
-        if ($folder->isRoot()) {
-            throw new AccessDeniedHttpException('can not create processing by the root.');
-        }
-
-        // prevent creating processing if no access to folder
-        if (!$folder->canAccess($this->getUser())) {
-            throw new AccessDeniedHttpException('can not create processing if no access to its folder.');
-        }
+        $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
@@ -328,7 +319,8 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
-        
+        $this->canUpdateResourceOr403($processing);
+
         $updatableAttributes = [];
         
         if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
@@ -417,6 +409,7 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
+        $this->canDeleteResourceOr403($processing);
 
         if (count($processing->getPias()) > 0) {
             throw new ApiException(Response::HTTP_CONFLICT, 'Processing must not contain Pias before being deleted', 701);
@@ -610,5 +603,38 @@ class ProcessingController extends RestController
         }
 
         return $this->view($processing, Response::HTTP_OK);
+    }
+
+    public function canCreateResourceOr403($folder): void
+    {
+        // prevent creating processing by the root
+        if ($folder->isRoot()) {
+            // can not create processing by the root.
+            throw new AccessDeniedHttpException('messages.http.403.1');
+        }
+
+        // prevent creating processing if no access to folder
+        if (!$folder->canAccess($this->getUser())) {
+            // can not create processing if no access to its folder.
+            throw new AccessDeniedHttpException(' messages.http.403.4');
+        }
+    }
+
+    public function canUpdateResourceOr403($resource): void
+    {
+        // prevent updating folder if no access to folder
+        if (!$resource->getFolder()->canAccess($this->getUser())) {
+            // you are not allowed to update this processing.
+            throw new AccessDeniedHttpException('messages.http.403.3');
+        }
+    }
+
+    public function canDeleteResourceOr403($resource): void
+    {
+        // prevent deleting folder if no access to folder
+        if (!$resource->getFolder()->canAccess($this->getUser())) {
+            // you are not allowed to delete this processing.
+            throw new AccessDeniedHttpException('messages.http.403.7');
+        }
     }
 }
