@@ -222,7 +222,7 @@ class FolderUserController extends LayerRestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->canAccess($this->getUser()) && !$this->isGranted('CAN_ASSIGN_FOLDER_USER')) {
+        if (!$resource->canAccess($this->getUser()) || !$this->isGranted('CAN_ASSIGN_FOLDER_USER')) {
             // you are not allowed to update this folder.
             throw new AccessDeniedHttpException('messages.http.403.2');
         }
@@ -235,7 +235,7 @@ class FolderUserController extends LayerRestController
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
-        if (!$resource->canAccess($this->getUser()) && !$this->isGranted('CAN_REMOVE_FOLDER_USER')) {
+        if (!$resource->canAccess($this->getUser()) || !$this->isGranted('CAN_REMOVE_FOLDER_USER')) {
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
         }
