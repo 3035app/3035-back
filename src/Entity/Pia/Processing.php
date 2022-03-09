@@ -1017,7 +1017,6 @@ class Processing
         if ($this->users->contains($user)) {
             throw new \InvalidArgumentException(sprintf('User « %s » is already attached with Processing « #%d »', $user, $this->getId()));
         }
-        $user->addProcessing($this); // synchronously updating inverse side
         $this->users->add($user);
     }
 
