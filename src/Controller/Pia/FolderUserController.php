@@ -128,6 +128,7 @@ class FolderUserController extends LayerRestController
     {
         // get folder and user
         list($folder, $user) = $this->getResources($folderId, $userId);
+        $this->canUpdateResourceOr403($folder);
 
         // propagate user's inheriting to children (folder, subfolders and processings)
         $folder->inheritUser($user);
@@ -178,6 +179,7 @@ class FolderUserController extends LayerRestController
     {
         // get folder and user
         list($folder, $user) = $this->getResources($folderId, $userId);
+        $this->canDeleteResourceOr403($folder);
 
         // remove user's inheriting of children (folder, subfolders and processings)
         $folder->removeInheritUser($user);
@@ -210,6 +212,32 @@ class FolderUserController extends LayerRestController
         // check that folder is in user's structure
         if ($resource->getStructure() !== $this->getUser()->getStructure()) {
             throw new AccessDeniedHttpException();
+        }
+    }
+
+    /**
+     * Checks permissions while updating folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canUpdateResourceOr403($resource): void
+    {
+        // prevent updating folder if no access to folder
+        if (!$resource->canAccess($this->getUser()) || !$this->isGranted('CAN_ASSIGN_FOLDER_USER')) {
+            // you are not allowed to update this folder.
+            throw new AccessDeniedHttpException('messages.http.403.2');
+        }
+    }
+
+    /**
+     * Checks permissions while deleting folder.
+     * the error code sent is managed by front for translation.
+     */
+    public function canDeleteResourceOr403($resource): void
+    {
+        // prevent deleting folder if no access to folder
+        if (!$resource->canAccess($this->getUser()) || !$this->isGranted('CAN_REMOVE_FOLDER_USER')) {
+            // you are not allowed to delete this folder.
+            throw new AccessDeniedHttpException('messages.http.403.6');
         }
     }
 }
