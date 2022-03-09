@@ -22,14 +22,15 @@ use JMS\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
+use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
+use PiaApi\DataExchange\Transformer\ProcessingTransformer;
+use PiaApi\Exception\DataImportException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use PiaApi\DataExchange\Transformer\ProcessingTransformer;
-use PiaApi\Exception\DataImportException;
-use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
 
 class ProcessingController extends RestController
 {
@@ -217,12 +218,12 @@ class ProcessingController extends RestController
 
         // prevent creating processing by the root
         if ($folder->isRoot()) {
-            throw new \InvalidArgumentException('can not create processing by the root.');
+            throw new AccessDeniedHttpException('can not create processing by the root.');
         }
 
         // prevent creating processing if no access to folder
         if (!$folder->canAccess($this->getUser())) {
-            throw new \InvalidArgumentException('can not create processing if no access to its folder.');
+            throw new AccessDeniedHttpException('can not create processing if no access to its folder.');
         }
 
         $processing = $this->processingService->createProcessing(
