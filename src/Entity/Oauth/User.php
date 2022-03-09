@@ -17,6 +17,7 @@ use FOS\UserBundle\Model\User as BaseUser;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Pia\Folder;
 use PiaApi\Entity\Pia\Portfolio;
+use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\UserProfile;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;

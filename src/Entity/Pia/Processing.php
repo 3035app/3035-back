@@ -257,6 +257,15 @@ class Processing
      */
     protected $template;
 
+    /**
+     * many folders have many users.
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__processings")
+     * 
+     * @var Collection
+     */
+    protected $users;
+
     public function __construct(
         string $name,
         Folder $folder,
@@ -270,6 +279,7 @@ class Processing
 
         $this->processingDataTypes = new ArrayCollection();
         $this->pias = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -995,5 +1005,47 @@ class Processing
     public function setSubcontractorsObligations(?array $subcontractorsObligations = null): void
     {
         $this->subcontractorsObligations = $subcontractorsObligations;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addUser(User $user): void
+    {
+        if ($this->users->contains($user)) {
+            throw new \InvalidArgumentException(sprintf('User « %s » is already attached with Processing « #%d »', $user, $this->getId()));
+        }
+        $this->users->add($user);
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeUser(User $user): void
+    {
+        if ($this->users->contains($user)) {
+            throw new \InvalidArgumentException(sprintf('User « %s » is not attached with Processing « #%d »', $user, $this->getId()));
+        }
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
