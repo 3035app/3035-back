@@ -631,7 +631,7 @@ class ProcessingController extends RestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->getFolder()->canAccess($this->getUser())) {
+        if (!$resource->canShow($this->getUser())) {
             // you are not allowed to update this processing.
             throw new AccessDeniedHttpException('messages.http.403.3');
         }
@@ -644,7 +644,7 @@ class ProcessingController extends RestController
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
-        if (!$resource->getFolder()->canAccess($this->getUser())) {
+        if (!$resource->canShow($this->getUser())) {
             // you are not allowed to delete this processing.
             throw new AccessDeniedHttpException('messages.http.403.7');
         }
