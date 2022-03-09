@@ -108,13 +108,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      */
     protected $portfolios;
 
-    /**
-     * many users have many folders.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Pia\Folder", inversedBy="users")
-     * @ORM\JoinTable(name="users_folders")
-     */
-    private $folders;
-
     public function __construct(?string $email = null)
     {
         $this->email = $email;
@@ -125,7 +118,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         $this->enabled = true;
         $this->profile = new UserProfile();
         $this->portfolios = new ArrayCollection();
-        $this->folders = new ArrayCollection();
     }
 
     /**
@@ -434,39 +426,5 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         }
 
         return $allStructures->toArray();
-    }
-
-    /**
-     * @param Folder $folder
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function addFolder(Folder $folder): void
-    {
-        if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is already attached with User « %d »', $folder, $this->getEmail()));
-        }
-        $this->folders->add($folder);
-    }
-
-    /**
-     * @param Folder $folder
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function removeFolder(Folder $folder): void
-    {
-        if ($this->folders->contains($folder)) {
-            throw new \InvalidArgumentException(sprintf('Folder « %s » is not attached with User « %d »', $folder, $this->getEmail()));
-        }
-        $this->folders->removeElement($folder);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getFolders(): Collection
-    {
-        return $this->folders;
     }
 }

@@ -124,7 +124,8 @@ class Folder implements Timestampable
 
     /**
      * many folders have many users.
-     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User", mappedBy="folders")
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__folders")
      * 
      * @var Collection
      */
@@ -141,6 +142,7 @@ class Folder implements Timestampable
 
         $this->children = new ArrayCollection();
         $this->processings = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
