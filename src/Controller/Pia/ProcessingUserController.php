@@ -116,7 +116,7 @@ class ProcessingUserController extends LayerRestController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING')")
+     * @Security("is_granted('CAN_ASSIGN_PROCESSING_USER')")
      *
      * @return View
      */
@@ -166,7 +166,7 @@ class ProcessingUserController extends LayerRestController
      *     description="Empty content"
      * )
      *
-     * @Security("is_granted('CAN_EDIT_PROCESSING')")
+     * @Security("is_granted('CAN_REMOVE_PROCESSING_USER')")
      *
      * @return View
      */
@@ -203,19 +203,8 @@ class ProcessingUserController extends LayerRestController
             throw new AccessDeniedHttpException();
         }
 
-        if ($this->getSecurity()->isGranted('CAN_MANAGE_PROCESSINGS')) {
-            $can_access = true;
-        } else {
-            $can_access = false;
-            foreach ($resource->getUsers() as $user) {
-                if ($user === $this->getUser()) {
-                    $can_access = true;
-                    break;
-                }
-            }
-        }
-
-        if ($resource !== null && !$can_access) {
+        // check that folder is in user's structure
+        if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure()) {
             throw new AccessDeniedHttpException();
         }
     }
