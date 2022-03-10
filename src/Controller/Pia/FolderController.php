@@ -181,10 +181,8 @@ class FolderController extends RestController
         );
 
         $this->persist($folder);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view($folder, Response::HTTP_OK);
@@ -249,12 +247,9 @@ class FolderController extends RestController
         ];
 
         $this->mergeFromRequest($folder, $updatableAttributes, $request);
-
         $this->update($folder);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view($folder, Response::HTTP_OK);
@@ -305,10 +300,8 @@ class FolderController extends RestController
         }
 
         $this->remove($folder);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view([], Response::HTTP_OK);

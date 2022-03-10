@@ -10,16 +10,17 @@
 
 namespace PiaApi\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Doctrine\ORM\EntityManagerInterface;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Entity\Pia\StructureType;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use PiaApi\Services\StructureService;
+use PiaApi\Services\StructureTypeService;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class CreateStructureCommand extends Command
 {
@@ -45,12 +46,19 @@ class CreateStructureCommand extends Command
      */
     private $structureService;
 
+    /**
+     * @var structureTypeService
+     */
+    private $structureTypeService;
+
     public function __construct(
         EntityManagerInterface $entityManager,
-        StructureService $structureService
+        StructureService $structureService,
+        StructureTypeService $structureTypeService
     ) {
         $this->entityManager = $entityManager;
         $this->structureService = $structureService;
+        $this->structureTypeService = $structureTypeService;
         parent::__construct();
     }
 

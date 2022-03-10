@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -121,6 +122,23 @@ class Folder implements Timestampable
      */
     protected $structure;
 
+    /**
+     * many folders have many users.
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__folders")
+     * @JMS\Exclude()
+     * 
+     * @var Collection
+     */
+    protected $users;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * 
+     * @var bool
+     */
+    protected $canAccess;
+
     public function __construct(string $name, ?Structure $structure = null)
     {
         $this->name = $name;
@@ -132,6 +150,7 @@ class Folder implements Timestampable
 
         $this->children = new ArrayCollection();
         $this->processings = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -371,6 +390,96 @@ class Folder implements Timestampable
                 return $folder->flatCollectProcessings();
             })->getValues()
         );
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addUser(User $user): void
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeUser(User $user): void
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    /**
+     * Propagate user's inheriting to children.
+     * 
+     * @param User $user
+     */
+    public function inheritUser(User $user): void
+    {
+        // attach user to folder
+        $this->addUser($user);
+        // propagate user's inheriting to subfolders
+        foreach ($this->getChildren() as $subfolder)
+        {
+            $subfolder->inheritUser($user);
+        }
+        // propagate user's inheriting to processings
+        foreach ($this->getProcessings() as $processing)
+        {
+            $processing->addUser($user);
+        }
+    }
+
+    /**
+     * Remove user's inheriting of children.
+     * 
+     * @param User $user
+     */
+    public function removeInheritUser(User $user): void
+    {
+        // detach user from folder
+        $this->removeUser($user);
+        // remove user's inheriting of subfolders
+        foreach ($this->getChildren() as $subfolder)
+        {
+            $subfolder->removeInheritUser($user);
+        }
+        // remove user's inheriting of processings
+        foreach ($this->getProcessings() as $processing)
+        {
+            $processing->removeUser($user);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAccess(User $user): bool
+    {
+        return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCanAccess(User $user): void
+    {
+        $this->canAccess = $this->canAccess($user);
     }
 
     /**
