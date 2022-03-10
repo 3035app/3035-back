@@ -295,6 +295,7 @@ class StructureFolderController extends RestController
             return $this->view($folder, Response::HTTP_NOT_FOUND);
         }
         $this->canAccessResourceOr403($folder);
+        // check if can access to source folder when moving
         $this->canUpdateResourceOr403($folder);
 
         $start_point = $folder->getParent()->getId();
@@ -465,6 +466,9 @@ class StructureFolderController extends RestController
     public function detachUsersAttachUsersNewPlace($folder, $start_point): void
     {
         if ($start_point != $folder->getParent()->getId()) {
+            // check if can access to destination folder when moving
+            $this->canUpdateResourceOr403($folder->getParent());
+
             // detach processing's users
             foreach ($folder->getUsers() as $user) {
                 $folder->removeInheritUser($user);
