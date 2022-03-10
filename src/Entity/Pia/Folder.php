@@ -425,6 +425,14 @@ class Folder implements Timestampable
     }
 
     /**
+     * @return bool
+     */
+    public function hasUsers(): bool
+    {
+        return 0 < count($this->getUsers());
+    }
+
+    /**
      * Propagate user's inheriting to children.
      * 
      * @param User $user

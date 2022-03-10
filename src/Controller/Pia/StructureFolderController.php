@@ -136,10 +136,10 @@ class StructureFolderController extends RestController
         }
         $this->canAccessResourceOr403($folder);
 
-        // can not access folder's content if not attached to it
-        if (!$folder->canAccess($this->getUser())) {
-            // you are not allowed to update this folder.
-            throw new AccessDeniedHttpException('you are not allowed to show the content of this folder');
+        // can not access folder's content if not attached to it or no user at all
+        if (!$folder->canAccess($this->getUser()) && $folder->hasUsers()) {
+            // you are not allowed to see the content of this folder.
+            throw new AccessDeniedHttpException('you are not allowed to see the content of this folder');
         }
 
         // indicates if user can access folders or can show processings
