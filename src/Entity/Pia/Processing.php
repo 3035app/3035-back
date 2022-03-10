@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -257,20 +258,22 @@ class Processing
      */
     protected $template;
 
-    public function __construct(
-        string $name,
-        Folder $folder,
-        string $author,
-        string $designatedController
-    ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
+    /**
+     * many folders have many users.
+     * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
+     * @ORM\JoinTable(name="pia_users__processings")
+     * @JMS\Exclude()
+     * 
+     * @var Collection
+     */
+    protected $users;
 
-        $this->processingDataTypes = new ArrayCollection();
-        $this->pias = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * 
+     * @var bool
+     */
+    protected $canShow;
 
     /**
      * @ORM\Column(type="array", nullable=true)
@@ -319,6 +322,22 @@ class Processing
      * @var array|null
      */
     protected $subcontractorsObligations;
+
+    public function __construct(
+        string $name,
+        Folder $folder,
+        string $author,
+        string $designatedController
+    ) {
+        $this->name = $name;
+        $this->folder = $folder;
+        $this->author = $author;
+        $this->designatedController = $designatedController;
+
+        $this->processingDataTypes = new ArrayCollection();
+        $this->pias = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -995,5 +1014,61 @@ class Processing
     public function setSubcontractorsObligations(?array $subcontractorsObligations = null): void
     {
         $this->subcontractorsObligations = $subcontractorsObligations;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addUser(User $user): void
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeUser(User $user): void
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canShow(User $user): bool
+    {
+        return $this->getUsers()->contains($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setCanShow(User $user): void
+    {
+        $this->canShow = $this->canShow($user);
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

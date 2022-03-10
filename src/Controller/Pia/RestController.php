@@ -10,19 +10,20 @@
 
 namespace PiaApi\Controller\Pia;
 
-use FOS\RestBundle\Controller\AbstractFOSRestController;
-use JMS\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\View\View;
 use Doctrine\Common\Util\Inflector as Inflector;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
+use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManager;
-use PiaApi\DataHandler\RequestDataHandler;
 
 abstract class RestController extends AbstractFOSRestController
 {
@@ -77,7 +78,7 @@ abstract class RestController extends AbstractFOSRestController
     }
 
     /**
-     * Gest resource entity manager.
+     * Gets resource entity manager.
      *
      * @return EntityManager
      */
@@ -110,6 +111,21 @@ abstract class RestController extends AbstractFOSRestController
         }
 
         return $repo->find($id);
+    }
+
+    /**
+     * Gives User resource for specific ID.
+     *
+     * @param int $id
+     */
+    protected function getUserResource(int $userId)
+    {
+        // get user
+        $user = $this->getResource($userId, User::class);
+        if ($user === null) {
+            return $this->view($user, Response::HTTP_NOT_FOUND);
+        }
+        return $user;
     }
 
     /**
