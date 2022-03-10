@@ -297,6 +297,8 @@ class StructureFolderController extends RestController
         $this->canAccessResourceOr403($folder);
         $this->canUpdateResourceOr403($folder);
 
+        $start_point = $folder->getParent()->getId();
+
         $updatableAttributes = [
             'name'   => RequestDataHandler::TYPE_STRING,
             'person_in_charge' => RequestDataHandler::TYPE_STRING,
@@ -306,6 +308,7 @@ class StructureFolderController extends RestController
         $this->mergeFromRequest($folder, $updatableAttributes, $request);
         $this->getRepository()->verify();
         $this->getRepository()->recover();
+        $this->detachUsersAttachUsersNewPlace($folder, $start_point);
         $this->update($folder);
 
         return $this->view($folder, Response::HTTP_OK);
@@ -453,6 +456,25 @@ class StructureFolderController extends RestController
         if (!$resource->canAccess($this->getUser())) {
             // you are not allowed to update this folder.
             throw new AccessDeniedHttpException('messages.http.403.2');
+        }
+    }
+
+    /**
+     * If processing moved: detach users and attach users from parent.
+     */
+    public function detachUsersAttachUsersNewPlace($folder, $start_point): void
+    {
+        if ($start_point != $folder->getParent()->getId()) {
+            // detach processing's users
+            foreach ($folder->getUsers() as $user) {
+                $folder->removeInheritUser($user);
+            }
+            // add user that moves folder
+            $folder->inheritUser($this->getUser());
+            // attach users' parent to that processing
+            foreach ($folder->getParent()->getUsers() as $user) {
+                $folder->inheritUser($user);
+            }
         }
     }
 
