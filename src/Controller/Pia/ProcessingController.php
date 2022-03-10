@@ -326,18 +326,20 @@ class ProcessingController extends RestController
         $this->canAccessResourceOr403($processing);
         $this->canUpdateResourceOr403($processing);
 
+        $start_point = $processing->getFolder()->getId();
+
         $updatableAttributes = [];
-        
+
         if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
             $updatableAttributes['folder'] = Folder::class;
         }
-        
+
         if ( $this->isGranted('CAN_EDIT_CARD_PROCESSING') ) {
             $updatableAttributes['name'] = RequestDataHandler::TYPE_STRING;
             $updatableAttributes['author'] = RequestDataHandler::TYPE_STRING;
             $updatableAttributes['designated_controller'] = RequestDataHandler::TYPE_STRING;
         }
-        
+
         if ( $this->isGranted('CAN_EDIT_PROCESSING') ) {
             $updatableAttributes = array_merge($updatableAttributes, [
                 'description'                => RequestDataHandler::TYPE_STRING,
@@ -372,8 +374,9 @@ class ProcessingController extends RestController
                 'evaluation_state'          => RequestDataHandler::TYPE_INT,
             ]);
         }
-        
+
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
+        $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->update($processing);
 
         return $this->view($processing, Response::HTTP_OK);
@@ -639,6 +642,25 @@ class ProcessingController extends RestController
         if (!$resource->canShow($this->getUser())) {
             // you are not allowed to update this processing.
             throw new AccessDeniedHttpException('messages.http.403.3');
+        }
+    }
+
+    /**
+     * If processing moved: detach users and attach users from parent.
+     */
+    public function detachUsersAttachUsersNewPlace($processing, $start_point): void
+    {
+        if ($start_point != $processing->getFolder()->getId()) {
+            // detach processing's users
+            foreach ($processing->getUsers() as $user) {
+                $processing->removeUser($user);
+            }
+            // add user that moves processing
+            $processing->addUser($this->getUser());
+            // attach users' parent to that processing
+            foreach ($processing->getFolder()->getUsers() as $user) {
+                $processing->addUser($user);
+            }
         }
     }
 
