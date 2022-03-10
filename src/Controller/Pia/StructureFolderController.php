@@ -218,13 +218,16 @@ class StructureFolderController extends RestController
         $this->getRepository()->verify();
         $this->getRepository()->recover();
 
-        // attach users' parent to that folder
-        foreach ($folder->getParent()->getUsers() as $user) {
-            $folder->inheritUser($user);
-        }
+        // if ROLE_DPO: do not assign user to folder
+        if (!$this->isGranted('ROLE_DPO')) {
+            // attach users' parent to that folder
+            foreach ($folder->getParent()->getUsers() as $user) {
+                $folder->inheritUser($user);
+            }
 
-        // attach connected user (creator) to that folder
-        $folder->inheritUser($this->getUser());
+            // attach connected user (creator) to that folder
+            $folder->inheritUser($this->getUser());
+        }
 
         $this->getDoctrine()->getManager()->flush();
 
