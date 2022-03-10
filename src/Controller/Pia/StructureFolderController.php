@@ -196,10 +196,7 @@ class StructureFolderController extends RestController
             ? $this->getResource($request->get('parent')['id'], Folder::class)
             : null;
 
-        // do not check can access if by the root
-        if (!$parent->isRoot()) {
-            $this->canCreateResourceOr403($parent);
-        }
+        $this->canCreateResourceOr403($parent);
 
         $structure = $this->getResource($structureId, Structure::class);
 
@@ -422,10 +419,18 @@ class StructureFolderController extends RestController
      */
     public function canCreateResourceOr403($resource): void
     {
-        // prevent creating folder if no access to folder
-        if (!$resource->canAccess($this->getUser())) {
-            // you are not allowed to create a folder in that folder.
-            throw new AccessDeniedHttpException('messages.http.403.5');
+        if ($resource->isRoot()) {
+            if (!$this->isGranted('ROLE_DPO')) {
+                // only ROLE_DPO can create folder by the root
+                throw new AccessDeniedHttpException('messages.http.403.8');
+            }
+        } else {
+            // do not check can access if by the root
+            // prevent creating folder if no access to folder
+            if (!$resource->canAccess($this->getUser())) {
+                // you are not allowed to create a folder in that folder.
+                throw new AccessDeniedHttpException('messages.http.403.5');
+            }
         }
     }
 
