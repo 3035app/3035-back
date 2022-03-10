@@ -188,6 +188,7 @@ security:
 
     ROLE_ADMIN:
       - CAN_ACCESS_BACK_OFFICE
+      - CAN_ASSIGN_FOLDER_USER
       #- ROLE_SHARED_DPO
       #- ROLE_CONTROLLER_MULTI
       #includes - ROLE_DPO
