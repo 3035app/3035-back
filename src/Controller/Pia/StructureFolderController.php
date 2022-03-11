@@ -137,7 +137,7 @@ class StructureFolderController extends RestController
         $this->canAccessResourceOr403($folder);
 
         // can not access folder's content if not attached to it or no user at all
-        if (!$folder->canAccess($this->getUser()) && $folder->hasUsers()) {
+        if (!$folder->canAccess($this->getUser()) && $folder->hasUsers() && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to see the content of this folder.
             throw new AccessDeniedHttpException('you are not allowed to see the content of this folder');
         }
