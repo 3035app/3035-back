@@ -12,6 +12,7 @@ namespace PiaApi\Controller\Pia;
 
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 
 abstract class LayerRestController extends RestController
@@ -19,15 +20,15 @@ abstract class LayerRestController extends RestController
     /**
      * @var Security
      */
-    private $security;
+    private $authChecker;
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         SerializerInterface $serializer,
-        Security $security
+        Security $authChecker
     ) {
         parent::__construct($propertyAccessor, $serializer);
-        $this->security = $security;
+        $this->authChecker = $authChecker;
     }
 
     /**
@@ -37,6 +38,6 @@ abstract class LayerRestController extends RestController
      */
     protected function getSecurity(): Security
     {
-        return $this->security;
+        return $this->authChecker;
     }
 }

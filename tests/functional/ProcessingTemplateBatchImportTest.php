@@ -42,8 +42,8 @@ class ProcessingTemplateBatchImportTest extends WebTestCase
         $application->add(
             new ProcessingTemplatesBatchImportCommand(
                 $di->get('doctrine')->getManager(),
-                $di->get(JsonToEntityTransformer::class),
-                $di->get(ProcessingTemplateService::class)
+                $di->get('test.' . JsonToEntityTransformer::class),
+                $di->get('test.' . ProcessingTemplateService::class)
             )
         );
 
