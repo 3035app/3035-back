@@ -25,7 +25,7 @@ abstract class LayerRestController extends RestController
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         SerializerInterface $serializer,
-        AuthorizationCheckerInterface $authChecker
+        Security $authChecker
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->authChecker = $authChecker;
