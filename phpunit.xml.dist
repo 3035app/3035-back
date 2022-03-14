@@ -32,7 +32,8 @@
         <!-- For a PostgreSQL database, use: "postgresql://db_user:db_password@127.0.0.1:5432/db_name?serverVersion=11&charset=utf8" -->
         <!-- IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml -->
         <!-- env name="DATABASE_URL" value="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=13.5"-->
-        <env name="DATABASE_URL" value="postgresql://user_pialab:pass_pialab@localhost:5432/db_pialab?serverVersion=13.5"/>
+        <!-- env name="DATABASE_URL" value="postgresql://user_pialab:pass_pialab@localhost:5432/db_pialab_test?serverVersion=13.5" -->
+        <env name="DATABASE_URL" value="pgsql://user_test:password_test@localhost:5432/db_pialab_test?serverVersion=13.5"/>
         <env name="DATABASE_VERSION" value="13.5"/>
         <!-- ###- doctrine/doctrine-bundle ### -->
 
@@ -47,13 +48,14 @@
         <env name="CORS_ALLOW_ORIGIN" value="^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$"/>
         <!-- ###- nelmio/cors-bundle ### -->
     </php>
-
     <testsuites>
         <testsuite name="Unit">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
-
+    <!-- extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+    </extensions -->
     <filter>
         <whitelist>
             <directory>src</directory>
