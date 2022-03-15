@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -24,9 +25,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class Processing
 {
-    use
-        ResourceTrait,
-        TimestampableEntity;
+    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_VALIDATION = 1;
@@ -259,7 +258,7 @@ class Processing
     protected $template;
 
     /**
-     * many folders have many users.
+     * many processings have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__processings")
      * @JMS\Exclude()
@@ -1018,8 +1017,6 @@ class Processing
 
     /**
      * @param User $user
-     *
-     * @throws \InvalidArgumentException
      */
     public function addUser(User $user): void
     {
@@ -1030,8 +1027,6 @@ class Processing
 
     /**
      * @param User $user
-     *
-     * @throws \InvalidArgumentException
      */
     public function removeUser(User $user): void
     {

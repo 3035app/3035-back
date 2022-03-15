@@ -626,7 +626,7 @@ class ProcessingController extends RestController
         }
 
         // prevent creating processing if no access to folder
-        if (!$folder->canAccess($this->getUser())) {
+        if (!$folder->canAccess($this->getUser()) && $folder->hasUsers()) {
             // can not create processing if no access to its folder.
             throw new AccessDeniedHttpException('messages.http.403.4');
         }
