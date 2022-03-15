@@ -33,8 +33,8 @@
         <!-- IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml -->
         <!-- env name="DATABASE_URL" value="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=13.5"-->
         <!-- env name="DATABASE_URL" value="postgresql://user_pialab:pass_pialab@localhost:5432/db_pialab_test?serverVersion=13.5" -->
-        <env name="DATABASE_URL" value="pgsql://user_test:password_test@localhost:5432/db_pialab_test?serverVersion=13.5"/>
-        <env name="DATABASE_VERSION" value="13.5"/>
+        <env name="DATABASE_URL" value="pgsql://user_test:password_test@localhost:5432/db_pialab_test?serverVersion=11.15"/>
+        <env name="DATABASE_VERSION" value="11.15"/>
         <!-- ###- doctrine/doctrine-bundle ### -->
 
         <!-- ###+ symfony/swiftmailer-bundle ### -->
@@ -42,6 +42,8 @@
         <!-- For a generic SMTP server, use: "smtp://localhost:25?encryption=&auth_mode=" -->
         <!-- Delivery is disabled by default via "null://localhost" -->
         <env name="MAILER_URL" value="null://localhost"/>
+        <env name="MAILER_SENDER" />
+        <env name="MAILER_SENDER_NAME" />
         <!-- ###- symfony/swiftmailer-bundle ### -->
 
         <!-- ###+ nelmio/cors-bundle ### -->
