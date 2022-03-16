@@ -440,7 +440,7 @@ class StructureFolderController extends RestController
         } else {
             // do not check can access if by the root
             // prevent creating folder if no access to folder
-            if (!$resource->canAccess($this->getUser())) {
+            if (!$resource->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
                 // you are not allowed to create a folder in that folder.
                 throw new AccessDeniedHttpException('messages.http.403.5');
             }
