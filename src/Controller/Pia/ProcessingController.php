@@ -620,13 +620,13 @@ class ProcessingController extends RestController
     public function canCreateResourceOr403($folder): void
     {
         // prevent creating processing by the root
-        if ($folder->isRoot()) {
+        if ($folder->isRoot() && !$this->isGranted('ROLE_DPO')) {
             // can not create processing by the root.
             throw new AccessDeniedHttpException('messages.http.403.1');
         }
 
         // prevent creating processing if no access to folder
-        if (!$folder->canAccess($this->getUser())) {
+        if (!$folder->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // can not create processing if no access to its folder.
             throw new AccessDeniedHttpException('messages.http.403.4');
         }
