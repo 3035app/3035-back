@@ -368,10 +368,8 @@ class StructureFolderController extends RestController
         }
 
         $this->remove($folder);
-
         $this->getRepository()->verify();
         $this->getRepository()->recover();
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view([], Response::HTTP_OK);
@@ -489,7 +487,7 @@ class StructureFolderController extends RestController
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
-        if (!$resource->canAccess($this->getUser() && !$this->isGranted('ROLE_DPO'))) {
+        if (!$resource->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
         }
