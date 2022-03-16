@@ -671,7 +671,7 @@ class ProcessingController extends RestController
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
-        if (!$folder->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
+        if (!$resource->getFolder()->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to delete this processing.
             throw new AccessDeniedHttpException('messages.http.403.7');
         }
