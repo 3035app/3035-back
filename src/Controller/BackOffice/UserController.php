@@ -104,7 +104,7 @@ class UserController extends BackOfficeAbstractController
      */
     public function addUserAction(Request $request)
     {
-        $form = $this->createForm(CreateUserForm::class, ['roles' => ['ROLE_USER']], [
+        $form = $this->createForm(CreateUserForm::class, ['roles' => []], [
             'action'      => $this->generateUrl('manage_users_add_user'),
             'structure'   => $this->isGranted('CAN_MANAGE_STRUCTURES') || $this->isGranted('CAN_MANAGE_ONLY_OWNED_STRUCTURES') ? false : $this->getUser()->getStructure(),
             'application' => $this->isGranted('CAN_MANAGE_APPLICATIONS') || $this->isGranted('CAN_MANAGE_ONLY_OWNED_APPLICATIONS') ? false : $this->getUser()->getApplication(),
