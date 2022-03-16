@@ -12,7 +12,6 @@
         <table class="ui compact striped table">
             <thead>
                 <tr>
-                    <th>{{ 'pia.structures.list.id'|trans }}</th>
                     <th>{{ 'pia.structures.list.name'|trans }}</th>
                     <th>{{ 'pia.structures.list.type'|trans }}</th>
                     <th>{{ 'pia.structures.list.users_number'|trans }}</th>
@@ -27,7 +26,6 @@
 
                 {% for structure in structures %}
                     <tr>
-                        <td>{{ structure.id }}</td>
                         <td>{{ structure.name }}</td>
                         <td>
                             {% if structure.type is not null %}

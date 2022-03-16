@@ -11,7 +11,6 @@
   <table class="ui compact striped table">
     <thead>
       <tr>
-        <th>{{ 'pia.structure_types.list.id'|trans }}</th>
         <th>{{ 'pia.structure_types.list.name'|trans }}</th>
         <th>{{ 'pia.structure_types.list.structures_number'|trans }}</th>
         <th class="right aligned">
@@ -23,7 +22,6 @@
 
       {% for structureType in structureTypes %}
         <tr>
-          <td>{{ structureType.id }}</td>
           <td>{{ structureType.name }}</td>
           <td>
             <span class="ui label">{{ structureType.structures|length }}</span>
