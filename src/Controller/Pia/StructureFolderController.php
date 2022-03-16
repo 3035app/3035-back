@@ -218,13 +218,13 @@ class StructureFolderController extends RestController
         $this->getRepository()->verify();
         $this->getRepository()->recover();
 
+        // attach users' parent to that folder
+        foreach ($folder->getParent()->getUsers() as $user) {
+            $folder->inheritUser($user);
+        }
+
         // if ROLE_DPO: do not assign user to folder
         if (!$this->isGranted('ROLE_DPO')) {
-            // attach users' parent to that folder
-            foreach ($folder->getParent()->getUsers() as $user) {
-                $folder->inheritUser($user);
-            }
-
             // attach connected user (creator) to that folder
             $folder->inheritUser($this->getUser());
         }
@@ -489,7 +489,7 @@ class StructureFolderController extends RestController
     public function canDeleteResourceOr403($resource): void
     {
         // prevent deleting folder if no access to folder
-        if (!$resource->canAccess($this->getUser())) {
+        if (!$resource->canAccess($this->getUser() && !$this->isGranted('ROLE_DPO'))) {
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
         }
