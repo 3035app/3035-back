@@ -29,7 +29,6 @@
                     <table class="ui compact striped table">
                         <thead>
                             <tr>
-                                <th>{{ 'pia.templates.list.id'|trans }}</th>
                                 <th>{{ 'pia.templates.list.name'|trans }}</th>
                                 <th>{{ 'pia.templates.list.description'|trans }}</th>
                                 <th>{{ 'pia.templates.list.enabled'|trans }}</th>
@@ -48,7 +47,6 @@
 
                             {% for template in templates %}
                                 <tr>
-                                    <td>{{ template.id }}</td>
                                     <td>{{ template.name }}</td>
                                     <td>
                                         {% set hyphen = '' %}
