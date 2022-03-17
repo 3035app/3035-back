@@ -32,7 +32,6 @@
                     <table class="ui compact striped table">
                         <thead>
                             <tr>
-                                <th>{{ 'pia.portfolios.list.id'|trans }}</th>
                                 <th>{{ 'pia.portfolios.list.name'|trans }}</th>
                                 <th>{{ 'pia.portfolios.list.structures_number'|trans }}</th>
                                 <th class="right aligned">
@@ -45,7 +44,6 @@
                             {% for portfolio in portfolios %}
 
                                 <tr>
-                                    <td>{{ portfolio.id }}</td>
                                     <td>{{ portfolio.name }}</td>
                                     <td>
                                         <span class="ui teal label">{{ portfolio.structures|length }}</span>

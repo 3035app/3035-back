@@ -99,7 +99,7 @@ class StructureController extends BackOfficeAbstractController
         $userPager->setMaxPerPage($userLimit);
         $userPager->setCurrentPage($userPager->getNbPages() < $userPage ? $userPager->getNbPages() : $userPage);
 
-        $userForm = $this->createForm(CreateUserForm::class, ['roles' => ['ROLE_USER']], [
+        $userForm = $this->createForm(CreateUserForm::class, ['roles' => []], [
             'action'      => $this->generateUrl('manage_users_add_user'),
             'structure'   => $structure,
             'redirect'    => $this->generateUrl('manage_structures_show_structure', ['structureId' => $structureId]),
