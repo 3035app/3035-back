@@ -325,14 +325,13 @@ class Processing
     public function __construct(
         string $name,
         Folder $folder,
-        string $author,
-        string $designatedController
+        string $redactor,
+        string $dataController
     ) {
         $this->name = $name;
         $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
-
+        $this->redactor = $redactor;
+        $this->dataController = $dataController;
         $this->processingDataTypes = new ArrayCollection();
         $this->pias = new ArrayCollection();
         $this->users = new ArrayCollection();

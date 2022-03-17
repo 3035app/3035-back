@@ -12,6 +12,7 @@ namespace PiaApi\Entity\Pia\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 
 trait ProcessingSupervisorTrait
 {
@@ -21,7 +22,7 @@ trait ProcessingSupervisorTrait
      * 
      * @var User
      */
-    protected $sAuthor;
+    protected $redactor;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
@@ -29,85 +30,37 @@ trait ProcessingSupervisorTrait
      * 
      * @var User
      */
-    protected $sDesignatedController;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
-     * 
-     * @var User
-     */
-    protected $sDataProtectionOfficer;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
-     * 
-     * @var User
-     */
-    protected $sDataController;
+    protected $dataController;
 
     /**
      * @return User
      */
-    public function getSAuthor(): User
+    public function getRedactor(): User
     {
-        return $this->sAuthor;
+        return $this->redactor;
     }
 
     /**
-     * @param User $sAuthor
+     * @param User $redactor
      */
-    public function setSAuthor(User $sAuthor): void
+    public function setRedactor(User $redactor): void
     {
-        $this->sAuthor = $sAuthor;
+        $this->redactor = $redactor;
     }
 
     /**
      * @return User
      */
-    public function getSDesignatedController(): User
+    public function getDataController(): User
     {
-        return $this->sDesignatedController;
+        return $this->dataController;
     }
 
     /**
-     * @param User $sDesignatedController
+     * @param User $dataController
      */
-    public function setSDesignatedController(?User $sDesignatedController=null): void
+    public function setDataController(?User $dataController=null): void
     {
-        $this->sDesignatedController = $sDesignatedController;
-    }
-
-    /**
-     * @return User
-     */
-    public function getSDataProtectionOfficer(): User
-    {
-        return $this->sDataProtectionOfficer;
-    }
-
-    /**
-     * @param User $sDataProtectionOfficer
-     */
-    public function setSDataProtectionOfficer(?User $sDataProtectionOfficer=null): void
-    {
-        $this->sDataProtectionOfficer = $sDataProtectionOfficer;
-    }
-
-    /**
-     * @return User
-     */
-    public function getSDataController(): User
-    {
-        return $this->sDataController;
-    }
-
-    /**
-     * @param User $sDataController
-     */
-    public function setSDataController(?User $sDataController=null): void
-    {
-        $this->sDataController = $sDataController;
+        $this->dataController = $dataController;
     }
 }

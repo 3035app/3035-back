@@ -10,21 +10,22 @@
 
 namespace PiaApi\Controller\Pia;
 
-use PiaApi\Services\ProcessingService;
-use PiaApi\Entity\Pia\Processing;
-use PiaApi\Entity\Pia\ProcessingTemplate;
-use PiaApi\Entity\Pia\Folder;
-use PiaApi\DataHandler\RequestDataHandler;
-use PiaApi\Entity\Pia\ProcessingDataType;
-use PiaApi\Entity\Pia\ProcessingComment;
-use PiaApi\Exception\ApiException;
-use JMS\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
+use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
 use PiaApi\DataExchange\Transformer\ProcessingTransformer;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Folder;
+use PiaApi\Entity\Pia\Processing;
+use PiaApi\Entity\Pia\ProcessingComment;
+use PiaApi\Entity\Pia\ProcessingDataType;
+use PiaApi\Entity\Pia\ProcessingTemplate;
+use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
+use PiaApi\Services\ProcessingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -164,8 +165,12 @@ class ProcessingController extends RestController
      *     required=false,
      *     @Swg\Schema(
      *         type="object",
-     *         required={"name", "author", "designated_controller", "folder"},
+     *         required={"name", "redactor", "data_controller", "folder"},
      *         @Swg\Property(property="name", type="string"),
+     *         @Swg\Property(property="redactor", required={"redactor_id"}, type="object",
+     *         @Swg\Property(property="redactor_id", type="number")),
+     *         @Swg\Property(property="data_controller", required={"data_controller_id"}, type="object",
+     *         @Swg\Property(property="data_controller_id", type="number")),
      *         @Swg\Property(property="author", type="string"),
      *         @Swg\Property(property="designated_controller", type="string"),
      *         @Swg\Property(property="folder", required={"id"}, type="object",
@@ -215,13 +220,16 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
+        // request->get('author'), request->get('designated_controller')
+        $redactor = $this->getResource($entity->getRedactor()->getId(), User::class);
+        $dataController = $this->getResource($entity->getDataController()->getId(), User::class);
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
             $folder,
-            $request->get('author'),
-            $request->get('designated_controller')
+            $redactor,
+            $dataController
         );
 
         // attach users' parent to that processing

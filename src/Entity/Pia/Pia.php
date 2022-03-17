@@ -10,13 +10,14 @@
 
 namespace PiaApi\Entity\Pia;
 
-use Gedmo\Timestampable\Timestampable;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
-use JMS\Serializer\Annotation as JMS;
-use PiaApi\Entity\Pia\Traits\ResourceTrait;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Timestampable;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Pia\Traits\PiaSupervisorTrait;
+use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
  * @ORM\Entity
@@ -24,8 +25,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Pia implements Timestampable
 {
-    use ResourceTrait,
-        TimestampableEntity;
+    use PiaSupervisorTrait, ResourceTrait, TimestampableEntity;
 
     const TYPE_REGULAR = 'regular';
     const TYPE_SIMPLIFIED = 'simplified';

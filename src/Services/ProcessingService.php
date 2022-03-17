@@ -10,6 +10,7 @@
 
 namespace PiaApi\Services;
 
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Folder;
 use PiaApi\Entity\Pia\Processing;
 
@@ -23,15 +24,13 @@ class ProcessingService extends AbstractService
     /**
      * @param string $name
      * @param Folder $folder
-     * @param string $author
-     * @param string $designatedController
+     * @param User $redactor
+     * @param User $dataController
      *
      * @return Processing
      */
-    public function createProcessing(string $name, Folder $folder, string $author, string $designatedController): Processing
+    public function createProcessing(string $name, Folder $folder, User $redactor, User $dataController): Processing
     {
-        $processing = new Processing($name, $folder, $author, $designatedController);
-
-        return $processing;
+        return new Processing($name, $folder, $redactor, $dataController);
     }
 }
