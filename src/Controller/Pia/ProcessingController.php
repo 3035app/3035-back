@@ -165,12 +165,8 @@ class ProcessingController extends RestController
      *     required=false,
      *     @Swg\Schema(
      *         type="object",
-     *         required={"name", "redactor", "data_controller", "folder"},
+     *         required={"name", "author", "designated_controller", "folder"},
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="redactor", required={"redactor_id"}, type="object",
-     *         @Swg\Property(property="redactor_id", type="number")),
-     *         @Swg\Property(property="data_controller", required={"data_controller_id"}, type="object",
-     *         @Swg\Property(property="data_controller_id", type="number")),
      *         @Swg\Property(property="author", type="string"),
      *         @Swg\Property(property="designated_controller", type="string"),
      *         @Swg\Property(property="folder", required={"id"}, type="object",
@@ -220,9 +216,9 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
-        // request->get('author'), request->get('designated_controller')
-        $redactor = $this->getResource($entity->getRedactor()->getId(), User::class);
-        $dataController = $this->getResource($entity->getDataController()->getId(), User::class);
+        # FIXME should catch redactor_id and data_controller_id from POST
+        $redactor = $this->getResource($request->get('author'), User::class);
+        $dataController = $this->getResource($request->get('designated_controller'), User::class);
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(

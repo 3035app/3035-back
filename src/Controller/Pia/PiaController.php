@@ -15,15 +15,15 @@ use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\DataExchange\Transformer\PiaTransformer;
 use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Pia\Answer;
+use PiaApi\Entity\Pia\Attachment;
+use PiaApi\Entity\Pia\Comment;
+use PiaApi\Entity\Pia\Evaluation;
+use PiaApi\Entity\Pia\Measure;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Exception\DataImportException;
-use PiaApi\Entity\Pia\Answer;
-use PiaApi\Entity\Pia\Measure;
-use PiaApi\Entity\Pia\Evaluation;
-use PiaApi\Entity\Pia\Comment;
-use PiaApi\Entity\Pia\Attachment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -207,9 +207,9 @@ class PiaController extends RestController
      */
     public function createAction(Request $request)
     {
+        # FIXME should catch evaluator_id and data_protection_officer_id from POST
         $processingId = $request->get('processing', ['id' => -1])['id'];
         $structureId = $request->get('processing')['folder']['structure_id'];
-
         $structure = $this->getResource($structureId, Structure::class);
         $processing = $this->getResource($processingId, Processing::class);
 
@@ -222,10 +222,8 @@ class PiaController extends RestController
         }
 
         $pia = $this->newFromRequest($request);
-
         $pia->setProcessing($processing);
         $pia->setStructure($structure);
-
         $this->persist($pia);
 
         return $this->view($pia, Response::HTTP_OK);

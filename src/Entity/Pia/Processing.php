@@ -19,6 +19,8 @@ use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")
@@ -46,7 +48,7 @@ class Processing
     protected $name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -102,7 +104,7 @@ class Processing
     protected $processors;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -325,8 +327,8 @@ class Processing
     public function __construct(
         string $name,
         Folder $folder,
-        string $redactor,
-        string $dataController
+        User $redactor,
+        User $dataController
     ) {
         $this->name = $name;
         $this->folder = $folder;
