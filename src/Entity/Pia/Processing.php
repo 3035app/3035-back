@@ -328,12 +328,17 @@ class Processing
         string $name,
         Folder $folder,
         User $redactor,
-        User $dataController
+        User $dataController,
+        User $evaluatorPending=null,
+        User $dataProtectionOfficerPending=null
     ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->redactor = $redactor;
-        $this->dataController = $dataController;
+        $this->setName($name);
+        $this->setFolder($folder);
+        $this->setRedactor($redactor);
+        $this->setDataController($dataController);
+        $this->setEvaluatorPending($evaluatorPending);
+        $this->setDataProtectionOfficerPending($dataProtectionOfficerPending);
+
         $this->processingDataTypes = new ArrayCollection();
         $this->pias = new ArrayCollection();
         $this->users = new ArrayCollection();

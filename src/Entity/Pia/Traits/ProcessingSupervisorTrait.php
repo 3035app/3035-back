@@ -33,6 +33,22 @@ trait ProcessingSupervisorTrait
     protected $dataController;
 
     /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @JMS\Exclude()
+     * 
+     * @var User
+     */
+    protected $evaluatorPending;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @JMS\Exclude()
+     * 
+     * @var User
+     */
+    protected $dataProtectionOfficerPending;
+
+    /**
      * @return User
      */
     public function getRedactor(): User
@@ -62,5 +78,37 @@ trait ProcessingSupervisorTrait
     public function setDataController(?User $dataController=null): void
     {
         $this->dataController = $dataController;
+    }
+
+    /**
+     * @return User
+     */
+    public function getEvaluatorPending(): User
+    {
+        return $this->evaluatorPending;
+    }
+
+    /**
+     * @param User $evaluatorPending
+     */
+    public function setEvaluatorPending(?User $evaluatorPending=null): void
+    {
+        $this->evaluatorPending = $evaluatorPending;
+    }
+
+    /**
+     * @return User
+     */
+    public function getDataProtectionOfficerPending(): User
+    {
+        return $this->dataProtectionOfficerPending;
+    }
+
+    /**
+     * @param User $dataProtectionOfficerPending
+     */
+    public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null): void
+    {
+        $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
     }
 }

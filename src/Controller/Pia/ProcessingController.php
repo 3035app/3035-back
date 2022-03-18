@@ -219,13 +219,31 @@ class ProcessingController extends RestController
         # FIXME should catch redactor_id and data_controller_id from POST
         $redactor = $this->getResource($request->get('author'), User::class);
         $dataController = $this->getResource($request->get('designated_controller'), User::class);
+
+        // evaluator data for pia creation
+        $evaluatorPendingId = $request->get('evaluator_pending_id');
+$evaluatorPendingId = 4; // FIXME: TO BE REMOVED!
+        $evaluatorPending = null;
+        if (null != $evaluatorPendingId) {
+            $evaluatorPending = $this->getResource($evaluatorPendingId, User::class);
+        }
+
+        // dpo data for pia creation
+        $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
+$dataProtectionOfficerPendingId = 2; // FIXME: TO BE REMOVED!
+        $dataProtectionOfficerPending = null;
+        if (null != $dataProtectionOfficerPendingId) {
+            $dataProtectionOfficerPending = $this->getResource($dataProtectionOfficerPendingId, User::class);
+        }
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
             $folder,
             $redactor,
-            $dataController
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending
         );
 
         // attach users' parent to that processing
