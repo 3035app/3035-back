@@ -19,8 +19,6 @@ use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")

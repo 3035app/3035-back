@@ -45,7 +45,7 @@ trait PiaSupervisorTrait
      * @param User $evaluator
      * @return $this
      */
-    public function setEvaluator(?User $evaluator=null): void
+    public function setEvaluator(?User $evaluator=null)
     {
         $this->evaluator = $evaluator;
         return $this;
@@ -64,7 +64,7 @@ trait PiaSupervisorTrait
      * @param User $dataProtectionOfficer
      * @return $this
      */
-    public function setDataProtectionOfficer(?User $dataProtectionOfficer=null): void
+    public function setDataProtectionOfficer(?User $dataProtectionOfficer=null)
     {
         $this->dataProtectionOfficer = $dataProtectionOfficer;
         return $this;

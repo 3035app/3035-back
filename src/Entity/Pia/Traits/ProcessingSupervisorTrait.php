@@ -57,7 +57,7 @@ trait ProcessingSupervisorTrait
      * @param User $redactor
      * @return $this
      */
-    public function setRedactor(User $redactor): void
+    public function setRedactor(User $redactor)
     {
         $this->redactor = $redactor;
         return $this;
@@ -76,7 +76,7 @@ trait ProcessingSupervisorTrait
      * @param User $dataController
      * @return $this
      */
-    public function setDataController(?User $dataController=null): void
+    public function setDataController(?User $dataController=null)
     {
         $this->dataController = $dataController;
         return $this;
@@ -95,7 +95,7 @@ trait ProcessingSupervisorTrait
      * @param User $evaluatorPending
      * @return $this
      */
-    public function setEvaluatorPending(?User $evaluatorPending=null): void
+    public function setEvaluatorPending(?User $evaluatorPending=null)
     {
         $this->evaluatorPending = $evaluatorPending;
         return $this;
@@ -114,7 +114,7 @@ trait ProcessingSupervisorTrait
      * @param User $dataProtectionOfficerPending
      * @return $this
      */
-    public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null): void
+    public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null)
     {
         $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
         return $this;
