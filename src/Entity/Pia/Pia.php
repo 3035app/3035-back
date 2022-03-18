@@ -49,7 +49,7 @@ class Pia implements Timestampable
     protected $status = 0;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -57,7 +57,7 @@ class Pia implements Timestampable
     protected $authorName = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -65,7 +65,7 @@ class Pia implements Timestampable
     protected $evaluatorName = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string

@@ -18,7 +18,6 @@ trait ProcessingSupervisorTrait
 {
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -26,7 +25,6 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -34,7 +32,6 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -42,7 +39,6 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -57,11 +53,14 @@ trait ProcessingSupervisorTrait
     }
 
     /**
+     * Sets redactor.
      * @param User $redactor
+     * @return $this
      */
     public function setRedactor(User $redactor): void
     {
         $this->redactor = $redactor;
+        return $this;
     }
 
     /**
@@ -73,11 +72,14 @@ trait ProcessingSupervisorTrait
     }
 
     /**
+     * Sets dataController.
      * @param User $dataController
+     * @return $this
      */
     public function setDataController(?User $dataController=null): void
     {
         $this->dataController = $dataController;
+        return $this;
     }
 
     /**
@@ -89,11 +91,14 @@ trait ProcessingSupervisorTrait
     }
 
     /**
+     * Sets evaluatorPending.
      * @param User $evaluatorPending
+     * @return $this
      */
     public function setEvaluatorPending(?User $evaluatorPending=null): void
     {
         $this->evaluatorPending = $evaluatorPending;
+        return $this;
     }
 
     /**
@@ -105,10 +110,13 @@ trait ProcessingSupervisorTrait
     }
 
     /**
+     * Sets dataProtectionOfficerPending.
      * @param User $dataProtectionOfficerPending
+     * @return $this
      */
     public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null): void
     {
         $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
+        return $this;
     }
 }

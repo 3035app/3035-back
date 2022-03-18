@@ -15,6 +15,7 @@ use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\DataExchange\Transformer\PiaTransformer;
 use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Answer;
 use PiaApi\Entity\Pia\Attachment;
 use PiaApi\Entity\Pia\Comment;
@@ -29,6 +30,7 @@ use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class PiaController extends RestController
@@ -157,9 +159,8 @@ class PiaController extends RestController
      *     @Swg\Schema(
      *         type="object",
      *         required={
-     *             "author_name",
-     *             "evaluator_name",
-     *             "validator_name",
+     *             "evaluator_id",
+     *             "data_protection_officer_id",
      *             "status",
      *             "dpo_status",
      *             "dpo_opinion",
@@ -173,6 +174,8 @@ class PiaController extends RestController
      *             "people_names",
      *             "processing"
      *         },
+     *         @Swg\Property(property="evaluator_id", type="number"),
+     *         @Swg\Property(property="data_protection_officer_id", type="number"),
      *         @Swg\Property(property="author_name", type="string"),
      *         @Swg\Property(property="evaluator_name", type="string"),
      *         @Swg\Property(property="validator_name", type="string"),
@@ -207,7 +210,6 @@ class PiaController extends RestController
      */
     public function createAction(Request $request)
     {
-        # FIXME should catch evaluator_id and data_protection_officer_id from POST
         $processingId = $request->get('processing', ['id' => -1])['id'];
         $structureId = $request->get('processing')['folder']['structure_id'];
         $structure = $this->getResource($structureId, Structure::class);
@@ -224,6 +226,20 @@ class PiaController extends RestController
         $pia = $this->newFromRequest($request);
         $pia->setProcessing($processing);
         $pia->setStructure($structure);
+        // evaluator data pia creation
+        $evaluator = $this->getResource($request->get('evaluator_id'), User::class);
+        if (null == $evaluator) {
+            // evaluator is unknown but mandatory!
+            throw new NotFoundHttpException('evaluator is unknown but mandatory!');
+        }
+        $pia->setEvaluator($evaluator);
+        // dpo data for pia creation
+        $dataProtectionOfficer = $this->getResource($request->get('data_protection_officer_id'), User::class);
+        if (null == $dataProtectionOfficer) {
+            // dpo is unknown but mandatory!
+            throw new NotFoundHttpException('dpo is unknown but mandatory!');
+        }
+        $pia->setDataProtectionOfficer($dataProtectionOfficer);
         $this->persist($pia);
 
         return $this->view($pia, Response::HTTP_OK);

@@ -165,12 +165,16 @@ class ProcessingController extends RestController
      *     required=false,
      *     @Swg\Schema(
      *         type="object",
-     *         required={"name", "author", "designated_controller", "folder"},
+     *         required={"name", "redactor_id", "data_controller_id", "folder"},
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="author", type="string"),
-     *         @Swg\Property(property="designated_controller", type="string"),
+     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="data_controller_id", type="number"),
+     *         @Swg\Property(property="evaluator_pending_id", type="number"),
+     *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
      *         @Swg\Property(property="folder", required={"id"}, type="object",
      *         @Swg\Property(property="id", type="number")),
+     *         @Swg\Property(property="author", type="string"),
+     *         @Swg\Property(property="designated_controller", type="string"),
      *         @Swg\Property(property="lawfulness", type="string"),
      *         @Swg\Property(property="minimization", type="string"),
      *         @Swg\Property(property="rights_guarantee", type="string"),
@@ -216,25 +220,21 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
-        # FIXME should catch redactor_id and data_controller_id from POST
-        $redactor = $this->getResource($request->get('author'), User::class);
-        $dataController = $this->getResource($request->get('designated_controller'), User::class);
+        $redactor = $this->getResource($request->get('redactor_id'), User::class);
+        $dataController = $this->getResource($request->get('data_controller_id'), User::class);
 
         // evaluator data for pia creation
         $evaluatorPendingId = $request->get('evaluator_pending_id');
-$evaluatorPendingId = 4; // FIXME: TO BE REMOVED!
-        $evaluatorPending = null;
-        if (null != $evaluatorPendingId) {
-            $evaluatorPending = $this->getResource($evaluatorPendingId, User::class);
-        }
+        $evaluatorPending = (null != $evaluatorPendingId)
+            ? $this->getResource($evaluatorPendingId, User::class)
+            : $evaluatorPending = null;
 
         // dpo data for pia creation
         $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
-$dataProtectionOfficerPendingId = 2; // FIXME: TO BE REMOVED!
-        $dataProtectionOfficerPending = null;
-        if (null != $dataProtectionOfficerPendingId) {
-            $dataProtectionOfficerPending = $this->getResource($dataProtectionOfficerPendingId, User::class);
-        }
+        $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
+            ? $this->getResource($dataProtectionOfficerPendingId, User::class)
+            : $dataProtectionOfficerPending = null;
+
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
