@@ -25,6 +25,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\UserRepository")
  * @ORM\Table(name="pia_user")
+ * @JMS\ExclusionPolicy("all")
  */
 class User extends BaseUser implements AdvancedUserInterface, \Serializable
 {
@@ -71,7 +72,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\OneToOne(targetEntity="PiaApi\Entity\Pia\UserProfile", mappedBy="user", cascade={"persist", "remove"})
-     *
      * @JMS\MaxDepth(2)
      *
      * @var bool
