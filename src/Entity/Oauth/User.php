@@ -25,7 +25,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\UserRepository")
  * @ORM\Table(name="pia_user")
- * @JMS\ExclusionPolicy("all")
  */
 class User extends BaseUser implements AdvancedUserInterface, \Serializable
 {
@@ -47,7 +46,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\Column(name="expirationDate", type="datetime")
-     *
      * @JMS\Type("DateTime")
      *
      * @var \DateTime
@@ -63,7 +61,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * Encrypted password. Must be persisted.
-     *
      * @JMS\Exclude()
      *
      * @var string
@@ -80,7 +77,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="users")
-     *
      * @JMS\MaxDepth(1)
      *
      * @var Client
@@ -89,7 +85,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\ManyToOne(targetEntity="PiaApi\Entity\Pia\Structure", inversedBy="users")
-     *
      * @JMS\MaxDepth(1)
      *
      * @var Structure

@@ -46,6 +46,31 @@ trait ProcessingSupervisorTrait
      */
     protected $dataProtectionOfficerPending;
 
+    private function getSupervisor($obj)
+    {
+        if (null === $obj) return null;
+        return [
+            'id' => $obj->getId(),
+            'username' => $obj->getUsername()
+        ];
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("supervisors")
+     * 
+     * @return array
+     */
+    public function getProcessingSupervisors()
+    {
+        return [
+            'redactor' => $this->getSupervisor($this->getRedactor()),
+            'data_controller' => $this->getSupervisor($this->getDataController()),
+            'evaluator_pending' => $this->getSupervisor($this->getEvaluatorPending()),
+            'data_protection_officer_pending' => $this->getSupervisor($this->getDataProtectionOfficerPending())
+        ];
+    }
+
     /**
      * @return User
      */
@@ -87,7 +112,7 @@ trait ProcessingSupervisorTrait
     /**
      * @return User
      */
-    public function getEvaluatorPending(): User
+    public function getEvaluatorPending(): ?User
     {
         return $this->evaluatorPending;
     }
@@ -106,7 +131,7 @@ trait ProcessingSupervisorTrait
     /**
      * @return User
      */
-    public function getDataProtectionOfficerPending(): User
+    public function getDataProtectionOfficerPending(): ?User
     {
         return $this->dataProtectionOfficerPending;
     }
