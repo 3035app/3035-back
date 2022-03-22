@@ -46,15 +46,6 @@ trait ProcessingSupervisorTrait
      */
     protected $dataProtectionOfficerPending;
 
-    private function getSupervisor($obj)
-    {
-        if (null === $obj) return null;
-        return [
-            'id' => $obj->getId(),
-            'username' => $obj->getUsername()
-        ];
-    }
-
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("supervisors")
@@ -145,5 +136,14 @@ trait ProcessingSupervisorTrait
     {
         $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
         return $this;
+    }
+
+    private function getSupervisor($obj)
+    {
+        if (null === $obj) return null;
+        return [
+            'id' => $obj->getId(),
+            'username' => $obj->getUsername()
+        ];
     }
 }
