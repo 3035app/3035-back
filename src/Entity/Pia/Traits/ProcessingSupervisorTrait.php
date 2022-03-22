@@ -18,6 +18,8 @@ trait ProcessingSupervisorTrait
 {
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @JMS\Groups({"Default"})
+     * @JMS\MaxDepth(1)
      * 
      * @var User
      */
