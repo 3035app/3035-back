@@ -662,7 +662,7 @@ class ProcessingController extends RestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->canShow($this->getUser())) {
+        if (!$resource->canShow($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to update this processing.
             throw new AccessDeniedHttpException('messages.http.403.3');
         }

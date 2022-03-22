@@ -452,7 +452,7 @@ class StructureFolderController extends RestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->canAccess($this->getUser())) {
+        if (!$resource->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to update this folder.
             throw new AccessDeniedHttpException('messages.http.403.2');
         }
