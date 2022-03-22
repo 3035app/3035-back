@@ -32,6 +32,7 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=true)
      * 
      * @var User
      */
@@ -39,6 +40,7 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=true)
      * 
      * @var User
      */
@@ -76,7 +78,7 @@ trait ProcessingSupervisorTrait
      * @param User $dataController
      * @return $this
      */
-    public function setDataController(?User $dataController=null)
+    public function setDataController(?User $dataController)
     {
         $this->dataController = $dataController;
         return $this;
