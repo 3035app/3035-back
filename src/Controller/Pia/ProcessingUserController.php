@@ -72,6 +72,7 @@ class ProcessingUserController extends LayerRestController
                 'id' => $user->getId(),
                 'firstName' => $user->getProfile()->getFirstName(),
                 'lastName' => $user->getProfile()->getLastName(),
+                'roles' => $user->getRoles()
             ]);
         }
 
