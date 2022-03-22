@@ -399,18 +399,9 @@ class StructureFolderController extends RestController
         foreach ($folder->getChildren() as $child) {
             $child->setCanAccess($connectedUser);
         }
+        // set access to processings
         foreach ($folder->getProcessings() as $processing) {
-            // set access to processings
             $processing->setCanShow($connectedUser);
-            // set supervisors to processings
-            $user = $processing->getRedactor();
-            if (null !== $user) {
-                $processing->setRedactor($user);
-            }
-            $user = $processing->getDataController();
-            if (null !== $user) {
-                $processing->setDataController($user);
-            }
         }
         return $folder;
     }
@@ -463,7 +454,7 @@ class StructureFolderController extends RestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
+        if (!$resource->canAccess($this->getUser())) {
             // you are not allowed to update this folder.
             throw new AccessDeniedHttpException('messages.http.403.2');
         }
