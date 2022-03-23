@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": [
     "Roles and permissions",
-    "Processing"
+    "Processing",
+    "Folders and processings"
   ]
 }
