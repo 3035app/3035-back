@@ -18,6 +18,7 @@ trait ProcessingSupervisorTrait
 {
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -25,6 +26,7 @@ trait ProcessingSupervisorTrait
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -33,6 +35,7 @@ trait ProcessingSupervisorTrait
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=true)
+     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -41,6 +44,7 @@ trait ProcessingSupervisorTrait
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=true)
+     * @JMS\Exclude()
      * 
      * @var User
      */
@@ -116,6 +120,11 @@ trait ProcessingSupervisorTrait
     public function setEvaluatorPending(?User $evaluatorPending=null)
     {
         $this->evaluatorPending = $evaluatorPending;
+        if (0 < $this->getPiasCount()) {
+            foreach ($this->getPias() as $pia) {
+                $pia->setEvaluator($evaluatorPending);
+            }
+        }
         return $this;
     }
 
@@ -135,6 +144,11 @@ trait ProcessingSupervisorTrait
     public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null)
     {
         $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
+        if (0 < $this->getPiasCount()) {
+            foreach ($this->getPias() as $pia) {
+                $pia->setDataProtectionOfficer($evaluatorPending);
+            }
+        }
         return $this;
     }
 

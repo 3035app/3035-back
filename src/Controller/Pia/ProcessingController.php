@@ -285,6 +285,7 @@ class ProcessingController extends RestController
      *     @Swg\Schema(
      *         type="object",
      *         @Swg\Property(property="name", type="string"),
+     *         @Swg\Property(property="supervisors", type="array"),
      *         @Swg\Property(property="author", type="string"),
      *         @Swg\Property(property="status", type="number"),
      *         @Swg\Property(property="description", type="string"),
@@ -348,9 +349,8 @@ class ProcessingController extends RestController
         $this->canAccessResourceOr403($processing);
         $this->canUpdateResourceOr403($processing);
 
-        $start_point = $processing->getFolder()->getId();
-
         $updatableAttributes = [];
+        $start_point = $processing->getFolder()->getId();
 
         if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
             $updatableAttributes['folder'] = Folder::class;
@@ -399,7 +399,11 @@ class ProcessingController extends RestController
 
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
+        $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
+
+// $content = json_decode($request->getContent(), true);
+// throw new AccessDeniedHttpException(json_encode($content['supervisors']));
 
         return $this->view($processing, Response::HTTP_OK);
     }
@@ -671,6 +675,24 @@ class ProcessingController extends RestController
     /**
      * If processing moved: detach users and attach users from parent.
      */
+    public function updateSupervisorsPia($request, $processing): void
+    {
+        $content = json_decode($request->getContent(), true);
+        if (array_key_exists('supervisors', $content)) {
+            foreach ([
+                ['redactor_id', 'setRedactor'],
+                ['data_controller_id', 'setDataController'],
+                ['evaluator_pending_id', 'setEvaluatorPending'],
+                ['data_protection_officer_pending_id', 'setDataProtectionOfficerPending'],
+                ] as $supervisor) {
+                $this->methodSupervisors($processing, $content['supervisors'], $supervisor);
+            }
+        }
+    }
+
+    /**
+     * If processing moved: detach users and attach users from parent.
+     */
     public function detachUsersAttachUsersNewPlace($processing, $start_point): void
     {
         if ($start_point != $processing->getFolder()->getId()) {
@@ -697,6 +719,21 @@ class ProcessingController extends RestController
         if (!$resource->getFolder()->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to delete this processing.
             throw new AccessDeniedHttpException('messages.http.403.7');
+        }
+    }
+
+    private function methodSupervisors($processing, $content, $supervisor): void
+    {
+        // property_id
+        if (array_key_exists($supervisor[0], $content)) {
+            $id = $content[$supervisor[0]];
+            if (null != $id && '' != $id) {
+                $user = $this->getResource($id, User::class);
+                if (null !== $user) {
+                    // method_name, change pia as well
+                    call_user_func([$processing, $supervisor[1]], $user);
+                }
+            }
         }
     }
 }
