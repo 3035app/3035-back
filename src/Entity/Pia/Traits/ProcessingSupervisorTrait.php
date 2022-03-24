@@ -55,10 +55,10 @@ trait ProcessingSupervisorTrait
     public function getProcessingSupervisors()
     {
         return [
-            'redactor' => $this->getSupervisor($this->getRedactor()),
-            'data_controller' => $this->getSupervisor($this->getDataController()),
-            'evaluator_pending' => $this->getSupervisor($this->getEvaluatorPending()),
-            'data_protection_officer_pending' => $this->getSupervisor($this->getDataProtectionOfficerPending())
+            'redactor_id' => $this->getSupervisor($this->getRedactor()),
+            'data_controller_id' => $this->getSupervisor($this->getDataController()),
+            'evaluator_pending_id' => $this->getSupervisor($this->getEvaluatorPending()),
+            'data_protection_officer_pending_id' => $this->getSupervisor($this->getDataProtectionOfficerPending())
         ];
     }
 
@@ -140,10 +140,9 @@ trait ProcessingSupervisorTrait
 
     private function getSupervisor($obj)
     {
-        if (null === $obj) return null;
-        return [
-            'id' => $obj->getId(),
-            'username' => $obj->getUsername()
-        ];
+        if (null === $obj) {
+            return null;
+        }
+        return $obj->getId();
     }
 }
