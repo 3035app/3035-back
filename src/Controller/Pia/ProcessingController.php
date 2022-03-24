@@ -402,9 +402,6 @@ class ProcessingController extends RestController
         $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
 
-// $content = json_decode($request->getContent(), true);
-// throw new AccessDeniedHttpException(json_encode($content['supervisors']));
-
         return $this->view($processing, Response::HTTP_OK);
     }
 
