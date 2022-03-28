@@ -10,21 +10,22 @@
 
 namespace PiaApi\Controller\Pia;
 
-use PiaApi\Services\ProcessingService;
-use PiaApi\Entity\Pia\Processing;
-use PiaApi\Entity\Pia\ProcessingTemplate;
-use PiaApi\Entity\Pia\Folder;
-use PiaApi\DataHandler\RequestDataHandler;
-use PiaApi\Entity\Pia\ProcessingDataType;
-use PiaApi\Entity\Pia\ProcessingComment;
-use PiaApi\Exception\ApiException;
-use JMS\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
+use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
 use PiaApi\DataExchange\Transformer\ProcessingTransformer;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Folder;
+use PiaApi\Entity\Pia\Processing;
+use PiaApi\Entity\Pia\ProcessingComment;
+use PiaApi\Entity\Pia\ProcessingDataType;
+use PiaApi\Entity\Pia\ProcessingTemplate;
+use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
+use PiaApi\Services\ProcessingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -164,12 +165,16 @@ class ProcessingController extends RestController
      *     required=false,
      *     @Swg\Schema(
      *         type="object",
-     *         required={"name", "author", "designated_controller", "folder"},
+     *         required={"name", "redactor_id", "data_controller_id", "folder"},
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="author", type="string"),
-     *         @Swg\Property(property="designated_controller", type="string"),
+     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="data_controller_id", type="number"),
+     *         @Swg\Property(property="evaluator_pending_id", type="number"),
+     *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
      *         @Swg\Property(property="folder", required={"id"}, type="object",
      *         @Swg\Property(property="id", type="number")),
+     *         @Swg\Property(property="author", type="string"),
+     *         @Swg\Property(property="designated_controller", type="string"),
      *         @Swg\Property(property="lawfulness", type="string"),
      *         @Swg\Property(property="minimization", type="string"),
      *         @Swg\Property(property="rights_guarantee", type="string"),
@@ -215,13 +220,19 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
+        list($redactor,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
             $folder,
-            $request->get('author'),
-            $request->get('designated_controller')
+            $redactor,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending
         );
 
         // attach users' parent to that processing
@@ -241,6 +252,8 @@ class ProcessingController extends RestController
      * Updates a processing.
      *
      * @Swg\Tag(name="Processing")
+     *
+     * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
      *
      * @Swg\Parameter(
      *     name="Authorization",
@@ -263,6 +276,10 @@ class ProcessingController extends RestController
      *     @Swg\Schema(
      *         type="object",
      *         @Swg\Property(property="name", type="string"),
+     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="data_controller_id", type="number"),
+     *         @Swg\Property(property="evaluator_pending_id", type="number"),
+     *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
      *         @Swg\Property(property="author", type="string"),
      *         @Swg\Property(property="status", type="number"),
      *         @Swg\Property(property="description", type="string"),
@@ -314,8 +331,6 @@ class ProcessingController extends RestController
      *     )
      * )
      *
-     * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
-     *
      * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING') or is_granted('CAN_EDIT_CARD_PROCESSING') or is_granted('CAN_EDIT_EVALUATION')")
      *
      * @return array
@@ -326,9 +341,8 @@ class ProcessingController extends RestController
         $this->canAccessResourceOr403($processing);
         $this->canUpdateResourceOr403($processing);
 
-        $start_point = $processing->getFolder()->getId();
-
         $updatableAttributes = [];
+        $start_point = $processing->getFolder()->getId();
 
         if ( $this->isGranted('CAN_MOVE_PROCESSING') ) {
             $updatableAttributes['folder'] = Folder::class;
@@ -377,6 +391,7 @@ class ProcessingController extends RestController
 
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
+        $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
 
         return $this->view($processing, Response::HTTP_OK);
@@ -626,6 +641,7 @@ class ProcessingController extends RestController
         }
 
         // prevent creating processing if no access to folder
+        # FIXME is this relevant? && $folder->hasUsers()
         if (!$folder->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // can not create processing if no access to its folder.
             throw new AccessDeniedHttpException('messages.http.403.4');
@@ -639,9 +655,25 @@ class ProcessingController extends RestController
     public function canUpdateResourceOr403($resource): void
     {
         // prevent updating folder if no access to folder
-        if (!$resource->canShow($this->getUser())) {
+        if (!$resource->canShow($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to update this processing.
             throw new AccessDeniedHttpException('messages.http.403.3');
+        }
+    }
+
+    /**
+     * If processing moved: detach users and attach users from parent.
+     */
+    public function updateSupervisorsPia($request, $processing): void
+    {
+        $content = json_decode($request->getContent(), true);
+        foreach ([
+            ['redactor_id', 'setRedactor'],
+            ['data_controller_id', 'setDataController'],
+            ['evaluator_pending_id', 'setEvaluatorPending'],
+            ['data_protection_officer_pending_id', 'setDataProtectionOfficerPending'],
+            ] as $supervisor) {
+            $this->methodSupervisors($processing, $content, $supervisor);
         }
     }
 
@@ -674,6 +706,41 @@ class ProcessingController extends RestController
         if (!$resource->getFolder()->canAccess($this->getUser()) && !$this->isGranted('ROLE_DPO')) {
             // you are not allowed to delete this processing.
             throw new AccessDeniedHttpException('messages.http.403.7');
+        }
+    }
+
+    private function getProcessingSupervisors($request): array
+    {
+        $redactor = $this->getResource($request->get('redactor_id'), User::class);
+        $dataController = $this->getResource($request->get('data_controller_id'), User::class);
+
+        // evaluator data for pia creation
+        $evaluatorPendingId = $request->get('evaluator_pending_id');
+        $evaluatorPending = (null != $evaluatorPendingId)
+            ? $this->getResource($evaluatorPendingId, User::class)
+            : $evaluatorPending = null;
+
+        // dpo data for pia creation
+        $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
+        $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
+            ? $this->getResource($dataProtectionOfficerPendingId, User::class)
+            : $dataProtectionOfficerPending = null;
+
+        return [$redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
+    }
+
+    private function methodSupervisors($processing, $content, $supervisor): void
+    {
+        // property_id
+        if (array_key_exists($supervisor[0], $content)) {
+            $id = $content[$supervisor[0]];
+            if (null != $id && '' != $id) {
+                $user = $this->getResource($id, User::class);
+                if (null !== $user) {
+                    // method_name, change pia as well
+                    call_user_func([$processing, $supervisor[1]], $user);
+                }
+            }
         }
     }
 }

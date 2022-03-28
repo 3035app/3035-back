@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -24,9 +25,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class Processing
 {
-    use
-        ResourceTrait,
-        TimestampableEntity;
+    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_VALIDATION = 1;
@@ -47,7 +46,7 @@ class Processing
     protected $name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -103,7 +102,7 @@ class Processing
     protected $processors;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -259,7 +258,7 @@ class Processing
     protected $template;
 
     /**
-     * many folders have many users.
+     * many processings have many users.
      * @ORM\ManyToMany(targetEntity="PiaApi\Entity\Oauth\User")
      * @ORM\JoinTable(name="pia_users__processings")
      * @JMS\Exclude()
@@ -326,13 +325,17 @@ class Processing
     public function __construct(
         string $name,
         Folder $folder,
-        string $author,
-        string $designatedController
+        User $redactor,
+        User $dataController,
+        User $evaluatorPending=null,
+        User $dataProtectionOfficerPending=null
     ) {
-        $this->name = $name;
-        $this->folder = $folder;
-        $this->author = $author;
-        $this->designatedController = $designatedController;
+        $this->setName($name);
+        $this->setFolder($folder);
+        $this->setRedactor($redactor);
+        $this->setDataController($dataController);
+        $this->setEvaluatorPending($evaluatorPending);
+        $this->setDataProtectionOfficerPending($dataProtectionOfficerPending);
 
         $this->processingDataTypes = new ArrayCollection();
         $this->pias = new ArrayCollection();
@@ -673,6 +676,9 @@ class Processing
      */
     public function getPiasCount(): int
     {
+        if (null == $this->pias) {
+            return 0;
+        }
         return $this->pias->count();
     }
 
@@ -1018,8 +1024,6 @@ class Processing
 
     /**
      * @param User $user
-     *
-     * @throws \InvalidArgumentException
      */
     public function addUser(User $user): void
     {
@@ -1030,8 +1034,6 @@ class Processing
 
     /**
      * @param User $user
-     *
-     * @throws \InvalidArgumentException
      */
     public function removeUser(User $user): void
     {
