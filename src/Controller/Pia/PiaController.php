@@ -509,6 +509,8 @@ class PiaController extends RestController
             throw new NotFoundHttpException('evaluator is unknown but mandatory!');
         }
         $pia->setEvaluator($evaluator);
+        // FIXME is it relevant to move this in entity?
+        $pia->getProcessing()->setEvaluatorPending($evaluator);
 
         // dpo data for pia creation
         $dataProtectionOfficer = $this->getResource($request->get('data_protection_officer_id'), User::class);
@@ -517,6 +519,8 @@ class PiaController extends RestController
             throw new NotFoundHttpException('dpo is unknown but mandatory!');
         }
         $pia->setDataProtectionOfficer($dataProtectionOfficer);
+        // FIXME is it relevant to move this in entity?
+        $pia->getProcessing()->setDataProtectionOfficerPending($dataProtectionOfficer);
 
         return $pia;
     }
