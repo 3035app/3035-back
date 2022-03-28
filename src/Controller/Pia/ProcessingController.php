@@ -220,21 +220,10 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
-        $redactor = $this->getResource($request->get('redactor_id'), User::class);
-        $dataController = $this->getResource($request->get('data_controller_id'), User::class);
-
-        // evaluator data for pia creation
-        $evaluatorPendingId = $request->get('evaluator_pending_id');
-        $evaluatorPending = (null != $evaluatorPendingId)
-            ? $this->getResource($evaluatorPendingId, User::class)
-            : $evaluatorPending = null;
-
-        // dpo data for pia creation
-        $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
-        $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
-            ? $this->getResource($dataProtectionOfficerPendingId, User::class)
-            : $dataProtectionOfficerPending = null;
-
+        list($redactor,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
@@ -718,6 +707,26 @@ class ProcessingController extends RestController
             // you are not allowed to delete this processing.
             throw new AccessDeniedHttpException('messages.http.403.7');
         }
+    }
+
+    private function getProcessingSupervisors($request): array
+    {
+        $redactor = $this->getResource($request->get('redactor_id'), User::class);
+        $dataController = $this->getResource($request->get('data_controller_id'), User::class);
+
+        // evaluator data for pia creation
+        $evaluatorPendingId = $request->get('evaluator_pending_id');
+        $evaluatorPending = (null != $evaluatorPendingId)
+            ? $this->getResource($evaluatorPendingId, User::class)
+            : $evaluatorPending = null;
+
+        // dpo data for pia creation
+        $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
+        $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
+            ? $this->getResource($dataProtectionOfficerPendingId, User::class)
+            : $dataProtectionOfficerPending = null;
+
+        return [$redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
     }
 
     private function methodSupervisors($processing, $content, $supervisor): void
