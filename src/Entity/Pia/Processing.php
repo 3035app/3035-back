@@ -676,6 +676,9 @@ class Processing
      */
     public function getPiasCount(): int
     {
+        if (null == $this->pias) {
+            return 0;
+        }
         return $this->pias->count();
     }
 

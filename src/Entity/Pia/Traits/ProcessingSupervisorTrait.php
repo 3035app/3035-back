@@ -121,6 +121,7 @@ trait ProcessingSupervisorTrait
     {
         $this->evaluatorPending = $evaluatorPending;
         if (0 < $this->getPiasCount()) {
+            # FIXME for now, every pia from the same processing has the same evaluator.
             foreach ($this->getPias() as $pia) {
                 $pia->setEvaluator($evaluatorPending);
             }
@@ -145,6 +146,7 @@ trait ProcessingSupervisorTrait
     {
         $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
         if (0 < $this->getPiasCount()) {
+            # FIXME for now, every pia from the same processing has the same dpo.
             foreach ($this->getPias() as $pia) {
                 $pia->setDataProtectionOfficer($evaluatorPending);
             }

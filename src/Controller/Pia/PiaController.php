@@ -226,20 +226,7 @@ class PiaController extends RestController
         $pia = $this->newFromRequest($request);
         $pia->setProcessing($processing);
         $pia->setStructure($structure);
-        // evaluator data pia creation
-        $evaluator = $this->getResource($request->get('evaluator_id'), User::class);
-        if (null == $evaluator) {
-            // evaluator is unknown but mandatory!
-            throw new NotFoundHttpException('evaluator is unknown but mandatory!');
-        }
-        $pia->setEvaluator($evaluator);
-        // dpo data for pia creation
-        $dataProtectionOfficer = $this->getResource($request->get('data_protection_officer_id'), User::class);
-        if (null == $dataProtectionOfficer) {
-            // dpo is unknown but mandatory!
-            throw new NotFoundHttpException('dpo is unknown but mandatory!');
-        }
-        $pia->setDataProtectionOfficer($dataProtectionOfficer);
+        $pia = $this->setPiaSupervisors($request, $pia);
         $this->persist($pia);
 
         return $this->view($pia, Response::HTTP_OK);
@@ -342,7 +329,6 @@ class PiaController extends RestController
 
         $this->mergeFromRequest($pia, $updatableAttributes, $request);
         $this->update($pia);
-
         return $this->view($pia, Response::HTTP_OK);
     }
 
@@ -512,5 +498,26 @@ class PiaController extends RestController
         if (!in_array($resourceStructure, $structures)) {
             throw new AccessDeniedHttpException();
         }
+    }
+
+    private function setPiaSupervisors($request, $pia)
+    {
+        // evaluator data pia creation
+        $evaluator = $this->getResource($request->get('evaluator_id'), User::class);
+        if (null == $evaluator) {
+            // evaluator is unknown but mandatory!
+            throw new NotFoundHttpException('evaluator is unknown but mandatory!');
+        }
+        $pia->setEvaluator($evaluator);
+
+        // dpo data for pia creation
+        $dataProtectionOfficer = $this->getResource($request->get('data_protection_officer_id'), User::class);
+        if (null == $dataProtectionOfficer) {
+            // dpo is unknown but mandatory!
+            throw new NotFoundHttpException('dpo is unknown but mandatory!');
+        }
+        $pia->setDataProtectionOfficer($dataProtectionOfficer);
+
+        return $pia;
     }
 }

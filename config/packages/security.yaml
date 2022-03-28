@@ -144,6 +144,7 @@ security:
       - CAN_SHOW_PROCESSING
       - CAN_EDIT_PROCESSING
       - CAN_SHOW_PIA
+      - CAN_CREATE_PIA
       - CAN_EDIT_PIA
       - CAN_MANAGE_MEASURES
       - CAN_MANAGE_ANSWERS
@@ -183,6 +184,7 @@ security:
     ROLE_DPO:
       - ROLE_USER
       - CAN_SHOW_EVALUATION
+      - CAN_CREATE_PIA
       - CAN_EDIT_PIA
       - CAN_EXPORT_PIA
       - CAN_SHOW_ATTACHMENT

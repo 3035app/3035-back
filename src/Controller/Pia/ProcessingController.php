@@ -264,6 +264,8 @@ class ProcessingController extends RestController
      *
      * @Swg\Tag(name="Processing")
      *
+     * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
+     *
      * @Swg\Parameter(
      *     name="Authorization",
      *     in="header",
@@ -285,7 +287,10 @@ class ProcessingController extends RestController
      *     @Swg\Schema(
      *         type="object",
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="supervisors", type="array"),
+     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="data_controller_id", type="number"),
+     *         @Swg\Property(property="evaluator_pending_id", type="number"),
+     *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
      *         @Swg\Property(property="author", type="string"),
      *         @Swg\Property(property="status", type="number"),
      *         @Swg\Property(property="description", type="string"),
@@ -336,8 +341,6 @@ class ProcessingController extends RestController
      *         ref=@Nelmio\Model(type=Processing::class, groups={"Default"})
      *     )
      * )
-     *
-     * @FOSRest\Put("/processings/{id}", requirements={"id"="\d+"})
      *
      * @Security("is_granted('CAN_EDIT_PROCESSING') or is_granted('CAN_MOVE_PROCESSING') or is_granted('CAN_EDIT_CARD_PROCESSING') or is_granted('CAN_EDIT_EVALUATION')")
      *
@@ -675,15 +678,13 @@ class ProcessingController extends RestController
     public function updateSupervisorsPia($request, $processing): void
     {
         $content = json_decode($request->getContent(), true);
-        if (array_key_exists('supervisors', $content)) {
-            foreach ([
-                ['redactor_id', 'setRedactor'],
-                ['data_controller_id', 'setDataController'],
-                ['evaluator_pending_id', 'setEvaluatorPending'],
-                ['data_protection_officer_pending_id', 'setDataProtectionOfficerPending'],
-                ] as $supervisor) {
-                $this->methodSupervisors($processing, $content['supervisors'], $supervisor);
-            }
+        foreach ([
+            ['redactor_id', 'setRedactor'],
+            ['data_controller_id', 'setDataController'],
+            ['evaluator_pending_id', 'setEvaluatorPending'],
+            ['data_protection_officer_pending_id', 'setDataProtectionOfficerPending'],
+            ] as $supervisor) {
+            $this->methodSupervisors($processing, $content, $supervisor);
         }
     }
 
