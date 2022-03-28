@@ -395,9 +395,11 @@ class StructureFolderController extends RestController
     protected function setAccessingProperties($folder)
     {
         $connectedUser = $this->getUser();
+        // set access to folders
         foreach ($folder->getChildren() as $child) {
             $child->setCanAccess($connectedUser);
         }
+        // set access to processings
         foreach ($folder->getProcessings() as $processing) {
             $processing->setCanShow($connectedUser);
         }
