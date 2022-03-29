@@ -686,7 +686,7 @@ class ProcessingController extends RestController
     }
 
     /**
-     * If status change from 0 to 1: notify evaluator.
+     * Some notifications to send.
      */
     public function notify($request, $processing): void
     {
