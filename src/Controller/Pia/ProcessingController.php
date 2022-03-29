@@ -833,6 +833,7 @@ class ProcessingController extends RestController
 
     private function isOkForSubmittingPia($request, $processing): bool
     {
+        #FIXME to create!
         return true === $request->get('dpo_submitted_pia');
     }
 }
