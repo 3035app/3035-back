@@ -45,7 +45,21 @@ class EmailingService
     public function notifyWhenAskingForProcessingEvaluation($processing, $recipientEmail, $recipientName)
     {
         list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/processing_evaluation%s.email.twig';
+        $template = 'pia/Email/processing/processing_evaluation%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
+    /**
+     * send email to evaluator when a redactor ask for evaluating each page of a pia.
+     */
+    public function notifyWhenAskingForPiaEvaluation($processing, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $template = 'pia/Email/pia/pia_evaluation%s.email.twig';
         $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);

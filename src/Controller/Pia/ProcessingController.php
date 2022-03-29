@@ -686,60 +686,6 @@ class ProcessingController extends RestController
     }
 
     /**
-     * Some notifications to send.
-     */
-    public function notify($request, $processing): void
-    {
-        if ($this->isOkForProcessingEvaluation($request, $processing))
-        {
-            // notify evaluator
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getEvaluatorPending()->getEmail();
-            $userName = $processing->getEvaluatorPending()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $userEmail, $userName);
-        }
-
-        #2
-        $isOkForEmittingDPOOpinion = false;
-        $isOkForEmittingDPOOpinion = true;
-
-        #3
-        #4
-
-        if ($this->isOkForEmittingEvaluatorOpinion($request, $processing))
-        {
-            // notify redactor
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getRedactor()->getEmail();
-            $userName = $processing->getRedactor()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenEmittingEvaluatorOpinion($processingAttr, $userEmail, $userName);
-        }
-
-        #6
-        #7
-
-        if ($this->isOkForSubmittingPia($request, $processing))
-        {
-            // notify redactor
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getDataProtectionOfficerPending()->getEmail();
-            $userName = $processing->getDataProtectionOfficerPending()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenSubmittingPia($processingAttr, $userEmail, $userName);
-        }
-
-        if ($isOkForEmittingDPOOpinion)
-        {
-            // notify data controller
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getDataController()->getEmail();
-            $userName = $processing->getDataController()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenEmittingDPOOpinion($processingAttr, $userEmail, $userName);
-        }
-
-        #10
-    }
-
-    /**
      * If processing moved: detach users and attach users from parent.
      */
     public function detachUsersAttachUsersNewPlace($processing, $start_point): void
@@ -806,7 +752,61 @@ class ProcessingController extends RestController
         }
     }
 
-    private function isOkForProcessingEvaluation($request, $processing): bool
+    /**
+     * Some notifications to send.
+     */
+    private function notify($request, $processing): void
+    {
+        if ($this->canAskForProcessingEvaluation($request, $processing))
+        {
+            // notify evaluator on last page of processing
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getEvaluatorPending()->getEmail();
+            $userName = $processing->getEvaluatorPending()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $userEmail, $userName);
+        }
+
+        #2
+        $isOkForEmittingDPOOpinion = true;
+        $isOkForEmittingDPOOpinion = false;
+
+        #3
+        #4
+
+        if ($this->isOkForEmittingEvaluatorOpinion($request, $processing))
+        {
+            // notify redactor
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getRedactor()->getEmail();
+            $userName = $processing->getRedactor()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenEmittingEvaluatorOpinion($processingAttr, $userEmail, $userName);
+        }
+
+        #6
+        #7
+
+        if ($this->isOkForSubmittingPia($request, $processing))
+        {
+            // notify redactor
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getDataProtectionOfficerPending()->getEmail();
+            $userName = $processing->getDataProtectionOfficerPending()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenSubmittingPia($processingAttr, $userEmail, $userName);
+        }
+
+        if ($isOkForEmittingDPOOpinion)
+        {
+            // notify data controller
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getDataController()->getEmail();
+            $userName = $processing->getDataController()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenEmittingDPOOpinion($processingAttr, $userEmail, $userName);
+        }
+
+        #10
+    }
+
+    private function canAskForProcessingEvaluation($request, $processing): bool
     {
         $new_status = $request->get('status');
         $old_status = $processing->getStatus();

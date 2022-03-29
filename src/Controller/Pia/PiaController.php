@@ -49,6 +49,11 @@ class PiaController extends RestController
         $this->piaTransformer = $piaTransformer;
     }
 
+    protected function getEntityClass()
+    {
+        return Pia::class;
+    }
+
     /**
      * Lists all PIAs.
      *
@@ -296,6 +301,7 @@ class PiaController extends RestController
     {
         $pia = $this->getResource($id);
         $this->canAccessResourceOr403($pia);
+
         $updatableAttributes = [];
 
         if ( $this->isGranted('CAN_VALIDATE_PIA') ) {
@@ -327,6 +333,8 @@ class PiaController extends RestController
             ]);
         }
 
+        // before merging!
+        $this->notify($request, $pia);
         $this->mergeFromRequest($pia, $updatableAttributes, $request);
         $this->update($pia);
         return $this->view($pia, Response::HTTP_OK);
@@ -479,11 +487,6 @@ class PiaController extends RestController
         return new Response($json, Response::HTTP_OK);
     }
 
-    protected function getEntityClass()
-    {
-        return Pia::class;
-    }
-
     public function canAccessResourceOr403($resource): void
     {
         if (!$resource instanceof Pia) {
@@ -523,5 +526,30 @@ class PiaController extends RestController
         $pia->getProcessing()->setDataProtectionOfficerPending($dataProtectionOfficer);
 
         return $pia;
+    }
+
+    /**
+     * Some notifications to send.
+     */
+    private function notify($request, $pia): void
+    {
+        if ($this->canAskForPiaEvaluation($request, $processing))
+        {
+            // notify evaluator on each page of pia
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getEvaluator()->getEmail();
+            $userName = $processing->getEvaluator()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenAskingForPiaEvaluation($processingAttr, $userEmail, $userName);
+        }
+    }
+
+    private function canAskForPiaEvaluation($request, $pia): bool
+    {
+        $new_status = $request->get('status');
+        $old_status = $pia->getStatus();
+        return
+            Processing::STATUS_DOING == $old_status &&
+            Processing::STATUS_UNDER_VALIDATION == $new_status
+            ;
     }
 }
