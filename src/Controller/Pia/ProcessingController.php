@@ -25,6 +25,7 @@ use PiaApi\Entity\Pia\ProcessingDataType;
 use PiaApi\Entity\Pia\ProcessingTemplate;
 use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
+use PiaApi\Services\EmailingService;
 use PiaApi\Services\ProcessingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
@@ -50,16 +51,23 @@ class ProcessingController extends RestController
      */
     protected $serializer;
 
+    /**
+     * @var EmailingService
+     */
+    protected $emailingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         ProcessingService $processingService,
         ProcessingTransformer $processingTransformer,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        EmailingService $emailingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;
         $this->serializer = $serializer;
+        $this->emailingService = $emailingService;
     }
 
     protected function getEntityClass()
@@ -242,9 +250,7 @@ class ProcessingController extends RestController
 
         // attach connected user (creator) to that processing
         $processing->addUser($this->getUser());
-
         $this->persist($processing);
-
         return $this->view($processing, Response::HTTP_OK);
     }
 
@@ -389,6 +395,8 @@ class ProcessingController extends RestController
             ]);
         }
 
+        // before merging!
+        $this->notifyWhenAskingForProcessingEvaluation($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
@@ -678,6 +686,23 @@ class ProcessingController extends RestController
     }
 
     /**
+     * If status change from 0 to 1: notify evaluator.
+     */
+    public function notifyWhenAskingForProcessingEvaluation($request, $processing): void
+    {
+        $new_status = $request->get('status');
+        if (Processing::STATUS_DOING == $processing->getStatus() &&
+            Processing::STATUS_UNDER_VALIDATION == $new_status)
+        {
+            // notify evaluator
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $evaluatorEmail = $processing->getEvaluatorPending()->getEmail();
+            $evaluatorName = $processing->getEvaluatorPending()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $evaluatorEmail, $evaluatorName);
+        }
+    }
+
+    /**
      * If processing moved: detach users and attach users from parent.
      */
     public function detachUsersAttachUsersNewPlace($processing, $start_point): void
@@ -718,13 +743,13 @@ class ProcessingController extends RestController
         $evaluatorPendingId = $request->get('evaluator_pending_id');
         $evaluatorPending = (null != $evaluatorPendingId)
             ? $this->getResource($evaluatorPendingId, User::class)
-            : $evaluatorPending = null;
+            : null;
 
         // dpo data for pia creation
         $dataProtectionOfficerPendingId = $request->get('data_protection_officer_pending_id');
         $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
             ? $this->getResource($dataProtectionOfficerPendingId, User::class)
-            : $dataProtectionOfficerPending = null;
+            : null;
 
         return [$redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
     }

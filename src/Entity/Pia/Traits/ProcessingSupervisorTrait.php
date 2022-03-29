@@ -148,7 +148,7 @@ trait ProcessingSupervisorTrait
         if (0 < $this->getPiasCount()) {
             # FIXME for now, every pia from the same processing has the same dpo.
             foreach ($this->getPias() as $pia) {
-                $pia->setDataProtectionOfficer($evaluatorPending);
+                $pia->setDataProtectionOfficer($dataProtectionOfficerPending);
             }
         }
         return $this;
