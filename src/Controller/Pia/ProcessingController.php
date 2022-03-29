@@ -396,7 +396,7 @@ class ProcessingController extends RestController
         }
 
         // before merging!
-        $this->notifyWhenAskingForProcessingEvaluation($request, $processing);
+        $this->notify($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
@@ -688,18 +688,55 @@ class ProcessingController extends RestController
     /**
      * If status change from 0 to 1: notify evaluator.
      */
-    public function notifyWhenAskingForProcessingEvaluation($request, $processing): void
+    public function notify($request, $processing): void
     {
-        $new_status = $request->get('status');
-        if (Processing::STATUS_DOING == $processing->getStatus() &&
-            Processing::STATUS_UNDER_VALIDATION == $new_status)
+        if ($this->isOkForProcessingEvaluation($request, $processing))
         {
             // notify evaluator
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $evaluatorEmail = $processing->getEvaluatorPending()->getEmail();
-            $evaluatorName = $processing->getEvaluatorPending()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $evaluatorEmail, $evaluatorName);
+            $userEmail = $processing->getEvaluatorPending()->getEmail();
+            $userName = $processing->getEvaluatorPending()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $userEmail, $userName);
         }
+
+        #2
+        $isOkForEmittingDPOOpinion = false;
+        $isOkForEmittingDPOOpinion = true;
+
+        #3
+        #4
+
+        if ($this->isOkForEmittingEvaluatorOpinion($request, $processing))
+        {
+            // notify redactor
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getRedactor()->getEmail();
+            $userName = $processing->getRedactor()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenEmittingEvaluatorOpinion($processingAttr, $userEmail, $userName);
+        }
+
+        #6
+        #7
+
+        if ($this->isOkForSubmittingPia($request, $processing))
+        {
+            // notify redactor
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getDataProtectionOfficerPending()->getEmail();
+            $userName = $processing->getDataProtectionOfficerPending()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenSubmittingPia($processingAttr, $userEmail, $userName);
+        }
+
+        if ($isOkForEmittingDPOOpinion)
+        {
+            // notify data controller
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
+            $userEmail = $processing->getDataController()->getEmail();
+            $userName = $processing->getDataController()->getProfile()->getFullname();
+            $this->emailingService->notifyWhenEmittingDPOOpinion($processingAttr, $userEmail, $userName);
+        }
+
+        #10
     }
 
     /**
@@ -767,5 +804,35 @@ class ProcessingController extends RestController
                 }
             }
         }
+    }
+
+    private function isOkForProcessingEvaluation($request, $processing): bool
+    {
+        $new_status = $request->get('status');
+        $old_status = $processing->getStatus();
+        return
+            Processing::STATUS_DOING == $old_status &&
+            Processing::STATUS_UNDER_VALIDATION == $new_status
+            ;
+    }
+
+    private function isOkForEmittingEvaluatorOpinion($request, $processing): bool
+    {
+        $new_status = $request->get('evaluation_state');
+        $old_status = $processing->getEvaluationState();
+        return
+            null !== $new_status
+            &&
+            (Processing::EVALUATION_STATE_NONE == $old_status &&
+            Processing::EVALUATION_STATE_TO_CORRECT == $new_status)
+            ||
+            (Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
+            Processing::EVALUATION_STATE_IMPROVABLE == $new_status)
+            ;
+    }
+
+    private function isOkForSubmittingPia($request, $processing): bool
+    {
+        return true === $request->get('dpo_submitted_pia');
     }
 }

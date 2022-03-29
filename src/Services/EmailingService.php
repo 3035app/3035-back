@@ -41,12 +41,6 @@ class EmailingService
 
     /**
      * send email to evaluator when a redactor ask for evaluating a processing.
-     *
-     * @access public
-     * @param array
-     * @param string
-     * @param string
-     * @return int
      */
     public function notifyWhenAskingForProcessingEvaluation($processing, $recipientEmail, $recipientName)
     {
@@ -61,12 +55,6 @@ class EmailingService
 
     /**
      * send email to evaluator when a dpo emit opinion or observations on a processing.
-     *
-     * @access public
-     * @param array
-     * @param string
-     * @param string
-     * @return int
      */
     public function notifyWhenEmittingOpinionOrObservations($processing, $recipientEmail, $recipientName)
     {
@@ -79,12 +67,68 @@ class EmailingService
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
+    /**
+     * send email to evaluator when a redactor fill in a processing after being observed by dpo.
+     */
+    public function notifyWhenFillingInProcessingAfterBeingObserved($processing, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $template = 'pia/Email/filling_in_processing_after_being_observed%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
 
+    #4
 
+    /**
+     * send email to redactor when evaluator's opinion on a pia is TO_CORRECT or IMPROVABLE.
+     */
+    public function notifyWhenEmittingEvaluatorOpinion($processing, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $template = 'pia/Email/emitting_evaluator_opinion%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
 
+    #6
+    #7
 
+    /**
+     * send email to dpo when an evaluator ask for evaluating a processing.
+     */
+    public function notifyWhenSubmittingPia($processing, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $template = 'pia/Email/wishing_submit_pia%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
 
+    /**
+     * send email to dpo when an evaluator ask for evaluating a processing.
+     */
+    public function notifyWhenEmittingDPOOpinion($processing, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $template = 'pia/Email/emitting_dpo_opinion%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
 
+    #10
 
     /**
      * @param string       $subject
@@ -113,6 +157,7 @@ class EmailingService
             return 0; // number of successful recipients reached
         }
 
+        // number of successful recipients reached
         return $this->mailer->send($email);
     }
 
