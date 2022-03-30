@@ -12,14 +12,33 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Evaluation;
+use PiaApi\Entity\Pia\Pia;
+use PiaApi\Services\EmailingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class EvaluationController extends PiaSubController
 {
+    /**
+     * @var EmailingService
+     */
+    protected $emailingService;
+
+    public function __construct(
+        PropertyAccessorInterface $propertyAccessor,
+        SerializerInterface $serializer,
+        EmailingService $emailingService
+    ) {
+        parent::__construct($propertyAccessor, $serializer);
+        $this->emailingService = $emailingService;
+    }
+
     /**
      * Lists all Answers for a specific Treatment.
      *
@@ -154,7 +173,12 @@ class EvaluationController extends PiaSubController
      */
     public function createAction(Request $request, $piaId)
     {
-        return parent::createAction($request, $piaId);
+        $view = parent::createAction($request, $piaId);
+        $evaluation = $this->getEvaluation($piaId, $request);
+        if (null !== $evaluation) {
+            $this->notifyEvaluator($request, $evaluation);
+        }
+        return $view;
     }
 
     /**
@@ -214,7 +238,12 @@ class EvaluationController extends PiaSubController
      */
     public function updateAction(Request $request, $piaId, $id)
     {
-        return parent::updateAction($request, $piaId, $id);
+        $view = parent::updateAction($request, $piaId, $id);
+        $evaluation = $this->getResource($id, Evaluation::class);
+        if (null !== $evaluation) {
+            $this->notifyRedactor($request, $evaluation);
+        }
+        return $view;
     }
 
     /**
@@ -263,5 +292,47 @@ class EvaluationController extends PiaSubController
     protected function getEntityClass()
     {
         return Evaluation::class;
+    }
+
+    private function getEvaluation($piaId, $request): ?Evaluation
+    {
+        $pia = $this->getResource($piaId, Pia::class);
+        $referenceTo = $request->get('reference_to');
+        foreach ($pia->getEvaluations() as $item)
+        {
+            if ($referenceTo == $item->getReferenceTo())
+            {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Some notifications to send.
+     */
+    private function notifyEvaluator($request, $evaluation): void
+    {
+        // notify evaluator on each page of pia
+        $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
+        $userEmail = $evaluation->getPia()->getEvaluator()->getEmail();
+        $userName = $evaluation->getPia()->getEvaluator()->getProfile()->getFullname();
+        $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $userEmail, $userName);
+    }
+
+    /**
+     * Some notifications to send.
+     */
+    private function notifyRedactor($request, $evaluation): void
+    {
+        //check if status and global status match this state
+        if ($this->canEmitPiaEvaluatorEvaluation($request, $evaluation))
+        {
+            // notify redactor after evaluating each page of pia
+            $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
+            $userEmail = $evaluation->getPia()->getProcessing()->getRedactor()->getEmail();
+            $userName = $evaluation->getPia()->getProcessing()->getRedactor()->getProfile()->getFullname();
+            $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $userEmail, $userName);
+        }
     }
 }

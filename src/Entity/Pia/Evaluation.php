@@ -108,4 +108,20 @@ class Evaluation implements Timestampable
      * @var int
      */
     protected $globalStatus = 0;
+
+    /**
+     * @return string
+     */
+    public function getReferenceTo(): string
+    {
+        return $this->referenceTo;
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return sprintf('%s (#%s)', $this->getPia()->getProcessing()->getName(), $this->getReferenceTo());
+    }
 }

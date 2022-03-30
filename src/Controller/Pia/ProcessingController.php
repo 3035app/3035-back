@@ -763,44 +763,44 @@ class ProcessingController extends RestController
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
             $userEmail = $processing->getEvaluatorPending()->getEmail();
             $userName = $processing->getEvaluatorPending()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenAskingForProcessingEvaluation($processingAttr, $userEmail, $userName);
+            $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $userEmail, $userName);
         }
 
         #2
-        $isOkForEmittingDPOOpinion = true;
-        $isOkForEmittingDPOOpinion = false;
+        $canEmitDpoOpinion = true;
+        $canEmitDpoOpinion = false;
 
         #3
         #4
 
-        if ($this->isOkForEmittingEvaluatorOpinion($request, $processing))
+        if ($this->canEmitEvaluatorEvaluation($request, $processing))
         {
             // notify redactor
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
             $userEmail = $processing->getRedactor()->getEmail();
             $userName = $processing->getRedactor()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenEmittingEvaluatorOpinion($processingAttr, $userEmail, $userName);
+            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $userEmail, $userName);
         }
 
         #6
         #7
 
-        if ($this->isOkForSubmittingPia($request, $processing))
+        if ($this->canSubmitPiaToDpo($request, $processing))
         {
             // notify redactor
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
             $userEmail = $processing->getDataProtectionOfficerPending()->getEmail();
             $userName = $processing->getDataProtectionOfficerPending()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenSubmittingPia($processingAttr, $userEmail, $userName);
+            $this->emailingService->notifySubmitPiaToDpo($processingAttr, $userEmail, $userName);
         }
 
-        if ($isOkForEmittingDPOOpinion)
+        if ($canEmitDpoOpinion)
         {
             // notify data controller
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
             $userEmail = $processing->getDataController()->getEmail();
             $userName = $processing->getDataController()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenEmittingDPOOpinion($processingAttr, $userEmail, $userName);
+            $this->emailingService->notifyEmitDpoOpinion($processingAttr, $userEmail, $userName);
         }
 
         #10
@@ -816,22 +816,34 @@ class ProcessingController extends RestController
             ;
     }
 
-    private function isOkForEmittingEvaluatorOpinion($request, $processing): bool
+    private function canEmitEvaluatorEvaluation($request, $processing): bool
     {
         $new_status = $request->get('evaluation_state');
         $old_status = $processing->getEvaluationState();
         return
             null !== $new_status
             &&
-            (Processing::EVALUATION_STATE_NONE == $old_status &&
-            Processing::EVALUATION_STATE_TO_CORRECT == $new_status)
-            ||
-            (Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
-            Processing::EVALUATION_STATE_IMPROVABLE == $new_status)
-            ;
+            (
+                # add an evaluation
+                Processing::EVALUATION_STATE_NONE == $old_status &&
+                Processing::EVALUATION_STATE_TO_CORRECT == $new_status
+                ||
+                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
+                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
+                ||
+                Processing::EVALUATION_STATE_NONE == $old_status &&
+                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
+                ||
+                # remove an evaluation
+                Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
+                Processing::EVALUATION_STATE_NONE == $new_status
+                ||
+                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
+                Processing::EVALUATION_STATE_NONE == $new_status
+            );
     }
 
-    private function isOkForSubmittingPia($request, $processing): bool
+    private function canSubmitPiaToDpo($request, $processing): bool
     {
         #FIXME to create!
         return true === $request->get('dpo_submitted_pia');

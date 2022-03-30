@@ -12,6 +12,7 @@ namespace PiaApi\Services;
 
 use FOS\UserBundle\Mailer\MailerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class EmailingService
@@ -42,10 +43,10 @@ class EmailingService
     /**
      * send email to evaluator when a redactor ask for evaluating a processing.
      */
-    public function notifyWhenAskingForProcessingEvaluation($processing, $recipientEmail, $recipientName)
+    public function notifyAskForProcessingEvaluation($processing, $recipientEmail, $recipientName)
     {
         list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/processing/processing_evaluation%s.email.twig';
+        $template = 'pia/Email/processing/ask_for_processing_evaluation%s.email.twig';
         $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
@@ -56,11 +57,11 @@ class EmailingService
     /**
      * send email to evaluator when a redactor ask for evaluating each page of a pia.
      */
-    public function notifyWhenAskingForPiaEvaluation($processing, $recipientEmail, $recipientName)
+    public function notifyAskForPiaEvaluation($pia, $recipientEmail, $recipientName)
     {
-        list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/pia/pia_evaluation%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        list($name, $route, $routeAttr) = $pia;
+        $template = 'pia/Email/pia/ask_for_pia_evaluation%s.email.twig';
+        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
         $to = [$recipientEmail => $recipientName];
@@ -72,13 +73,7 @@ class EmailingService
      */
     public function notifyWhenEmittingOpinionOrObservations($processing, $recipientEmail, $recipientName)
     {
-        list($name, $route, $routeAttr) = $processing;
         $template = 'pia/Email/emitting_opinion_or_observations%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
-        return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
@@ -86,24 +81,18 @@ class EmailingService
      */
     public function notifyWhenFillingInProcessingAfterBeingObserved($processing, $recipientEmail, $recipientName)
     {
-        list($name, $route, $routeAttr) = $processing;
         $template = 'pia/Email/filling_in_processing_after_being_observed%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
-        return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     #4
 
     /**
-     * send email to redactor when evaluator's opinion on a pia is TO_CORRECT or IMPROVABLE.
+     * send email to redactor when evaluator's opinion on a processing is TO_CORRECT or IMPROVABLE.
      */
-    public function notifyWhenEmittingEvaluatorOpinion($processing, $recipientEmail, $recipientName)
+    public function notifyEmitEvaluatorEvaluation($processing, $recipientEmail, $recipientName)
     {
         list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/emitting_evaluator_opinion%s.email.twig';
+        $template = 'pia/Email/processing/emit_evaluator_evaluation%s.email.twig';
         $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
@@ -111,16 +100,29 @@ class EmailingService
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
-    #6
+    /**
+     * send email to redactor when evaluator's opinion on a pia is TO_CORRECT or IMPROVABLE.
+     */
+    public function notifyEmitPiaEvaluatorEvaluation($pia, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $pia;
+        $template = 'pia/Email/pia/emit_pia_evaluator_evaluation%s.email.twig';
+        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
     #7
 
     /**
      * send email to dpo when an evaluator ask for evaluating a processing.
      */
-    public function notifyWhenSubmittingPia($processing, $recipientEmail, $recipientName)
+    public function notifySubmitPiaToDpo($processing, $recipientEmail, $recipientName)
     {
         list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/wishing_submit_pia%s.email.twig';
+        $template = 'pia/Email/processing/submit_pia_to_dpo%s.email.twig';
         $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
@@ -131,10 +133,10 @@ class EmailingService
     /**
      * send email to dpo when an evaluator ask for evaluating a processing.
      */
-    public function notifyWhenEmittingDPOOpinion($processing, $recipientEmail, $recipientName)
+    public function notifyEmitDpoOpinion($processing, $recipientEmail, $recipientName)
     {
         list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/emitting_dpo_opinion%s.email.twig';
+        $template = 'pia/Email/processing/emit_dpo_opinion%s.email.twig';
         $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
