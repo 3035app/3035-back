@@ -326,7 +326,7 @@ class EvaluationController extends PiaSubController
     private function notifyRedactor($request, $evaluation): void
     {
         //check if status and global status match this state
-        if ($this->canEmitPiaEvaluatorEvaluation($request, $evaluation))
+        if ($evaluation->canEmitPiaEvaluatorEvaluation($request))
         {
             // notify redactor after evaluating each page of pia
             $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];

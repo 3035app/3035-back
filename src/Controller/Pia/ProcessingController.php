@@ -757,7 +757,7 @@ class ProcessingController extends RestController
      */
     private function notify($request, $processing): void
     {
-        if ($this->canAskForProcessingEvaluation($request, $processing))
+        if ($processing->canAskForProcessingEvaluation($request))
         {
             // notify evaluator on last page of processing
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
@@ -773,7 +773,7 @@ class ProcessingController extends RestController
         #3
         #4
 
-        if ($this->canEmitEvaluatorEvaluation($request, $processing))
+        if ($processing->canEmitEvaluatorEvaluation($request))
         {
             // notify redactor
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
@@ -785,7 +785,7 @@ class ProcessingController extends RestController
         #6
         #7
 
-        if ($this->canSubmitPiaToDpo($request, $processing))
+        if ($processing->canSubmitPiaToDpo($request))
         {
             // notify redactor
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
@@ -804,48 +804,5 @@ class ProcessingController extends RestController
         }
 
         #10
-    }
-
-    private function canAskForProcessingEvaluation($request, $processing): bool
-    {
-        $new_status = $request->get('status');
-        $old_status = $processing->getStatus();
-        return
-            Processing::STATUS_DOING == $old_status &&
-            Processing::STATUS_UNDER_VALIDATION == $new_status
-            ;
-    }
-
-    private function canEmitEvaluatorEvaluation($request, $processing): bool
-    {
-        $new_status = $request->get('evaluation_state');
-        $old_status = $processing->getEvaluationState();
-        return
-            null !== $new_status
-            &&
-            (
-                # add an evaluation
-                Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_TO_CORRECT == $new_status
-                ||
-                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
-                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
-                ||
-                Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
-                ||
-                # remove an evaluation
-                Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
-                Processing::EVALUATION_STATE_NONE == $new_status
-                ||
-                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
-                Processing::EVALUATION_STATE_NONE == $new_status
-            );
-    }
-
-    private function canSubmitPiaToDpo($request, $processing): bool
-    {
-        #FIXME to create!
-        return true === $request->get('dpo_submitted_pia');
     }
 }
