@@ -754,6 +754,7 @@ class ProcessingController extends RestController
 
     /**
      * Some notifications to send.
+     * specifications: #1, #5
      */
     private function notify($request, $processing): void
     {
@@ -766,12 +767,7 @@ class ProcessingController extends RestController
             $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $userEmail, $userName);
         }
 
-        #2
-        $canEmitDpoOpinion = true;
-        $canEmitDpoOpinion = false;
-
         #3
-        #4
 
         if ($processing->canEmitEvaluatorEvaluation($request))
         {
@@ -780,27 +776,6 @@ class ProcessingController extends RestController
             $userEmail = $processing->getRedactor()->getEmail();
             $userName = $processing->getRedactor()->getProfile()->getFullname();
             $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $userEmail, $userName);
-        }
-
-        #6
-        #7
-
-        if ($processing->canSubmitPiaToDpo($request))
-        {
-            // notify redactor
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getDataProtectionOfficerPending()->getEmail();
-            $userName = $processing->getDataProtectionOfficerPending()->getProfile()->getFullname();
-            $this->emailingService->notifySubmitPiaToDpo($processingAttr, $userEmail, $userName);
-        }
-
-        if ($canEmitDpoOpinion)
-        {
-            // notify data controller
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getDataController()->getEmail();
-            $userName = $processing->getDataController()->getProfile()->getFullname();
-            $this->emailingService->notifyEmitDpoOpinion($processingAttr, $userEmail, $userName);
         }
 
         #10

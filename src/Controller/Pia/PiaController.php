@@ -25,6 +25,7 @@ use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Exception\DataImportException;
+use PiaApi\Services\EmailingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,13 +41,20 @@ class PiaController extends RestController
      */
     protected $piaTransformer;
 
+    /**
+     * @var EmailingService
+     */
+    protected $emailingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         PiaTransformer $piaTransformer,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        EmailingService $emailingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->piaTransformer = $piaTransformer;
+        $this->emailingService = $emailingService;
     }
 
     protected function getEntityClass()
@@ -530,26 +538,43 @@ class PiaController extends RestController
 
     /**
      * Some notifications to send.
+     * specifications: #2, #7, #9
      */
     private function notify($request, $pia): void
     {
-        if ($this->canAskForPiaEvaluation($request, $processing))
-        {
-            // notify evaluator on each page of pia
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getEvaluator()->getEmail();
-            $userName = $processing->getEvaluator()->getProfile()->getFullname();
-            $this->emailingService->notifyWhenAskingForPiaEvaluation($processingAttr, $userEmail, $userName);
-        }
-    }
+        $canNotifyDataController = false;
 
-    private function canAskForPiaEvaluation($request, $pia): bool
-    {
-        $new_status = $request->get('status');
-        $old_status = $pia->getStatus();
-        return
-            Processing::STATUS_DOING == $old_status &&
-            Processing::STATUS_UNDER_VALIDATION == $new_status
-            ;
+        if ($pia->canEmitOpinionOrObservations($request))
+        {
+            // notify data controller
+            $canNotifyDataController = true;
+
+            // notify evaluator
+            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $userEmail = $pia->getEvaluator()->getEmail();
+            $userName = $pia->getEvaluator()->getProfile()->getFullname();
+            $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $userEmail, $userName);
+        }
+
+        if ($pia->canEmitObservations($request))
+        {
+            // notify data controller
+            $canNotifyDataController = true;
+
+            // notify redactor
+            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $userEmail = $pia->getProcessing()->getRedactor()->getEmail();
+            $userName = $pia->getProcessing()->getRedactor()->getProfile()->getFullname();
+            $this->emailingService->notifyEmitObservations($piaAttr, $userEmail, $userName);
+        }
+
+        if ($canNotifyDataController)
+        {
+            // notify data controller
+            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $userEmail = $pia->getProcessing()->getDataController()->getEmail();
+            $userName = $pia->getProcessing()->getDataController()->getProfile()->getFullname();
+            $this->emailingService->notifyDataController($piaAttr, $userEmail, $userName);
+        }
     }
 }

@@ -120,6 +120,14 @@ class Evaluation implements Timestampable
     /**
      * @return int
      */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return int
+     */
     public function getGlobalStatus(): int
     {
         return $this->globalStatus;

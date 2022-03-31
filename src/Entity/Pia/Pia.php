@@ -664,4 +664,52 @@ class Pia implements Timestampable
     {
         $this->processing = $processing;
     }
+
+    /**
+     * @return bool
+     */
+    public function canEmitOpinionOrObservations($request): bool
+    {
+        $new_status = $request->get('dpo_status');
+        return
+            # old status
+            0 == $this->getDpoStatus() && 1 == $new_status
+            ||
+            $this->canEmitObservations($request)
+            ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canEmitObservations($request): bool
+    {
+        $new_opinion = $request->get('dpo_opinion');
+        return
+            # old opinion
+            $this->getDpoOpinion() != trim($new_opinion)
+            ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPiaEvaluationsAcceptable(): bool
+    {
+        foreach ($this->getEvaluations() as $evaluation) {
+            if (3 > $evaluation->getStatus()) # <=> acceptable
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return sprintf('%s (pia)', $this->getProcessing()->getName());
+    }
 }
