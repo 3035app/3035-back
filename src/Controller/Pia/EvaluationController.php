@@ -242,7 +242,7 @@ class EvaluationController extends PiaSubController
         $evaluation = $this->getResource($id, Evaluation::class);
         if (null !== $evaluation) {
             $this->notifyRedactor($request, $evaluation);
-            $this->notifyDpo($evaluation->getPia());
+            $this->notifyDpo($request, $evaluation->getPia());
         }
         return $view;
     }
@@ -343,18 +343,17 @@ class EvaluationController extends PiaSubController
      * Some notifications to send.
      * specifications: #8
      */
-    private function notifyDpo($pia): void
+    private function notifyDpo($request, $pia): void
     {
         // check if all evaluations are acceptable, then notify dpo!
         // at this point, all evaluations are created
         if ($pia->isPiaEvaluationsAcceptable())
         {
-throw new AccessDeniedHttpException('-- isPiaEvaluationsAcceptable Ok.');
             // notify dpo
             $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
             $userEmail = $pia->getDataProtectionOfficer()->getEmail();
             $userName = $pia->getDataProtectionOfficer()->getProfile()->getFullname();
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $userEmail, $userName);
         }
-
+    }
 }

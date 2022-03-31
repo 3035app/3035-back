@@ -697,7 +697,8 @@ class Pia implements Timestampable
     public function isPiaEvaluationsAcceptable(): bool
     {
         foreach ($this->getEvaluations() as $evaluation) {
-            if (3 > $evaluation->getStatus()) # <=> acceptable
+            # status <=> acceptable
+            if (3 > $evaluation->getStatus() || 2 > $evaluation->getGlobalStatus())
             {
                 return false;
             }
