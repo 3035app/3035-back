@@ -350,7 +350,7 @@ class EvaluationController extends PiaSubController
         if ($pia->isPiaEvaluationsAcceptable())
         {
             // notify dpo
-            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), 'piaapi_pia_pia_update', ['id' => $pia->getId()]];
             $userEmail = $pia->getDataProtectionOfficer()->getEmail();
             $userName = $pia->getDataProtectionOfficer()->getProfile()->getFullname();
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $userEmail, $userName);

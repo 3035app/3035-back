@@ -698,12 +698,12 @@ class Pia implements Timestampable
     {
         foreach ($this->getEvaluations() as $evaluation) {
             # status <=> acceptable
-            if (3 > $evaluation->getStatus() || 2 > $evaluation->getGlobalStatus())
+            if (3 <= $evaluation->getStatus() && 2 <= $evaluation->getGlobalStatus())
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
