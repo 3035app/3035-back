@@ -79,6 +79,10 @@ class FolderUserController extends LayerRestController
                 'roles' => $user->getRoles()
             ]);
         }
+        usort($users, [$this, 'mySortMethod']); 
+echo"<pre>";
+print_r($users);
+echo"</pre>";
 
         return $this->view($users, Response::HTTP_OK);
     }
@@ -240,5 +244,19 @@ class FolderUserController extends LayerRestController
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
         }
+    }
+
+    private function mySortMethod($a, $b): int
+    {
+        if ($a['roles'] == $b['roles'])
+        {
+            if ($a['firstName'] == $b['firstName'])
+            {
+                return 0;
+            }
+
+            return ($a['firstName'] < $b['firstName']) ? 1 : -1;
+        }
+        return ($a['roles'] < $b['roles']) ? -1 : 1;
     }
 }
