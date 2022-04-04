@@ -6,6 +6,8 @@ imports:
 parameters:
     locale: 'fr'
     api_pattern: ^/(pias|profile|processing-templates|folders|structures|users|portfolios|processings|processing-data-types|processing-comments|search)
+    pialab.from_email: { '%env(MAILER_SENDER)%': '%env(MAILER_SENDER_NAME)%' }
+    pialab.environment: '%env(APP_ENV)%'
 
 services:
     _defaults:
@@ -17,6 +19,8 @@ services:
             $FOSUserResettingRetryTTL: '%fos_user.resetting.retry_ttl%'
             $KernelProjectDir: '%kernel.project_dir%'
             # $SecurityRoleHierarchyRoles: '%security.role_hierarchy.roles%'
+            $PialabFromEmail: '%pialab.from_email%'
+            $PialabEnvironment: '%pialab.environment%'
 
             # Services
             FOS\UserBundle\Mailer\MailerInterface: '@fos_user.mailer.twig_swift'

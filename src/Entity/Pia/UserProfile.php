@@ -182,4 +182,12 @@ class UserProfile implements Timestampable
 
         return array_unique($structures, SORT_REGULAR);
     }
+
+    /**
+     * @return string
+     */
+    public function getFullname()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
 }
