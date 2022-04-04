@@ -538,7 +538,7 @@ class PiaController extends RestController
 
     /**
      * Some notifications to send.
-     * specifications: #2, #7, #9
+     * specifications: #2, #7, #9, #10
      */
     private function notify($request, $pia): void
     {
@@ -575,6 +575,15 @@ class PiaController extends RestController
             $userEmail = $pia->getProcessing()->getDataController()->getEmail();
             $userName = $pia->getProcessing()->getDataController()->getProfile()->getFullname();
             $this->emailingService->notifyDataController($piaAttr, $userEmail, $userName);
+        }
+
+        if ($pia->isPiaValidated($request))
+        {
+            // notify dpo
+            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $userEmail = $pia->getDataProtectionOfficer()->getEmail();
+            $userName = $pia->getDataProtectionOfficer()->getProfile()->getFullname();
+            $this->emailingService->notifyDataProtectionOfficer($piaAttr, $userEmail, $userName);
         }
     }
 }
