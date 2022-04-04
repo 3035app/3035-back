@@ -141,7 +141,7 @@ class EmailingService
     }
 
     /**
-     * send email to dpo when an evaluator ask for evaluating a processing.
+     * send email to data controller when a dpo emits any observations.
      */
     public function notifyDataController($processing, $recipientEmail, $recipientName)
     {
@@ -154,7 +154,19 @@ class EmailingService
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
-    #10
+    /**
+     * send email to dpo when a data controller validate a pia.
+     */
+    public function notifyDataProtectionOfficer($pia, $recipientEmail, $recipientName)
+    {
+        list($name, $route, $routeAttr) = $pia;
+        $template = 'pia/Email/pia/emit_data_controller_validation%s.email.twig';
+        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = [$recipientEmail => $recipientName];
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
 
     /**
      * @param string       $subject

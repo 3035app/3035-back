@@ -707,6 +707,18 @@ class Pia implements Timestampable
     }
 
     /**
+     * @return bool
+     */
+    public function isPiaValidated($request): bool
+    {
+        if (2 > $this->getStatus() && 2 <= $request->get('status'))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return string
      **/
     public function __toString()
