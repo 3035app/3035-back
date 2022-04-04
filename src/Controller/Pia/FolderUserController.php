@@ -80,9 +80,6 @@ class FolderUserController extends LayerRestController
             ]);
         }
         usort($users, [$this, 'mySortMethod']); 
-echo"<pre>";
-print_r($users);
-echo"</pre>";
 
         return $this->view($users, Response::HTTP_OK);
     }
