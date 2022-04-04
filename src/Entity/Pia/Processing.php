@@ -1067,6 +1067,56 @@ class Processing
     }
 
     /**
+     * @return bool
+     */
+    public function canAskForProcessingEvaluation($request): bool
+    {
+        return
+            Processing::STATUS_DOING == $this->getStatus() &&
+            Processing::STATUS_UNDER_VALIDATION == $request->get('status')
+            ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canEmitEvaluatorEvaluation($request): bool
+    {
+        $new_status = $request->get('evaluation_state');
+        $old_status = $this->getEvaluationState();
+        return
+            null !== $new_status
+            &&
+            (
+                # add an evaluation
+                Processing::EVALUATION_STATE_NONE == $old_status &&
+                Processing::EVALUATION_STATE_TO_CORRECT == $new_status
+                ||
+                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
+                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
+                ||
+                Processing::EVALUATION_STATE_NONE == $old_status &&
+                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
+                ||
+                # remove an evaluation
+                Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
+                Processing::EVALUATION_STATE_NONE == $new_status
+                ||
+                Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
+                Processing::EVALUATION_STATE_NONE == $new_status
+            );
+    }
+
+    /**
+     * @return bool
+     */
+    public function canSubmitPiaToDpo($request): bool
+    {
+        #FIXME to create!
+        return true === $request->get('dpo_submitted_pia');
+    }
+
+    /**
      * @return string
      **/
     public function __toString()

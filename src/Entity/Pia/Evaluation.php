@@ -108,4 +108,53 @@ class Evaluation implements Timestampable
      * @var int
      */
     protected $globalStatus = 0;
+
+    /**
+     * @return string
+     */
+    public function getReferenceTo(): string
+    {
+        return $this->referenceTo;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGlobalStatus(): int
+    {
+        return $this->globalStatus;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canEmitPiaEvaluatorEvaluation($request): bool
+    {
+        $old_status = $request->get('global_status');
+        return
+            # add an evaluation
+            Processing::STATUS_DOING == $old_status &&
+            $this->getStatus() == $this->getGlobalStatus()
+            ||
+            # remove an evaluation
+            $this->getStatus() == $old_status &&
+            $old_status > $this->getGlobalStatus()
+            ;
+    }
+
+    /**
+     * @return string
+     **/
+    public function __toString()
+    {
+        return sprintf('%s (#%s)', $this->getPia()->getProcessing()->getName(), $this->getReferenceTo());
+    }
 }

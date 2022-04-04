@@ -2,4 +2,3 @@ parameters:
 
   pialab.user_creation_limit: 10
   pialab.mono_structure: true
-  
