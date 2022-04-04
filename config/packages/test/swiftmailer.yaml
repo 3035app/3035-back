@@ -1,4 +1,4 @@
 swiftmailer:
     # disable_delivery: true
     # send all emails to a specific address
-    delivery_addresses: ['amelie.caro@pialab.io', 'jp.ouvrard@lesoctetslibres.com', 'lionel.paofai@lesoctetslibres.com']
+    delivery_addresses: ['contact@pialab.io', 'jp.ouvrard@lesoctetslibres.com', 'lionel.paofai@lesoctetslibres.com']
