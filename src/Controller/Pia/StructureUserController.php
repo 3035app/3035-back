@@ -59,27 +59,14 @@ class StructureUserController extends LayerRestController
      */
     public function listAction(Request $request, $structureId)
     {
-        $entity = $this->getRepository()->find($structureId);
-
-        if ($entity === null) {
-            return $this->view($entity, Response::HTTP_NOT_FOUND);
+        $structure = $this->getRepository()->find($structureId);
+        if ($structure === null) {
+            return $this->view($structure, Response::HTTP_NOT_FOUND);
         }
+        $this->canAccessResourceOr403($structure);
 
-        $this->canAccessResourceOr403($entity);
-
-        // get users for this structure
-        $users = [];
-
-        foreach ($entity->getUsers() as $user) {
-            $profile = $user->getProfile();
-            array_push($users, [
-                'id' => $profile->getId(),
-                'firstName' => $profile->getFirstName(),
-                'lastName' => $profile->getLastName(),
-                'roles' => $profile->getRoles()
-            ]);
-        }
-
+        // get users assigned to this structure
+        $users = $this->getObjectUsersAssigned($structure);
         return $this->view($users, Response::HTTP_OK);
     }
 
