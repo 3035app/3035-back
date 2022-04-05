@@ -65,17 +65,7 @@ class ProcessingUserController extends LayerRestController
         $this->canAccessResourceOr403($processing);
 
         // get users assigned to this processing
-        $users = [];
-
-        foreach ($processing->getUsers() as $user) {
-            array_push($users, [
-                'id' => $user->getId(),
-                'firstName' => $user->getProfile()->getFirstName(),
-                'lastName' => $user->getProfile()->getLastName(),
-                'roles' => $user->getRoles()
-            ]);
-        }
-
+        $users = $this->getObjectUsersAssigned($processing);
         return $this->view($users, Response::HTTP_OK);
     }
 

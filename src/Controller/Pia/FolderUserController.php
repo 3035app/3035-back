@@ -61,26 +61,13 @@ class FolderUserController extends LayerRestController
     public function listAction(Request $request, $folderId)
     {
         $folder = $this->getRepository()->find($folderId);
-
         if ($folder === null) {
             return $this->view($folder, Response::HTTP_NOT_FOUND);
         }
-
         $this->canAccessResourceOr403($folder);
 
         // get users assigned to this folder
-        $users = [];
-
-        foreach ($folder->getUsers() as $user) {
-            array_push($users, [
-                'id' => $user->getId(),
-                'firstName' => $user->getProfile()->getFirstName(),
-                'lastName' => $user->getProfile()->getLastName(),
-                'roles' => $user->getRoles()
-            ]);
-        }
-        usort($users, [$this, 'mySortMethod']); 
-
+        $users = $this->getObjectUsersAssigned($folder);
         return $this->view($users, Response::HTTP_OK);
     }
 
@@ -241,19 +228,5 @@ class FolderUserController extends LayerRestController
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
         }
-    }
-
-    private function mySortMethod($a, $b): int
-    {
-        if ($a['roles'] == $b['roles'])
-        {
-            if ($a['firstName'] == $b['firstName'])
-            {
-                return 0;
-            }
-
-            return ($a['firstName'] < $b['firstName']) ? 1 : -1;
-        }
-        return ($a['roles'] < $b['roles']) ? -1 : 1;
     }
 }

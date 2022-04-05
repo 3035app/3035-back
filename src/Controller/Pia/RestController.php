@@ -222,6 +222,39 @@ abstract class RestController extends AbstractFOSRestController
     }
 
     /**
+     * Get users assigned to this object.
+     *
+     */
+    public function getObjectUsersAssigned($object): array
+    {
+        $users = [];
+        foreach (call_user_func([$object, 'getUsers']) as $user) {
+            array_push($users, [
+                'id' => $user->getId(),
+                'firstName' => $user->getProfile()->getFirstName(),
+                'lastName' => $user->getProfile()->getLastName(),
+                'roles' => $user->getRoles()
+            ]);
+        }
+        usort($users, [$this, 'sortRolesFirstname']);
+        return $users;
+    }
+
+    public function sortRolesFirstname($a, $b): int
+    {
+        if ($a['roles'] == $b['roles'])
+        {
+            if ($a['firstName'] == $b['firstName'])
+            {
+                return 0;
+            }
+
+            return ($a['firstName'] < $b['firstName']) ? 1 : -1;
+        }
+        return ($a['roles'] < $b['roles']) ? -1 : 1;
+    }
+
+    /**
      * Check that current User can access resource.
      *
      * @throws AccessDeniedHttpException
