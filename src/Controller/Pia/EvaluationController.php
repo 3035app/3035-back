@@ -317,9 +317,10 @@ class EvaluationController extends PiaSubController
     {
         // notify evaluator on each page of pia
         $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
-        $userEmail = $evaluation->getPia()->getEvaluator()->getEmail();
-        $userName = $evaluation->getPia()->getEvaluator()->getProfile()->getFullname();
-        $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $userEmail, $userName);
+        array_push($piaAttr, $evaluation->getPia());
+        $recipient = $evaluation->getPia()->getEvaluator();
+        $source = $evaluation->getPia()->getProcessing()->getRedactor();
+        $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $recipient, $source);
     }
 
     /**
@@ -333,9 +334,10 @@ class EvaluationController extends PiaSubController
         {
             // notify redactor after evaluating each page of pia
             $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
-            $userEmail = $evaluation->getPia()->getProcessing()->getRedactor()->getEmail();
-            $userName = $evaluation->getPia()->getProcessing()->getRedactor()->getProfile()->getFullname();
-            $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $evaluation->getPia());
+            $recipient = $evaluation->getPia()->getProcessing()->getRedactor();
+            $source = $evaluation->getPia()->getEvaluator();
+            $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
         }
     }
 
@@ -351,9 +353,10 @@ class EvaluationController extends PiaSubController
         {
             // notify dpo
             $piaAttr = [$pia->__toString(), 'piaapi_pia_pia_update', ['id' => $pia->getId()]];
-            $userEmail = $pia->getDataProtectionOfficer()->getEmail();
-            $userName = $pia->getDataProtectionOfficer()->getProfile()->getFullname();
-            $this->emailingService->notifySubmitPiaToDpo($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $pia);
+            $recipient = $pia->getDataProtectionOfficer();
+            $source = $pia->getEvaluator();
+            $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
         }
     }
 }
