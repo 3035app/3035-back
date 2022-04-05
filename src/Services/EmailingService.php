@@ -20,6 +20,7 @@ class EmailingService
 {
     protected $environment;
     protected $from;
+    protected $frontUrl;
     protected $logger;
     protected $mailer;
     protected $router;
@@ -31,10 +32,12 @@ class EmailingService
         MailerInterface $mailer,
         UrlGeneratorInterface $router,
         string $PialabEnvironment,
-        array $PialabFromEmail
+        array $PialabFromEmail,
+        string $PialabFrontUrl
     ) {
         $this->environment = $PialabEnvironment;
         $this->from = $PialabFromEmail;
+        $this->frontUrl = $PialabFrontUrl;
         $this->logger = $logger;
         $this->mailer = $mailer;
         $this->router = $router;
@@ -221,7 +224,7 @@ class EmailingService
      */
     private function getAbsoluteUrl($route, $params)
     {
-        return $this->router->generate($route, $params, UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->frontUrl . $this->router->generate($route, $params);
     }
 
     /**

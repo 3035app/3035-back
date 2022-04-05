@@ -8,6 +8,7 @@ parameters:
     api_pattern: ^/(pias|profile|processing-templates|folders|structures|users|portfolios|processings|processing-data-types|processing-comments|search)
     pialab.from_email: { '%env(MAILER_SENDER)%': '%env(MAILER_SENDER_NAME)%' }
     pialab.environment: '%env(APP_ENV)%'
+    pialab.front_url: '%env(FRONT_URL_ENV)%'
 
 services:
     _defaults:
@@ -21,6 +22,7 @@ services:
             # $SecurityRoleHierarchyRoles: '%security.role_hierarchy.roles%'
             $PialabFromEmail: '%pialab.from_email%'
             $PialabEnvironment: '%pialab.environment%'
+            $PialabFrontUrl: '%pialab.front_url%'
 
             # Services
             FOS\UserBundle\Mailer\MailerInterface: '@fos_user.mailer.twig_swift'
