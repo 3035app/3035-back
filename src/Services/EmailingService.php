@@ -11,6 +11,7 @@
 namespace PiaApi\Services;
 
 use FOS\UserBundle\Mailer\MailerInterface;
+use PiaApi\Entity\Pia\Processing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -43,128 +44,90 @@ class EmailingService
     /**
      * send email to evaluator when a redactor ask for evaluating a processing.
      */
-    public function notifyAskForProcessingEvaluation($processing, $recipientEmail, $recipientName)
+    public function notifyAskForProcessingEvaluation($processingAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/processing/ask_for_processing_evaluation%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'ask_for_processing_evaluation';
+        list($subject, $body, $to) = $this->getEmailParameters($processingAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to evaluator when a redactor ask for evaluating each page of a pia.
      */
-    public function notifyAskForPiaEvaluation($pia, $recipientEmail, $recipientName)
+    public function notifyAskForPiaEvaluation($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/ask_for_pia_evaluation%s.email.twig';
-        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'ask_for_pia_evaluation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to evaluator when a dpo emit opinion or observations on a processing.
      */
-    public function notifyEmitOpinionOrObservations($pia, $recipientEmail, $recipientName)
+    public function notifyEmitOpinionOrObservations($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/emit_opinion_or_observations%s.email.twig';
-        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_opinion_or_observations';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
-
-    #3
 
     /**
      * send email to redactor when evaluator's opinion on a processing is TO_CORRECT or IMPROVABLE.
      */
-    public function notifyEmitEvaluatorEvaluation($processing, $recipientEmail, $recipientName)
+    public function notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/processing/emit_evaluator_evaluation%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_evaluator_evaluation';
+        list($subject, $body, $to) = $this->getEmailParameters($processingAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to redactor when evaluator's opinion on a pia is TO_CORRECT or IMPROVABLE.
      */
-    public function notifyEmitPiaEvaluatorEvaluation($pia, $recipientEmail, $recipientName)
+    public function notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/emit_pia_evaluator_evaluation%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_pia_evaluator_evaluation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to redactor when a dpo emit observations on a pia.
      */
-    public function notifyEmitObservations($pia, $recipientEmail, $recipientName)
+    public function notifyEmitObservations($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/emit_observations%s.email.twig';
-        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_observations';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to dpo when an evaluator has evaluated all parts of pia and they are all acceptable.
      */
-    public function notifySubmitPiaToDpo($pia, $recipientEmail, $recipientName)
+    public function notifySubmitPiaToDpo($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/submit_pia_to_dpo%s.email.twig';
-        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'submit_pia_to_dpo';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to data controller when a dpo emits any observations.
      */
-    public function notifyDataController($processing, $recipientEmail, $recipientName)
+    public function notifyDataController($processingAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $processing;
-        $template = 'pia/Email/processing/emit_dpo_opinion%s.email.twig';
-        $params = ['processing_name' => $name, 'processing_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_dpo_opinion';
+        list($subject, $body, $to) = $this->getEmailParameters($processingAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
     /**
      * send email to dpo when a data controller validate a pia.
      */
-    public function notifyDataProtectionOfficer($pia, $recipientEmail, $recipientName)
+    public function notifyDataProtectionOfficer($piaAttr, $recipient, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
-        $template = 'pia/Email/pia/emit_data_controller_validation%s.email.twig';
-        $params = ['pia_name' => $name, 'pia_url' => $this->getAbsoluteUrl($route, $routeAttr)];
-        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
-        $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = [$recipientEmail => $recipientName];
+        $template = 'emit_data_controller_validation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
 
@@ -197,6 +160,60 @@ class EmailingService
 
         // number of successful recipients reached
         return $this->mailer->send($email);
+    }
+
+    /**
+     * @return array
+     */
+    private function getEmailParameters($objAttr, $recipient, $source, $tmpl)
+    {
+        $index = count($objAttr) - 1;
+        if ($objAttr[$index] instanceof Processing) {
+            $params = $this->getProcessingParameters($objAttr, $source);
+            $template = sprintf('pia/Email/processing/%s', $tmpl);
+        } else {
+            $params = $this->getPiaParameters($objAttr, $source);
+            $template = sprintf('pia/Email/pia/%s', $tmpl);
+        }
+        $template .= '%s.email.twig';
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+        $to = $this->getRecipient($recipient);
+        return [$subject, $body, $to];
+    }
+
+    /**
+     * @return array
+     */
+    private function getProcessingParameters($processing, $source)
+    {
+        list($name, $route, $routeAttr) = $processing;
+        $params = [];
+        $params['processing_name'] = $name;
+        $params['processing_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        $params['source_name'] = $source->getProfile()->getFullname();
+        return $params;
+    }
+
+    /**
+     * @return array
+     */
+    private function getPiaParameters($pia, $source)
+    {
+        list($name, $route, $routeAttr) = $pia;
+        $params = [];
+        $params['pia_name'] = $name;
+        $params['pia_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        $params['source_name'] = $source->getProfile()->getFullname();
+        return $params;
+    }
+
+    /**
+     * @return array
+     */
+    private function getRecipient($recipient)
+    {
+        return [$recipient->getEmail() => $recipient->getProfile()->getFullname()];
     }
 
     /**

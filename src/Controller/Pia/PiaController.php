@@ -551,9 +551,10 @@ class PiaController extends RestController
 
             // notify evaluator
             $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
-            $userEmail = $pia->getEvaluator()->getEmail();
-            $userName = $pia->getEvaluator()->getProfile()->getFullname();
-            $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $pia);
+            $recipient = $pia->getEvaluator();
+            $source = $pia->getDataProtectionOfficer();
+            $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
         }
 
         if ($pia->canEmitObservations($request))
@@ -563,27 +564,30 @@ class PiaController extends RestController
 
             // notify redactor
             $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
-            $userEmail = $pia->getProcessing()->getRedactor()->getEmail();
-            $userName = $pia->getProcessing()->getRedactor()->getProfile()->getFullname();
-            $this->emailingService->notifyEmitObservations($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $pia);
+            $recipient = $pia->getProcessing()->getRedactor();
+            $source = $pia->getDataProtectionOfficer();
+            $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
         }
 
         if ($canNotifyDataController)
         {
             // notify data controller
             $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
-            $userEmail = $pia->getProcessing()->getDataController()->getEmail();
-            $userName = $pia->getProcessing()->getDataController()->getProfile()->getFullname();
-            $this->emailingService->notifyDataController($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $pia->getProcessing());
+            $recipient = $pia->getProcessing()->getDataController();
+            $source = $pia->getDataProtectionOfficer();
+            $this->emailingService->notifyDataController($piaAttr, $recipient, $source);
         }
 
         if ($pia->isPiaValidated($request))
         {
             // notify dpo
             $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
-            $userEmail = $pia->getDataProtectionOfficer()->getEmail();
-            $userName = $pia->getDataProtectionOfficer()->getProfile()->getFullname();
-            $this->emailingService->notifyDataProtectionOfficer($piaAttr, $userEmail, $userName);
+            array_push($piaAttr, $pia);
+            $recipient = $pia->getDataProtectionOfficer();
+            $source = $pia->getProcessing()->getDataController();
+            $this->emailingService->notifyDataProtectionOfficer($piaAttr, $recipient, $source);
         }
     }
 }

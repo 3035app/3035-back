@@ -762,22 +762,20 @@ class ProcessingController extends RestController
         {
             // notify evaluator on last page of processing
             $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getEvaluatorPending()->getEmail();
-            $userName = $processing->getEvaluatorPending()->getProfile()->getFullname();
-            $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $userEmail, $userName);
+            array_push($processingAttr, $processing);
+            $recipient = $processing->getEvaluatorPending();
+            $source = $processing->getRedactor();
+            $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $source);
         }
-
-        #3
 
         if ($processing->canEmitEvaluatorEvaluation($request))
         {
             // notify redactor
-            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()]];
-            $userEmail = $processing->getRedactor()->getEmail();
-            $userName = $processing->getRedactor()->getProfile()->getFullname();
-            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $userEmail, $userName);
+            $processingAttr = [$processing->getName(), $request->get('_route'), ['id' => $processing->getId()], $processing];
+            array_push($processingAttr, $processing);
+            $recipient = $processing->getRedactor();
+            $source = $processing->getEvaluatorPending();
+            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
         }
-
-        #10
     }
 }
