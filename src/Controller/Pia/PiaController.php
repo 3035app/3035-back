@@ -550,7 +550,7 @@ class PiaController extends RestController
             $canNotifyDataController = true;
 
             // notify evaluator
-            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
             $recipient = $pia->getEvaluator();
             $source = $pia->getDataProtectionOfficer();
@@ -563,7 +563,7 @@ class PiaController extends RestController
             $canNotifyDataController = true;
 
             // notify redactor
-            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
             $recipient = $pia->getProcessing()->getRedactor();
             $source = $pia->getDataProtectionOfficer();
@@ -573,7 +573,7 @@ class PiaController extends RestController
         if ($canNotifyDataController)
         {
             // notify data controller
-            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia->getProcessing());
             $recipient = $pia->getProcessing()->getDataController();
             $source = $pia->getDataProtectionOfficer();
@@ -583,7 +583,7 @@ class PiaController extends RestController
         if ($pia->isPiaValidated($request))
         {
             // notify dpo
-            $piaAttr = [$pia->__toString(), $request->get('_route'), ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
             $recipient = $pia->getDataProtectionOfficer();
             $source = $pia->getProcessing()->getDataController();

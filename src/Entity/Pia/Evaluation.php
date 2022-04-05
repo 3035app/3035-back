@@ -112,6 +112,32 @@ class Evaluation implements Timestampable
     /**
      * @return string
      */
+    public function getSection(): string
+    {
+        $points = explode('.', $this->getReferenceTo());
+        if (0 < count($points))
+        {
+            return $points[0];
+        }
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemReference(): string
+    {
+        $points = explode('.', $this->getReferenceTo());
+        if (1 < count($points))
+        {
+            return $points[1];
+        }
+        return null;
+    }
+
+    /**
+     * @return string
+     */
     public function getReferenceTo(): string
     {
         return $this->referenceTo;

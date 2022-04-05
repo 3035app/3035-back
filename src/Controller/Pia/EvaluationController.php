@@ -316,7 +316,7 @@ class EvaluationController extends PiaSubController
     private function notifyEvaluator($request, $evaluation): void
     {
         // notify evaluator on each page of pia
-        $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
+        $piaAttr = $this->getEvaluationRoute($evaluation);
         array_push($piaAttr, $evaluation->getPia());
         $recipient = $evaluation->getPia()->getEvaluator();
         $source = $evaluation->getPia()->getProcessing()->getRedactor();
@@ -333,7 +333,7 @@ class EvaluationController extends PiaSubController
         if ($evaluation->canEmitPiaEvaluatorEvaluation($request))
         {
             // notify redactor after evaluating each page of pia
-            $piaAttr = [$evaluation, $request->get('_route'), ['piaId' => $evaluation->getPia()->getId()]];
+            $piaAttr = $this->getEvaluationRoute($evaluation);
             array_push($piaAttr, $evaluation->getPia());
             $recipient = $evaluation->getPia()->getProcessing()->getRedactor();
             $source = $evaluation->getPia()->getEvaluator();
@@ -352,11 +352,21 @@ class EvaluationController extends PiaSubController
         if ($pia->isPiaEvaluationsAcceptable())
         {
             // notify dpo
-            $piaAttr = [$pia->__toString(), 'piaapi_pia_pia_update', ['id' => $pia->getId()]];
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/4/item/3', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
             $recipient = $pia->getDataProtectionOfficer();
             $source = $pia->getEvaluator();
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
         }
+    }
+
+    private function getEvaluationRoute($evaluation): array
+    {
+        $params = [
+            '{pia_id}' => $evaluation->getPia()->getId(),
+            '{section_id}' => $evaluation->getSection(),
+            '{item_id}' => $evaluation->getItemReference(),
+        ];
+        return [$evaluation, '/entry/{pia_id}/section/{section_id}/item/{item_id}', $params];
     }
 }

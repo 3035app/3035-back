@@ -222,9 +222,9 @@ class EmailingService
     /**
      * @return bool
      */
-    private function getAbsoluteUrl($route, $params)
+    private function getAbsoluteUrl($route, $replace)
     {
-        return $this->frontUrl . $this->router->generate($route, $params);
+        return $this->frontUrl . str_replace(array_keys($replace), $replace, $route);
     }
 
     /**

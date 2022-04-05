@@ -223,7 +223,6 @@ abstract class RestController extends AbstractFOSRestController
 
     /**
      * Get users assigned to this object.
-     *
      */
     public function getObjectUsersAssigned($object): array
     {
