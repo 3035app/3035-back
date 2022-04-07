@@ -519,24 +519,25 @@ class ProcessingController extends RestController
 
         if ($folderId) {
             $folder = $this->getResource($folderId, Folder::class);
-
             $this->processingTransformer->setFolder($folder);
+        }
+
+        if (array_key_exists('supervisors', $data)) {
+            $this->setSupervisors($data['supervisors']);            
+        } else {
+            throw new AccessDeniedHttpException('need supervisors object!');
         }
 
         try {
             $processing = $this->processingTransformer->jsonToProcessing($data);
             $this->persist($processing);
-
             $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
-
             foreach ($descriptor->getPias() as $pia) {
                 $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
             }
-
             foreach ($descriptor->getProcessingDataTypes() as $types) {
                 $processing->addProcessingDataType($this->processingTransformer->extractDataType($processing, $types));
             }
-
             $this->persist($processing);
         } catch (DataImportException $ex) {
             return $this->view(unserialize($ex->getMessage()), Response::HTTP_OK);
@@ -735,6 +736,39 @@ class ProcessingController extends RestController
             : null;
 
         return [$redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
+    }
+
+    private function setSupervisors($supervisors)
+    {
+
+        if (array_key_exists('redactor_id', $supervisors))
+        {
+            $redactor = $this->getResource($supervisors['redactor_id'], User::class);
+            $this->processingTransformer->setRedactor($redactor);            
+        }
+        if (array_key_exists('data_controller_id', $supervisors))
+        {
+            $dataController = $this->getResource($supervisors['data_controller_id'], User::class);
+            $this->processingTransformer->setDataController($dataController);            
+        }
+        if (array_key_exists('evaluator_pending_id', $supervisors))
+        {
+            // evaluator data for pia creation
+            $evaluatorPendingId = $supervisors['evaluator_pending_id'];
+            $evaluatorPending = (null != $evaluatorPendingId)
+                ? $this->getResource($evaluatorPendingId, User::class)
+                : null;
+            $this->processingTransformer->setEvaluatorPending($evaluatorPending);
+        }
+        if (array_key_exists('data_protection_officer_pending_id', $supervisors))
+        {
+            // dpo data for pia creation
+            $dataProtectionOfficerPendingId = $supervisors['data_protection_officer_pending_id'];
+            $dataProtectionOfficerPending = (null != $dataProtectionOfficerPendingId)
+                ? $this->getResource($dataProtectionOfficerPendingId, User::class)
+                : null;
+            $this->processingTransformer->setDataProtectionOfficerPending($dataProtectionOfficerPending);
+        }
     }
 
     private function methodSupervisors($processing, $content, $supervisor): void

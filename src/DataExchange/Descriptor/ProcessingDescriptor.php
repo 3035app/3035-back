@@ -27,7 +27,6 @@ class ProcessingDescriptor extends AbstractDescriptor
     /**
      * @JMS\Type("string")
      * @JMS\Groups({"Default", "Export"})
-     * @Assert\NotBlank
      *
      * @var string
      */
@@ -44,7 +43,6 @@ class ProcessingDescriptor extends AbstractDescriptor
     /**
      * @JMS\Type("string")
      * @JMS\Groups({"Default", "Export"})
-     * @Assert\NotBlank
      *
      * @var string
      */

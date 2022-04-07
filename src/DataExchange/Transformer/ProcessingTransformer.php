@@ -10,11 +10,12 @@
 
 namespace PiaApi\DataExchange\Transformer;
 
-use PiaApi\Entity\Pia\Processing;
-use PiaApi\Entity\Pia\Folder;
-use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
-use PiaApi\Services\ProcessingService;
 use JMS\Serializer\SerializerInterface;
+use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Folder;
+use PiaApi\Entity\Pia\Processing;
+use PiaApi\Services\ProcessingService;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProcessingTransformer extends AbstractTransformer
@@ -38,6 +39,11 @@ class ProcessingTransformer extends AbstractTransformer
      * @var DataTypeTransformer
      */
     protected $dataTypeTransformer;
+
+    protected $redactor;
+    protected $dataController;
+    protected $evaluatorPending;
+    protected $dataProtectionOfficerPending;
 
     public function __construct(
         SerializerInterface $serializer,
@@ -63,13 +69,55 @@ class ProcessingTransformer extends AbstractTransformer
         return $this->folder;
     }
 
+    public function setRedactor(User $redactor)
+    {
+        $this->redactor = $redactor;
+    }
+
+    public function getRedactor(): User
+    {
+        return $this->redactor;
+    }
+
+    public function setDataController(User $dataController)
+    {
+        $this->dataController = $dataController;
+    }
+
+    public function getDataController(): User
+    {
+        return $this->dataController;
+    }
+
+    public function setEvaluatorPending(?User $evaluatorPending=null)
+    {
+        $this->evaluatorPending = $evaluatorPending;
+    }
+
+    public function getEvaluatorPending(): ?User
+    {
+        return $this->evaluatorPending;
+    }
+
+    public function setDataProtectionOfficerPending(?User $dataProtectionOfficerPending=null)
+    {
+        $this->dataProtectionOfficerPending = $dataProtectionOfficerPending;
+    }
+
+    public function getDataProtectionOfficerPending(): ?User
+    {
+        return $this->dataProtectionOfficerPending;
+    }
+
     public function toProcessing(ProcessingDescriptor $descriptor): Processing
     {
         $processing = $this->processingService->createProcessing(
             $descriptor->getName(),
             $this->getFolder(),
-            $descriptor->getAuthor(),
-            $descriptor->getDesignatedController()
+            $this->getRedactor(),
+            $this->getDataController(),
+            $this->getEvaluatorPending(),
+            $this->getDataProtectionOfficerPending(),
         );
 
         $processing->setDescription($descriptor->getDescription());

@@ -59,9 +59,7 @@ class AbstractTransformer
     public function fromJson(array $json, string $class): AbstractDescriptor
     {
         $descriptor = $this->serializer->fromArray($json, $class);
-
         $this->validate($descriptor);
-
         return $descriptor;
     }
 }
