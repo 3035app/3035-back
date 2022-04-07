@@ -13,19 +13,20 @@ namespace PiaApi\Entity\Pia;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
+use PiaApi\Entity\Pia\Traits\TrackingTrait;
 
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Processing
 {
-    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity;
+    use ProcessingSupervisorTrait, ResourceTrait, TrackingTrait;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_VALIDATION = 1;

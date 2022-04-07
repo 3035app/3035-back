@@ -70,6 +70,10 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    PiaApi\EntityListener\OwnerEntityListener:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'PiaApi\Entity\Pia\Processing'}
+
     # Used to fix bug when updating and entity througth REST api
     # jms_serializer.object_constructor:
     #     alias: jms_serializer.doctrine_object_constructor
