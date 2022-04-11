@@ -2,6 +2,7 @@
 
 namespace PiaApi\Entity\Pia\Traits;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
@@ -17,15 +18,6 @@ use PiaApi\Entity\Oauth\User;
 trait TrackingTrait
 {
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=true)
-     * @JMS\Exclude()
-     * 
-     * @var User
-     */
-    protected $owner;
-
-    /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -38,25 +30,6 @@ trait TrackingTrait
      * @ORM\Column(type="datetime")
      */
     protected $updatedAt;
-
-    /**
-     * Sets owner.
-     * @param User $owner
-     * @return $this
-     */
-    public function setOwner(User $owner)
-    {
-        $this->owner = $owner;
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
 
     /**
      * Sets createdAt.
@@ -101,6 +74,28 @@ trait TrackingTrait
     {
         return $this->updatedAt;
     }
+
+    /**
+     * Logs a tracking activity entry.
+     */
+    public function logTrackingActivity(User $user, string $activity)
+    {
+        assert(null != $this->getId(), 'entity must have been saved before logging an activity.');
+        # $tl = new TrackingLog();
+        # $tl->setContentType(/* convert $this to string */);
+        /*
+        $tl->setActivity($activity);
+        $tl->setOwner($user);
+        $this->manager->persist($tl);
+        $this->manager->flush();
+        */
+    }
+
+    /**
+     * Returns the tracking log entries for the current object.
+     */
+    public function getTrackingLogs()
+    {}
 
     /**
      * @ORM\PreUpdate
