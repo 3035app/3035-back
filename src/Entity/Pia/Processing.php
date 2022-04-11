@@ -22,7 +22,6 @@ use PiaApi\Entity\Pia\Traits\TrackingTrait;
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")
- * @ORM\HasLifecycleCallbacks()
  */
 class Processing
 {

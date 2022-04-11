@@ -72,8 +72,12 @@ class TrackingLog
      */
     protected $entityId;
 
-    public function __construct()
+    public function __construct($activity, $user, $contentType, $id)
     {
+        $this->setActivity($activity);
+        $this->setOwner($user);
+        $this->setContentType($contentType);
+        $this->setEntityId($id);
     }
 
     /**
@@ -81,8 +85,10 @@ class TrackingLog
      * @param string $activity
      * @return $this
      */
-    public function setActivity(User $activity)
+    public function setActivity(string $activity)
     {
+        // check that activity is among constants entity!
+        $this->isAllowedActivity($activity);
         $this->activity = $activity;
         return $this;
     }
@@ -128,10 +134,10 @@ class TrackingLog
 
     /**
      * Sets contentType.
-     * @param string $contentType
+     * @param $contentType
      * @return $this
      */
-    public function setContentType(string $contentType)
+    public function setContentType($contentType)
     {
         $this->contentType = $contentType;
         return $this;
@@ -152,7 +158,7 @@ class TrackingLog
      * @param int $entityId
      * @return $this
      */
-    public function setEntityId(string $entityId)
+    public function setEntityId(int $entityId)
     {
         $this->entityId = $entityId;
         return $this;
@@ -177,6 +183,40 @@ class TrackingLog
     public function getOwnerId()
     {
         return $this->getOwner()->getId();
+    }
+
+    /**
+     * Check that given activity is among constants entity.
+     * 
+     * @return bool
+     */
+    public function isAllowedActivity($activity)
+    {
+        if (!in_array($activity, $this->getActivitiesList()))
+        {
+            throw new \InvalidArgumentException(sprintf('constant « %s » is not allowed!', $activity));
+        }
+        return true;
+    }
+
+    /**
+     * Get list of activities.
+     * 
+     * @return array
+     */
+    public function getActivitiesList()
+    {
+        return [
+            self::ACTIVITY_CREATED,
+            self::ACTIVITY_LAST_MODIFICATION,
+            self::ACTIVITY_EVALUATION_REQUEST,
+            self::ACTIVITY_EVALUATION,
+            self::ACTIVITY_ISSUE_REQUEST,
+            self::ACTIVITY_NOTICE_REQUEST,
+            self::ACTIVITY_VALIDATION_REQUEST,
+            self::ACTIVITY_VALIDATED,
+            self::ACTIVITY_STORED,
+        ];
     }
 
     /**

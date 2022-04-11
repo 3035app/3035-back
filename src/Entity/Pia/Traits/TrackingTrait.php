@@ -2,11 +2,11 @@
 
 namespace PiaApi\Entity\Pia\Traits;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\TrackingLog;
 
 /**
  * A trait to add activity tracking to a model object.
@@ -78,17 +78,12 @@ trait TrackingTrait
     /**
      * Logs a tracking activity entry.
      */
-    public function logTrackingActivity(User $user, string $activity)
+    public function logTrackingActivity(User $user, string $activity, $entity, $manager)
     {
         assert(null != $this->getId(), 'entity must have been saved before logging an activity.');
-        # $tl = new TrackingLog();
-        # $tl->setContentType(/* convert $this to string */);
-        /*
-        $tl->setActivity($activity);
-        $tl->setOwner($user);
-        $this->manager->persist($tl);
-        $this->manager->flush();
-        */
+        $tl = new TrackingLog($activity, $user, $this->getEntityClass($entity), $entity->getId());
+        $manager->persist($tl);
+        $manager->flush();
     }
 
     /**
@@ -97,11 +92,10 @@ trait TrackingTrait
     public function getTrackingLogs()
     {}
 
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdateEvent()
+    private function getEntityClass($entity)
     {
-        // print_r($this->__toString());
+        $classname = get_class($entity);
+        if ($pos = strrpos($classname, '\\')) return substr($classname, $pos + 1);
+        return $pos;
     }
 }
