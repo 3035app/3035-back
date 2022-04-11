@@ -78,23 +78,24 @@ trait TrackingTrait
     /**
      * Logs a tracking activity entry.
      */
-    public function logTrackingActivity(User $user, string $activity, $entity, $manager)
+    public function logTrackingActivity(User $user, string $activity)
     {
         assert(null != $this->getId(), 'entity must have been saved before logging an activity.');
-        $tl = new TrackingLog($activity, $user, $this->getEntityClass($entity), $entity->getId());
-        $manager->persist($tl);
-        $manager->flush();
+        return new TrackingLog($activity, $user, $this->getEntityClass(), $this->getId());
     }
 
     /**
      * Returns the tracking log entries for the current object.
      */
     public function getTrackingLogs()
-    {}
-
-    private function getEntityClass($entity)
     {
-        $classname = get_class($entity);
+        content_type = ContentType.objects.get_for_model(self)
+        return TrackingLog.objects.filter(object_id=self.id, content_type=content_type).order_by('-date')
+    }
+
+    public function getEntityClass()
+    {
+        $classname = get_class($this);
         if ($pos = strrpos($classname, '\\')) return substr($classname, $pos + 1);
         return $pos;
     }

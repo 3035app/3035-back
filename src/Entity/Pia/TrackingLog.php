@@ -25,14 +25,14 @@ class TrackingLog
     use ResourceTrait;
 
     const ACTIVITY_CREATED = 'created';
-    const ACTIVITY_LAST_MODIFICATION = 'last-modification';
+    const ACTIVITY_LAST_UPDATE = 'last-update';
     const ACTIVITY_EVALUATION_REQUEST = 'evaluation-request';
     const ACTIVITY_EVALUATION = 'evaluation';
     const ACTIVITY_ISSUE_REQUEST = 'issue-request';
     const ACTIVITY_NOTICE_REQUEST = 'notice-issued';
     const ACTIVITY_VALIDATION_REQUEST = 'validation-request';
     const ACTIVITY_VALIDATED = 'validated';
-    const ACTIVITY_STORED = 'stored';
+    const ACTIVITY_ARCHIVED = 'archived';
 
     /**
      * @ORM\Column(type="string")
@@ -208,7 +208,7 @@ class TrackingLog
     {
         return [
             self::ACTIVITY_CREATED,
-            self::ACTIVITY_LAST_MODIFICATION,
+            self::ACTIVITY_LAST_UPDATE,
             self::ACTIVITY_EVALUATION_REQUEST,
             self::ACTIVITY_EVALUATION,
             self::ACTIVITY_ISSUE_REQUEST,

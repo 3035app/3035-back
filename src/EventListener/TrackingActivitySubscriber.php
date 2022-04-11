@@ -11,6 +11,7 @@
 namespace PiaApi\EventListener;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use PiaApi\Entity\Pia\TrackingLog;
@@ -20,6 +21,8 @@ use Symfony\Component\Security\Core\Security;
 class TrackingActivitySubscriber implements EventSubscriber
 {
     private $security;
+    private $em;
+    private $uow;
 
     public function __construct(Security $security)
     {
@@ -31,32 +34,38 @@ class TrackingActivitySubscriber implements EventSubscriber
     public function getSubscribedEvents(): array
     {
         return [
-            Events::preUpdate,
+            Events::onFlush,
         ];
     }
 
-    // callback methods must be called exactly like the events they listen to;
-    // they receive an argument of type LifecycleEventArgs, which gives you access
-    // to both the entity object of the event and the entity manager itself
-    public function preUpdate(LifecycleEventArgs $args): void
+    public function onFlush(OnFlushEventArgs  $args)
     {
-        if (null !== $args->getObject()->getId())
+        $this->em = $args->getEntityManager();
+        $this->uow = $this->em->getUnitOfWork();
+
+        // only inserts!
+        foreach ($this->uow->getScheduledEntityInsertions() as $keyEntity => $entity)
         {
-            $this->logActivity(TrackingLog::ACTIVITY_LAST_MODIFICATION, $args);
-        } else {
-            $this->logActivity(TrackingLog::ACTIVITY_CREATED, $args);
+            $this->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
         }
 
+        // only updates!
+        foreach ($this->uow->getScheduledEntityUpdates() as $keyEntity => $entity)
+        {
+            $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
+        }
     }
 
-    private function logActivity(string $activity, LifecycleEventArgs $args): void
+    private function logActivity(string $activity, $entity): void
     {
         // get authenticated user and log activity
-        $args->getObject()->logTrackingActivity(
+        $trackingLog = $entity->logTrackingActivity(
             $this->security->getUser(),
             $activity,
             $entity,
-            $event->getObjectManager()
         );
+        $this->em->persist($trackingLog);
+        $classMetadata = $this->em->getClassMetadata(get_class($trackingLog));
+        $this->uow->computeChangeSet($classMetadata, $trackingLog);        
     }
 }
