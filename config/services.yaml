@@ -70,10 +70,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    # PiaApi\EntityListener\ActivityEntityListener:
-    #     tags:
-    #         - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'PiaApi\Entity\Pia\Processing'}
-
     PiaApi\EventListener\TrackingActivitySubscriber:
         tags:
             - { name: doctrine.event_subscriber, connection: default }

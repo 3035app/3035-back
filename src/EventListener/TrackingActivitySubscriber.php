@@ -11,6 +11,7 @@
 namespace PiaApi\EventListener;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -20,12 +21,14 @@ use Symfony\Component\Security\Core\Security;
 
 class TrackingActivitySubscriber implements EventSubscriber
 {
+    private $manager;
     private $security;
     private $em;
     private $uow;
 
-    public function __construct(Security $security)
+    public function __construct(EntityManagerInterface $manager, Security $security)
     {
+        $this->manager = $manager;
         $this->security = $security;
     }
 
@@ -54,16 +57,19 @@ class TrackingActivitySubscriber implements EventSubscriber
         foreach ($this->uow->getScheduledEntityUpdates() as $keyEntity => $entity)
         {
             if (!$entity instanceof TrackingInterface) return;
-            # remove old one!
+
+            # remove all old!
             $params = [
                 'activity' => TrackingLog::ACTIVITY_LAST_UPDATE,
                 'contentType' => $entity->getEntityClass(),
                 'entityId' => $entity->getId()
             ];
-            /*
-            $trackingLog = $entityManager->getRepository(TrackingLog::class)->findOneBy($params);
-            $entityManager->remove($trackingLog);
-            */
+            foreach ($this->manager->getRepository(TrackingLog::class)->findBy($params) as $trackingLog)
+            {
+                $this->manager->remove($trackingLog);
+            }
+
+            # add a new one!
             $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
         }
     }
