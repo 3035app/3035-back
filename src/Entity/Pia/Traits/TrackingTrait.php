@@ -100,16 +100,7 @@ trait TrackingTrait
     {
         $params = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
         $trackingLogs = $this->entityManager->getRepository(TrackingLog::class)->findBy($params);
-        $trackings = [];
-        foreach ($trackingLogs as $tracking)
-        {
-            $trackings[] = [
-                $tracking->getOwner()->getProfile()->getFullname(),
-                $tracking->getActivity(),
-                $tracking->getDate(),
-            ];
-        }
-        return $trackings;
+        return $trackingLogs;
     }
 
     /**

@@ -50,6 +50,7 @@ class TrackingActivitySubscriber implements EventSubscriber
         foreach ($this->uow->getScheduledEntityInsertions() as $keyEntity => $entity)
         {
             if (!$entity instanceof TrackingInterface) return;
+            # FIXME check $entity->getEntityClass() and $entity->getId()
             $this->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
         }
 
@@ -58,7 +59,7 @@ class TrackingActivitySubscriber implements EventSubscriber
         {
             if (!$entity instanceof TrackingInterface) return;
 
-            # remove all old!
+            # remove all old logs!
             $params = [
                 'activity' => TrackingLog::ACTIVITY_LAST_UPDATE,
                 'contentType' => $entity->getEntityClass(),
