@@ -2,11 +2,17 @@
 
 namespace PiaApi\Entity\Pia\Traits;
 
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\TrackingLog;
+
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * A trait to add activity tracking to a model object.
@@ -86,11 +92,32 @@ trait TrackingTrait
 
     /**
      * Returns the tracking log entries for the current object.
+     * 
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("trackings")
      */
     public function getTrackingLogs()
     {
-        content_type = ContentType.objects.get_for_model(self)
-        return TrackingLog.objects.filter(object_id=self.id, content_type=content_type).order_by('-date')
+        $params = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
+        $trackingLogs = $this->entityManager->getRepository(TrackingLog::class)->findBy($params);
+        $trackings = [];
+        foreach ($trackingLogs as $tracking)
+        {
+            $trackings[] = [
+                $tracking->getOwner()->getProfile()->getFullname(),
+                $tracking->getActivity(),
+                $tracking->getDate(),
+            ];
+        }
+        return $trackings;
+    }
+
+    /**
+     * Retrieves entityManager injected by ObjectManagerAware interface.
+     */
+    public function injectObjectManager(ObjectManager $objectManager, ClassMetadata $classMetadata)
+    {
+        $this->entityManager = $objectManager;
     }
 
     public function getEntityClass()

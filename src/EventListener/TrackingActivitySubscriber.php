@@ -14,8 +14,8 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use PiaApi\Entity\Pia\TrackingInterface;
 use PiaApi\Entity\Pia\TrackingLog;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Security;
 
 class TrackingActivitySubscriber implements EventSubscriber
@@ -46,12 +46,24 @@ class TrackingActivitySubscriber implements EventSubscriber
         // only inserts!
         foreach ($this->uow->getScheduledEntityInsertions() as $keyEntity => $entity)
         {
+            if (!$entity instanceof TrackingInterface) return;
             $this->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
         }
 
         // only updates!
         foreach ($this->uow->getScheduledEntityUpdates() as $keyEntity => $entity)
         {
+            if (!$entity instanceof TrackingInterface) return;
+            # remove old one!
+            $params = [
+                'activity' => TrackingLog::ACTIVITY_LAST_UPDATE,
+                'contentType' => $entity->getEntityClass(),
+                'entityId' => $entity->getId()
+            ];
+            /*
+            $trackingLog = $entityManager->getRepository(TrackingLog::class)->findOneBy($params);
+            $entityManager->remove($trackingLog);
+            */
             $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
         }
     }

@@ -12,6 +12,7 @@ namespace PiaApi\Entity\Pia;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Persistence\ObjectManagerAware;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
@@ -23,7 +24,7 @@ use PiaApi\Entity\Pia\Traits\TrackingTrait;
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")
  */
-class Processing
+class Processing implements ObjectManagerAware, TrackingInterface
 {
     use ProcessingSupervisorTrait, ResourceTrait, TrackingTrait;
 

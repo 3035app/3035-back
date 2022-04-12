@@ -18,7 +18,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\TrackingLogRepository")
- * @ORM\Table(name="pia_trackinglog")
+ * @ORM\Table(name="pia_trackinglogs")
  */
 class TrackingLog
 {
@@ -192,7 +192,7 @@ class TrackingLog
      */
     public function isAllowedActivity($activity)
     {
-        if (!in_array($activity, $this->getActivitiesList()))
+        if (!in_array($activity, self::getList()))
         {
             throw new \InvalidArgumentException(sprintf('constant « %s » is not allowed!', $activity));
         }
@@ -204,7 +204,7 @@ class TrackingLog
      * 
      * @return array
      */
-    public function getActivitiesList()
+    public static function getList()
     {
         return [
             self::ACTIVITY_CREATED,
@@ -215,7 +215,7 @@ class TrackingLog
             self::ACTIVITY_NOTICE_REQUEST,
             self::ACTIVITY_VALIDATION_REQUEST,
             self::ACTIVITY_VALIDATED,
-            self::ACTIVITY_STORED,
+            self::ACTIVITY_ARCHIVED,
         ];
     }
 
