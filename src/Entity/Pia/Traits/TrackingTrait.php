@@ -109,6 +109,7 @@ trait TrackingTrait
 
     /**
      * Retrieves entityManager injected by ObjectManagerAware interface.
+     * not retrieved in creation mode.
      */
     public function injectObjectManager(ObjectManager $objectManager, ClassMetadata $classMetadata)
     {
