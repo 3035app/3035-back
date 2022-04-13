@@ -20,4 +20,25 @@ class TrackingLogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TrackingLog::class);
     }
+
+    public function findTrackingsBy(array $options)
+    {
+        if (array_key_exists('contentType', $options) && array_key_exists('entityId', $options))
+        {
+            $qb = $this
+                ->createQueryBuilder('tl')
+                ->leftJoin('tl.owner', 'u')
+                ->leftJoin('u.profile', 'p')
+                ->select('tl.activity')
+                ->addSelect("CONCAT(CONCAT(p.firstName, ' '), p.lastName) AS fullname")
+                ->addSelect('tl.date')
+                ->andWhere('tl.contentType = :contentType')
+                ->andWhere('tl.entityId = :entityId')
+                ->setParameters($options)
+                ->orderBy('tl.date', 'ASC')
+                ;
+            return $qb->getQuery()->getResult();
+        }
+        return [];
+    }
 }

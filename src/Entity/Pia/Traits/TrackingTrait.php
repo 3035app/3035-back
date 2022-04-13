@@ -98,22 +98,12 @@ trait TrackingTrait
      */
     public function getTrackingLogs()
     {
-        $params = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
-        $trackings = [];
         if (isset($this->entityManager) && null !== $this->entityManager)
         {
-            $trackingLogs = $this->entityManager->getRepository(TrackingLog::class)->findBy($params);
-            foreach ($trackingLogs as $tracking)
-            {
-                $trackings[] = [
-                    $tracking->getActivity(),
-                    $tracking->getOwner()->getProfile()->getFullname(),
-                    $tracking->getDate(),
-                ];
-            }
+            $options = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
+            return $this->entityManager->getRepository(TrackingLog::class)->findTrackingsBy($options);
         }
-
-        return $trackings;
+        return [];
     }
 
     /**
