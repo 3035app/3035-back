@@ -60,7 +60,6 @@ class TrackingActivitySubscriber implements EventSubscriber
         foreach ($this->uow->getScheduledEntityUpdates() as $keyEntity => $entity)
         {
             if (!$entity instanceof TrackingInterface) return;
-
             # remove all old logs!
             $params = [
                 'activity' => TrackingLog::ACTIVITY_LAST_UPDATE,
@@ -71,7 +70,6 @@ class TrackingActivitySubscriber implements EventSubscriber
             {
                 $this->manager->remove($trackingLog);
             }
-
             # add a new one!
             $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
         }
