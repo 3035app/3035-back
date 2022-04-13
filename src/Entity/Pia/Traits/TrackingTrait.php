@@ -100,6 +100,7 @@ trait TrackingTrait
     {
         if (isset($this->entityManager) && null !== $this->entityManager)
         {
+            # request optimised in repository
             $options = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
             return $this->entityManager->getRepository(TrackingLog::class)->findTrackingsBy($options);
         }
