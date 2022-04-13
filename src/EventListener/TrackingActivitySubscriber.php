@@ -19,6 +19,8 @@ use PiaApi\Entity\Pia\TrackingInterface;
 use PiaApi\Entity\Pia\TrackingLog;
 use Symfony\Component\Security\Core\Security;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 class TrackingActivitySubscriber implements EventSubscriber
 {
     private $manager;
@@ -50,7 +52,7 @@ class TrackingActivitySubscriber implements EventSubscriber
         foreach ($this->uow->getScheduledEntityInsertions() as $keyEntity => $entity)
         {
             if (!$entity instanceof TrackingInterface) return;
-            # FIXME check $entity->getEntityClass() and $entity->getId()
+            # at this point the ID is defined!
             $this->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
         }
 

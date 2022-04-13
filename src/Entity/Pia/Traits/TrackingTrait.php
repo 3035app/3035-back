@@ -99,8 +99,21 @@ trait TrackingTrait
     public function getTrackingLogs()
     {
         $params = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
-        $trackingLogs = $this->entityManager->getRepository(TrackingLog::class)->findBy($params);
-        return $trackingLogs;
+        $trackings = [];
+        if (isset($this->entityManager) && null !== $this->entityManager)
+        {
+            $trackingLogs = $this->entityManager->getRepository(TrackingLog::class)->findBy($params);
+            foreach ($trackingLogs as $tracking)
+            {
+                $trackings[] = [
+                    $tracking->getActivity(),
+                    $tracking->getOwner()->getProfile()->getFullname(),
+                    $tracking->getDate(),
+                ];
+            }
+        }
+
+        return $trackings;
     }
 
     /**
