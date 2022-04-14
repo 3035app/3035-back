@@ -362,9 +362,8 @@ class EvaluationController extends PiaSubController
             $source = $pia->getEvaluator();
             $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
 
-/*throw new AccessDeniedHttpException('logActivityEvaluation');
             # add an evaluation tracking
-            $this->trackingService->logActivityEvaluation($processing);*/
+            $this->trackingService->logActivityEvaluation($processing);
         }
     }
 
