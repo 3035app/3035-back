@@ -821,9 +821,8 @@ class ProcessingController extends RestController
             $source = $processing->getEvaluatorPending();
             $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
 
-/*throw new AccessDeniedHttpException('logActivityEvaluation');
             # add an evaluation tracking
-            $this->trackingService->logActivityEvaluation($processing);*/
+            $this->trackingService->logActivityEvaluation($processing);
         }
 /*
         # add historical comments

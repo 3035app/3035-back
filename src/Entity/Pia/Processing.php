@@ -1091,16 +1091,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
             (
                 # add an evaluation
                 Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_TO_CORRECT == $new_status
+                in_array($new_status, [
+                    Processing::EVALUATION_STATE_TO_CORRECT,
+                    Processing::EVALUATION_STATE_IMPROVABLE,
+                    Processing::EVALUATION_STATE_ACCEPTABLE
+                ])
                 ||
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
                 Processing::EVALUATION_STATE_IMPROVABLE == $new_status
-                ||
-                Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
-                ||
-                Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_ACCEPTABLE == $new_status
                 ||
                 # remove an evaluation
                 Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
