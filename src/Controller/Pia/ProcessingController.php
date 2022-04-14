@@ -399,7 +399,7 @@ class ProcessingController extends RestController
         }
 
         // before merging!
-        $this->notify_or_track($request, $processing);
+        $this->notifyOrTrack($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
@@ -793,7 +793,7 @@ class ProcessingController extends RestController
      * Some notifications to send.
      * specifications: #1, #5
      */
-    private function notify_or_track($request, $processing): void
+    private function notifyOrTrack($request, $processing): void
     {
         if ($processing->canAskForProcessingEvaluation($request))
         {
@@ -824,12 +824,12 @@ class ProcessingController extends RestController
             # add an evaluation tracking
             $this->trackingService->logActivityEvaluation($processing);
         }
-/*
+
         # add historical comments
-        if ($processing->isArchived())
+        if ($processing->isArchived($request))
         {
             # add an archived tracking
             $this->trackingService->logActivityArchivedProcessing($processing);
-        }*/
+        }
     }
 }

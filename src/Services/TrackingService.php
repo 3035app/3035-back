@@ -29,40 +29,42 @@ class TrackingService
 
     public function logActivityLastUpdate($entity): void
     {
-        # remove all old logs!
-        $this->removeTrackings(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
-        # add a new one!
-        $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
-        $this->manager->flush(); // FIXME is it useful?
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
     }
 
     public function logActivityEvaluationRequest($entity): void
     {
-        # remove all old logs!
-        $this->removeTrackings(TrackingLog::ACTIVITY_EVALUATION_REQUEST, $entity);
-        # add a new one!
-        $this->logActivity(TrackingLog::ACTIVITY_EVALUATION_REQUEST, $entity);
-        $this->manager->flush(); // FIXME is it useful?
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_EVALUATION_REQUEST, $entity);
     }
 
     public function logActivityEvaluation($entity): void
     {
-        # remove all old logs!
-        $this->removeTrackings(TrackingLog::ACTIVITY_EVALUATION, $entity);
-        # add a new one!
-        $this->logActivity(TrackingLog::ACTIVITY_EVALUATION, $entity);
-        $this->manager->flush(); // FIXME is it useful?
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_EVALUATION, $entity);
     }
 
-    // ...
+    public function logActivityIssueRequest($entity): void
+    {
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_ISSUE_REQUEST, $entity);
+    }
+
+    public function logActivityNoticeRequest($entity): void
+    {
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_NOTICE_REQUEST, $entity);
+    }
+
+    public function logActivityValidationRequest($entity): void
+    {
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_VALIDATION_REQUEST, $entity);
+    }
+
+    public function logActivityValidated($entity): void
+    {
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_VALIDATED, $entity);
+    }
 
     public function logActivityArchivedProcessing($entity): void
     {
-        # remove all old logs!
-        $this->removeTrackings(TrackingLog::ACTIVITY_ARCHIVED, $entity);
-        # add a new one!
-        $this->logActivity(TrackingLog::ACTIVITY_ARCHIVED, $entity);
-        $this->manager->flush(); // FIXME is it useful?
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_ARCHIVED, $entity);
     }
 
 
@@ -79,6 +81,15 @@ class TrackingService
         $this->manager->persist($trackingLog);
         $classMetadata = $this->manager->getClassMetadata(get_class($trackingLog));
         $this->uow->computeChangeSet($classMetadata, $trackingLog);
+    }
+
+    private function removeAndLogActivity(string $activity, $entity): void
+    {
+        # remove all old logs!
+        $this->removeTrackings($activity, $entity);
+        # add a new one!
+        $this->logActivity($activity, $entity);
+        $this->manager->flush(); // FIXME is it useful?
     }
 
     private function removeTrackings(string $activity, $entity): void

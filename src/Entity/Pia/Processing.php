@@ -1120,9 +1120,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @return bool
      */
-    public function isArchived(): bool
+    public function isArchived($request): bool
     {
-        return Processing::STATUS_ARCHIVED;
+        $new_status = $request->get('status');
+        return
+            $new_status == Processing::STATUS_ARCHIVED
+            &&
+            $old_status != $this->getStatus()
+            ;
     }
 
     /**

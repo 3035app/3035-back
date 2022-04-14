@@ -26,6 +26,7 @@ use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Exception\DataImportException;
 use PiaApi\Services\EmailingService;
+use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,11 +51,13 @@ class PiaController extends RestController
         PropertyAccessorInterface $propertyAccessor,
         PiaTransformer $piaTransformer,
         SerializerInterface $serializer,
-        EmailingService $emailingService
+        EmailingService $emailingService,
+        TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->piaTransformer = $piaTransformer;
         $this->emailingService = $emailingService;
+        $this->trackingService = $trackingService;
     }
 
     protected function getEntityClass()
@@ -568,6 +571,9 @@ class PiaController extends RestController
             $recipient = $pia->getProcessing()->getRedactor();
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
+
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($canNotifyDataController)
@@ -588,6 +594,9 @@ class PiaController extends RestController
             $recipient = $pia->getDataProtectionOfficer();
             $source = $pia->getProcessing()->getDataController();
             $this->emailingService->notifyDataProtectionOfficer($piaAttr, $recipient, $source);
+
+            # add a validation request tracking
+            $this->trackingService->logActivityValidationRequest($pia->getProcessing());
         }
     }
 }
