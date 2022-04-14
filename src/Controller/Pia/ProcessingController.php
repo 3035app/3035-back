@@ -798,8 +798,12 @@ class ProcessingController extends RestController
             $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
             array_push($processingAttr, $processing);
             $recipient = $processing->getEvaluatorPending();
-            $source = $processing->getRedactor();
-            $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $source);
+            if (null != $recipient)
+            {
+                $source = $processing->getRedactor();
+                $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $source);
+            }
+            # FIXME add an evaluation request tracking (if possible)?
         }
 
         if ($processing->canEmitEvaluatorEvaluation($request))

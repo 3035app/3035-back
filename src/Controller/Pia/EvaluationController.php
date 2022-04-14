@@ -17,10 +17,13 @@ use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Evaluation;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Services\EmailingService;
+use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class EvaluationController extends PiaSubController
 {
@@ -29,13 +32,20 @@ class EvaluationController extends PiaSubController
      */
     protected $emailingService;
 
+    /**
+     * @var trackingService
+     */
+    protected $trackingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         SerializerInterface $serializer,
-        EmailingService $emailingService
+        EmailingService $emailingService,
+        TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->emailingService = $emailingService;
+        $this->trackingService = $trackingService;
     }
 
     /**
@@ -314,12 +324,23 @@ class EvaluationController extends PiaSubController
      */
     private function notifyEvaluator($request, $evaluation): void
     {
+        $pia = $evaluation->getPia();
+        $processing = $pia->getProcessing();
+
         // notify evaluator on each page of pia
         $piaAttr = $this->getEvaluationRoute($evaluation);
-        array_push($piaAttr, $evaluation->getPia());
-        $recipient = $evaluation->getPia()->getEvaluator();
-        $source = $evaluation->getPia()->getProcessing()->getRedactor();
+        array_push($piaAttr, $pia);
+        $recipient = $pia->getEvaluator();
+        $source = $processing->getRedactor();
         $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $recipient, $source);
+
+        // check if all evaluations requested for that pia
+        // and one evaluation requested for that processing
+        if ($pia->canLogEvaluationRequest())
+        {
+            # add an evaluation request tracking
+            $this->trackingService->logActivityEvaluationRequest($processing);
+        }
     }
 
     /**

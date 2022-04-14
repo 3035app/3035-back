@@ -40,6 +40,8 @@ class Pia implements Timestampable
     const QUESTION_NUMBER = 18;
     const OLD_QUESTION_NUMBER = 36;
 
+    const EVALUATION_NUMBER = 4;
+
     /**
      * @ORM\Column(type="smallint")
      * @JMS\Groups({"Default", "Export"})
@@ -689,6 +691,19 @@ class Pia implements Timestampable
             # old opinion
             $this->getDpoOpinion() != trim($new_opinion)
             ;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canLogEvaluationRequest(): bool
+    {
+        if (self::EVALUATION_NUMBER == count($this->getEvaluations())
+            && $this->getProcessing()->isUnderValidation())
+        {
+            return true;
+        }
+        return false;
     }
 
     /**

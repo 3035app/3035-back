@@ -1111,6 +1111,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @return bool
      */
+    public function isUnderValidation(): bool
+    {
+        return Processing::STATUS_UNDER_VALIDATION;
+    }
+
+    /**
+     * @return bool
+     */
     public function canSubmitPiaToDpo($request): bool
     {
         #FIXME to create!

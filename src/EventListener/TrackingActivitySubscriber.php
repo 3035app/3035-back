@@ -11,27 +11,21 @@
 namespace PiaApi\EventListener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use PiaApi\Entity\Pia\TrackingInterface;
 use PiaApi\Entity\Pia\TrackingLog;
-use Symfony\Component\Security\Core\Security;
-
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use PiaApi\Services\TrackingService;
 
 class TrackingActivitySubscriber implements EventSubscriber
 {
-    private $manager;
-    private $security;
+    private $tracking;
     private $em;
     private $uow;
 
-    public function __construct(EntityManagerInterface $manager, Security $security)
+    public function __construct(TrackingService $tracking)
     {
-        $this->manager = $manager;
-        $this->security = $security;
+        $this->tracking = $tracking;
     }
 
     // this method can only return the event names; you cannot define a
@@ -53,38 +47,15 @@ class TrackingActivitySubscriber implements EventSubscriber
         {
             if (!$entity instanceof TrackingInterface) return;
             # at this point the ID is defined!
-            $this->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
+            $this->tracking->logActivity(TrackingLog::ACTIVITY_CREATED, $entity);
         }
 
         // only updates!
         foreach ($this->uow->getScheduledEntityUpdates() as $keyEntity => $entity)
         {
             if (!$entity instanceof TrackingInterface) return;
-            # remove all old logs!
-            $params = [
-                'activity' => TrackingLog::ACTIVITY_LAST_UPDATE,
-                'contentType' => $entity->getEntityClass(),
-                'entityId' => $entity->getId()
-            ];
-            foreach ($this->manager->getRepository(TrackingLog::class)->findBy($params) as $trackingLog)
-            {
-                $this->manager->remove($trackingLog);
-            }
             # add a new one!
-            $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
+            $this->tracking->logActivityLastUpdate($entity);
         }
-    }
-
-    private function logActivity(string $activity, $entity): void
-    {
-        // get authenticated user and log activity
-        $trackingLog = $entity->logTrackingActivity(
-            $this->security->getUser(),
-            $activity,
-            $entity,
-        );
-        $this->em->persist($trackingLog);
-        $classMetadata = $this->em->getClassMetadata(get_class($trackingLog));
-        $this->uow->computeChangeSet($classMetadata, $trackingLog);        
     }
 }
