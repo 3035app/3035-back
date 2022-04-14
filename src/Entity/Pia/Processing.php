@@ -1099,6 +1099,9 @@ class Processing implements ObjectManagerAware, TrackingInterface
                 Processing::EVALUATION_STATE_NONE == $old_status &&
                 Processing::EVALUATION_STATE_IMPROVABLE == $new_status
                 ||
+                Processing::EVALUATION_STATE_NONE == $old_status &&
+                Processing::EVALUATION_STATE_ACCEPTABLE == $new_status
+                ||
                 # remove an evaluation
                 Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
                 Processing::EVALUATION_STATE_NONE == $new_status
@@ -1114,6 +1117,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     public function isUnderValidation(): bool
     {
         return Processing::STATUS_UNDER_VALIDATION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived(): bool
+    {
+        return Processing::STATUS_ARCHIVED;
     }
 
     /**

@@ -33,7 +33,7 @@ class TrackingService
         $this->removeTrackings(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
         # add a new one!
         $this->logActivity(TrackingLog::ACTIVITY_LAST_UPDATE, $entity);
-        $this->manager->flush();
+        $this->manager->flush(); // FIXME is it useful?
     }
 
     public function logActivityEvaluationRequest($entity): void
@@ -42,8 +42,31 @@ class TrackingService
         $this->removeTrackings(TrackingLog::ACTIVITY_EVALUATION_REQUEST, $entity);
         # add a new one!
         $this->logActivity(TrackingLog::ACTIVITY_EVALUATION_REQUEST, $entity);
-        $this->manager->flush();
+        $this->manager->flush(); // FIXME is it useful?
     }
+
+    public function logActivityEvaluation($entity): void
+    {
+        # remove all old logs!
+        $this->removeTrackings(TrackingLog::ACTIVITY_EVALUATION, $entity);
+        # add a new one!
+        $this->logActivity(TrackingLog::ACTIVITY_EVALUATION, $entity);
+        $this->manager->flush(); // FIXME is it useful?
+    }
+
+    // ...
+
+    public function logActivityArchivedProcessing($entity): void
+    {
+        # remove all old logs!
+        $this->removeTrackings(TrackingLog::ACTIVITY_ARCHIVED, $entity);
+        # add a new one!
+        $this->logActivity(TrackingLog::ACTIVITY_ARCHIVED, $entity);
+        $this->manager->flush(); // FIXME is it useful?
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
 
     public function logActivity(string $activity, $entity): void
     {

@@ -352,12 +352,19 @@ class EvaluationController extends PiaSubController
         //check if status and global status match this state
         if ($evaluation->canEmitPiaEvaluatorEvaluation($request))
         {
+            $pia = $evaluation->getPia();
+            $processing = $pia->getProcessing();
+
             // notify redactor after evaluating each page of pia
             $piaAttr = $this->getEvaluationRoute($evaluation);
-            array_push($piaAttr, $evaluation->getPia());
-            $recipient = $evaluation->getPia()->getProcessing()->getRedactor();
-            $source = $evaluation->getPia()->getEvaluator();
+            array_push($piaAttr, $pia);
+            $recipient = $processing->getRedactor();
+            $source = $pia->getEvaluator();
             $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
+
+/*throw new AccessDeniedHttpException('logActivityEvaluation');
+            # add an evaluation tracking
+            $this->trackingService->logActivityEvaluation($processing);*/
         }
     }
 

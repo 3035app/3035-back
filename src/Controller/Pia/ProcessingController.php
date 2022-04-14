@@ -27,6 +27,7 @@ use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
 use PiaApi\Services\EmailingService;
 use PiaApi\Services\ProcessingService;
+use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,13 +62,15 @@ class ProcessingController extends RestController
         ProcessingService $processingService,
         ProcessingTransformer $processingTransformer,
         SerializerInterface $serializer,
-        EmailingService $emailingService
+        EmailingService $emailingService,
+        TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;
         $this->serializer = $serializer;
         $this->emailingService = $emailingService;
+        $this->trackingService = $trackingService;
     }
 
     protected function getEntityClass()
@@ -396,7 +399,7 @@ class ProcessingController extends RestController
         }
 
         // before merging!
-        $this->notify($request, $processing);
+        $this->notify_or_track($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
@@ -790,7 +793,7 @@ class ProcessingController extends RestController
      * Some notifications to send.
      * specifications: #1, #5
      */
-    private function notify($request, $processing): void
+    private function notify_or_track($request, $processing): void
     {
         if ($processing->canAskForProcessingEvaluation($request))
         {
@@ -798,12 +801,15 @@ class ProcessingController extends RestController
             $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
             array_push($processingAttr, $processing);
             $recipient = $processing->getEvaluatorPending();
-            if (null != $recipient)
+            if (null == $recipient)
             {
+                // evaluator not defined!
+                throw new AccessDeniedHttpException('evaluator not defined!');
+            } else {
                 $source = $processing->getRedactor();
                 $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $source);
             }
-            # FIXME add an evaluation request tracking (if possible)?
+            # FIXME add an evaluation request tracking? unfortunately, at this point we do not know the pia!
         }
 
         if ($processing->canEmitEvaluatorEvaluation($request))
@@ -814,6 +820,17 @@ class ProcessingController extends RestController
             $recipient = $processing->getRedactor();
             $source = $processing->getEvaluatorPending();
             $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
+
+/*throw new AccessDeniedHttpException('logActivityEvaluation');
+            # add an evaluation tracking
+            $this->trackingService->logActivityEvaluation($processing);*/
         }
+/*
+        # add historical comments
+        if ($processing->isArchived())
+        {
+            # add an archived tracking
+            $this->trackingService->logActivityArchivedProcessing($processing);
+        }*/
     }
 }
