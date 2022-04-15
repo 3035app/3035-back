@@ -383,6 +383,9 @@ class EvaluationController extends PiaSubController
             $recipient = $pia->getDataProtectionOfficer();
             $source = $pia->getEvaluator();
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
+
+            # add an issue request tracking
+            $this->trackingService->logActivityIssueRequest($pia->getProcessing());
         }
     }
 

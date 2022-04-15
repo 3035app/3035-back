@@ -345,7 +345,7 @@ class PiaController extends RestController
         }
 
         // before merging!
-        $this->notify($request, $pia);
+        $this->notifyOrTrack($request, $pia);
         $this->mergeFromRequest($pia, $updatableAttributes, $request);
         $this->update($pia);
         return $this->view($pia, Response::HTTP_OK);
@@ -543,7 +543,7 @@ class PiaController extends RestController
      * Some notifications to send.
      * specifications: #2, #7, #9, #10
      */
-    private function notify($request, $pia): void
+    private function notifyOrTrack($request, $pia): void
     {
         $canNotifyDataController = false;
 
@@ -558,6 +558,9 @@ class PiaController extends RestController
             $recipient = $pia->getEvaluator();
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
+
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($pia->canEmitObservations($request))
@@ -595,6 +598,20 @@ class PiaController extends RestController
             $source = $pia->getProcessing()->getDataController();
             $this->emailingService->notifyDataProtectionOfficer($piaAttr, $recipient, $source);
 
+            # add a validation tracking
+            $this->trackingService->logActivityValidated($pia->getProcessing());
+        }
+
+        // check if dpo noticed the pia
+        if ($pia->canLogNoticeRequest($request))
+        {
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+        }
+
+        // check if is is a validation request tracking
+        if ($pia->canLogValidationRequest($request))
+        {
             # add a validation request tracking
             $this->trackingService->logActivityValidationRequest($pia->getProcessing());
         }

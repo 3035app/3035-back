@@ -734,6 +734,61 @@ class Pia implements Timestampable
     }
 
     /**
+     * dpo_status: 1 && dpos_names: abc
+     * ||
+     * dpo_status: 0 && dpo_opinion: abc && dpos_names: abc
+     * 
+     * @return bool
+     */
+    public function canLogNoticeRequest($request): bool
+    {
+        $new_status = $request->get('dpo_status');
+        $new_opinion = $request->get('dpo_opinion');
+        if ($this->isDpoStatusAndDpoName($request)
+            ||
+            0 == $new_status && 0 < strlen(trim($new_opinion)) && $this->isDpoName($request)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canLogValidationRequest($request): bool
+    {
+        $concerned_status = $request->get('concerned_people_status');
+        $concerned_opinion = $request->get('concerned_people_searched_opinion');
+        $people_names = $request->get('people_names');
+        if ($this->isDpoStatusAndDpoName($request)
+            &&
+            1 == $concerned_status && $concerned_opinion && 0 < strlen(trim($people_names))
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDpoStatusAndDpoName($request): bool
+    {
+        $new_status = $request->get('dpo_status');
+        return 1 == $new_status && $this->isDpoName($request);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDpoName($request): bool
+    {
+        $new_names = $request->get('dpos_names');
+        return 0 < strlen(trim($new_names));
+    }
+
+    /**
      * @return string
      **/
     public function __toString()
