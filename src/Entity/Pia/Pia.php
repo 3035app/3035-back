@@ -762,7 +762,7 @@ class Pia implements Timestampable
         $concerned_opinion = $request->get('concerned_people_searched_opinion');
         $people_names = $request->get('people_names');
         if ($this->isDpoStatusAndDpoName($request)
-            &&
+            ||
             1 == $concerned_status && $concerned_opinion && 0 < strlen(trim($people_names))
         ) {
             return true;
