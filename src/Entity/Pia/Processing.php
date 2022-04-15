@@ -12,20 +12,21 @@ namespace PiaApi\Entity\Pia;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Persistence\ObjectManagerAware;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
+use PiaApi\Entity\Pia\Traits\TrackingTrait;
 
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
  * @ORM\Table(name="pia_processing")
  */
-class Processing
+class Processing implements ObjectManagerAware, TrackingInterface
 {
-    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity;
+    use ProcessingSupervisorTrait, ResourceTrait, TrackingTrait;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_VALIDATION = 1;
@@ -1090,12 +1091,13 @@ class Processing
             (
                 # add an evaluation
                 Processing::EVALUATION_STATE_NONE == $old_status &&
-                Processing::EVALUATION_STATE_TO_CORRECT == $new_status
+                in_array($new_status, [
+                    Processing::EVALUATION_STATE_TO_CORRECT,
+                    Processing::EVALUATION_STATE_IMPROVABLE,
+                    Processing::EVALUATION_STATE_ACCEPTABLE
+                ])
                 ||
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
-                Processing::EVALUATION_STATE_IMPROVABLE == $new_status
-                ||
-                Processing::EVALUATION_STATE_NONE == $old_status &&
                 Processing::EVALUATION_STATE_IMPROVABLE == $new_status
                 ||
                 # remove an evaluation
@@ -1105,6 +1107,27 @@ class Processing
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
                 Processing::EVALUATION_STATE_NONE == $new_status
             );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnderValidation(): bool
+    {
+        return Processing::STATUS_UNDER_VALIDATION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived($request): bool
+    {
+        $new_status = $request->get('status');
+        return
+            $new_status == Processing::STATUS_ARCHIVED
+            &&
+            $new_status != $this->getStatus()
+            ;
     }
 
     /**

@@ -18,6 +18,8 @@ use DateTime;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="pia_evaluation")
@@ -167,12 +169,10 @@ class Evaluation implements Timestampable
         $old_status = $request->get('global_status');
         return
             # add an evaluation
-            Processing::STATUS_DOING == $old_status &&
-            $this->getStatus() == $this->getGlobalStatus()
+            2 == $old_status && $old_status == $this->getGlobalStatus()
             ||
             # remove an evaluation
-            $this->getStatus() == $old_status &&
-            $old_status > $this->getGlobalStatus()
+            1 == $old_status && $old_status == $this->getGlobalStatus()
             ;
     }
 
