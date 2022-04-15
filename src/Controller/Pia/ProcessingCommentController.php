@@ -165,8 +165,9 @@ class ProcessingCommentController extends RestController
         $processing = $this->getResource($request->get('processing_id', -1), Processing::class);
         $content = $request->get('content', null);
         $field = $request->get('field', null);
+        $user = $this->getResource($request->get('user_id', -1), User::class);
 
-        $processingComment = new ProcessingComment($processing, $content, $field);
+        $processingComment = new ProcessingComment($processing, $content, $field, $user);
 
         $this->persist($processingComment);
 

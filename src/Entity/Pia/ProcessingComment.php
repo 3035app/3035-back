@@ -50,11 +50,21 @@ class ProcessingComment implements Timestampable
      */
     protected $processing;
 
-    public function __construct(Processing $processing, string $content, string $field)
+    /**
+     * @ORM\ManyToOne(targetEntity="PiaApi\Entity\Oauth\User", inversedBy="comments")
+     * @JMS\Groups({"Default", "Export"})
+     * @JMS\Exclude()
+     *
+     * @var User
+     */
+    protected $user;
+
+    public function __construct(Processing $processing, string $content, string $field, User $user)
     {
         $this->processing = $processing;
         $this->content = $content;
         $this->field = $field;
+        $this->user = $user;
     }
 
     /**
@@ -103,5 +113,21 @@ class ProcessingComment implements Timestampable
     public function setProcessing(Processing $processing): void
     {
         $this->processing = $processing;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 }
