@@ -605,7 +605,7 @@ class PiaController extends RestController
         // check if dpo noticed the pia
         if ($pia->canLogNoticeRequest($request))
         {
-            # add a notice request tracking
+            # add a notice request tracking.
             $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
