@@ -824,12 +824,5 @@ class ProcessingController extends RestController
             # add an evaluation tracking
             $this->trackingService->logActivityEvaluation($processing);
         }
-
-        # add historical comments
-        if ($processing->isArchived($request))
-        {
-            # add an archived tracking
-            $this->trackingService->logActivityArchivedProcessing($processing);
-        }
     }
 }

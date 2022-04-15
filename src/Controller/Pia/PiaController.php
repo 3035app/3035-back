@@ -615,5 +615,12 @@ class PiaController extends RestController
             # add a validation request tracking
             $this->trackingService->logActivityValidationRequest($pia->getProcessing());
         }
+
+        # add historical comments
+        if ($pia->getProcessing()->isArchived($request))
+        {
+            # add an archived tracking
+            $this->trackingService->logActivityArchivedProcessing($pia->getProcessing());
+        }
     }
 }

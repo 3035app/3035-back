@@ -1126,7 +1126,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
         return
             $new_status == Processing::STATUS_ARCHIVED
             &&
-            $old_status != $this->getStatus()
+            $new_status != $this->getStatus()
             ;
     }
 
