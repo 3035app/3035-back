@@ -70,6 +70,10 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    PiaApi\EventListener\TrackingActivitySubscriber:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
     # Used to fix bug when updating and entity througth REST api
     # jms_serializer.object_constructor:
     #     alias: jms_serializer.doctrine_object_constructor

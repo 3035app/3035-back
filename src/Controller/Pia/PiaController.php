@@ -26,6 +26,7 @@ use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\Structure;
 use PiaApi\Exception\DataImportException;
 use PiaApi\Services\EmailingService;
+use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,11 +51,13 @@ class PiaController extends RestController
         PropertyAccessorInterface $propertyAccessor,
         PiaTransformer $piaTransformer,
         SerializerInterface $serializer,
-        EmailingService $emailingService
+        EmailingService $emailingService,
+        TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->piaTransformer = $piaTransformer;
         $this->emailingService = $emailingService;
+        $this->trackingService = $trackingService;
     }
 
     protected function getEntityClass()
@@ -342,7 +345,7 @@ class PiaController extends RestController
         }
 
         // before merging!
-        $this->notify($request, $pia);
+        $this->notifyOrTrack($request, $pia);
         $this->mergeFromRequest($pia, $updatableAttributes, $request);
         $this->update($pia);
         return $this->view($pia, Response::HTTP_OK);
@@ -540,7 +543,7 @@ class PiaController extends RestController
      * Some notifications to send.
      * specifications: #2, #7, #9, #10
      */
-    private function notify($request, $pia): void
+    private function notifyOrTrack($request, $pia): void
     {
         $canNotifyDataController = false;
 
@@ -555,6 +558,9 @@ class PiaController extends RestController
             $recipient = $pia->getEvaluator();
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
+
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($pia->canEmitObservations($request))
@@ -568,6 +574,9 @@ class PiaController extends RestController
             $recipient = $pia->getProcessing()->getRedactor();
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
+
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($canNotifyDataController)
@@ -588,6 +597,30 @@ class PiaController extends RestController
             $recipient = $pia->getDataProtectionOfficer();
             $source = $pia->getProcessing()->getDataController();
             $this->emailingService->notifyDataProtectionOfficer($piaAttr, $recipient, $source);
+
+            # add a validation tracking
+            $this->trackingService->logActivityValidated($pia->getProcessing());
+        }
+
+        // check if dpo noticed the pia
+        if ($pia->canLogNoticeRequest($request))
+        {
+            # add a notice request tracking
+            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+        }
+
+        // check if is is a validation request tracking
+        if ($pia->canLogValidationRequest($request))
+        {
+            # add a validation request tracking
+            $this->trackingService->logActivityValidationRequest($pia->getProcessing());
+        }
+
+        # add historical comments
+        if ($pia->getProcessing()->isArchived($request))
+        {
+            # add an archived tracking
+            $this->trackingService->logActivityArchivedProcessing($pia->getProcessing());
         }
     }
 }
