@@ -17,7 +17,6 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
-use PiaApi\Entity\Pia\Traits\TrackingLogTrait;
 
 /**
  * @ORM\Entity
