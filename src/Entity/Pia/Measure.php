@@ -10,12 +10,12 @@
 
 namespace PiaApi\Entity\Pia;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use PiaApi\Entity\Pia\Traits\ResourceTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
+use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
  * @ORM\Entity
@@ -23,9 +23,7 @@ use PiaApi\Entity\Pia\Traits\HasPiaTrait;
  */
 class Measure implements Timestampable
 {
-    use ResourceTrait,
-        HasPiaTrait,
-        TimestampableEntity;
+    use HasPiaTrait, ResourceTrait, TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pia", inversedBy="measures")
