@@ -10,15 +10,14 @@
 
 namespace PiaApi\Entity\Pia;
 
+use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use DateTime;
-use PiaApi\Entity\Pia\Traits\ResourceTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
-
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use PiaApi\Entity\Pia\Traits\ResourceTrait;
+use PiaApi\Entity\Pia\Traits\TrackingLogTrait;
 
 /**
  * @ORM\Entity
@@ -26,9 +25,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 class Evaluation implements Timestampable
 {
-    use ResourceTrait,
-        HasPiaTrait,
-        TimestampableEntity;
+    use HasPiaTrait, ResourceTrait, TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pia", inversedBy="evaluations")

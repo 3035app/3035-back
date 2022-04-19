@@ -724,7 +724,7 @@ class Pia implements Timestampable
     /**
      * @return bool
      */
-    public function isAllEvaluationsAcceptable(): bool
+    public function hasAllEvaluationsAcceptable(): bool
     {
         $count = 0;
         foreach ($this->getEvaluations() as $evaluation) {

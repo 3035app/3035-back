@@ -23,8 +23,6 @@ use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 class EvaluationController extends PiaSubController
 {
     /**
@@ -385,7 +383,7 @@ class EvaluationController extends PiaSubController
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
 
             # all evaluations are acceptable!
-            if ($pia->isAllEvaluationsAcceptable()) {
+            if ($pia->hasAllEvaluationsAcceptable()) {
                 # add an issue request tracking
                 $this->trackingService->logActivityIssueRequest($pia->getProcessing());
             }

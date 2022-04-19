@@ -47,6 +47,11 @@ class PiaController extends RestController
      */
     protected $emailingService;
 
+    /**
+     * @var TrackingService
+     */
+    protected $trackingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         PiaTransformer $piaTransformer,
