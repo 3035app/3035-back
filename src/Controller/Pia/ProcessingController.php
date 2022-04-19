@@ -57,6 +57,11 @@ class ProcessingController extends RestController
      */
     protected $emailingService;
 
+    /**
+     * @var TrackingService
+     */
+    protected $trackingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         ProcessingService $processingService,

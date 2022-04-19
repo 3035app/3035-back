@@ -14,11 +14,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManagerAware;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
-use PiaApi\Entity\Pia\Traits\TrackingTrait;
+use PiaApi\Entity\Pia\Traits\TrackingLogTrait;
 
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\ProcessingRepository")
@@ -26,7 +27,7 @@ use PiaApi\Entity\Pia\Traits\TrackingTrait;
  */
 class Processing implements ObjectManagerAware, TrackingInterface
 {
-    use ProcessingSupervisorTrait, ResourceTrait, TrackingTrait;
+    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity, TrackingLogTrait;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_VALIDATION = 1;

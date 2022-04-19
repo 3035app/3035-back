@@ -10,13 +10,13 @@
 
 namespace PiaApi\Controller\Pia;
 
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use Swagger\Annotations as Swg;
+use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use PiaApi\Entity\Pia\Attachment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Swagger\Annotations as Swg;
+use Symfony\Component\HttpFoundation\Request;
 
 class AttachmentController extends PiaSubController
 {
