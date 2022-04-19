@@ -384,8 +384,11 @@ class EvaluationController extends PiaSubController
             $source = $pia->getEvaluator();
             $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
 
-            # add an issue request tracking
-            $this->trackingService->logActivityIssueRequest($pia->getProcessing());
+            # all evaluations are acceptable!
+            if ($pia->isAllEvaluationsAcceptable()) {
+                # add an issue request tracking
+                $this->trackingService->logActivityIssueRequest($pia->getProcessing());
+            }
         }
     }
 

@@ -724,6 +724,21 @@ class Pia implements Timestampable
     /**
      * @return bool
      */
+    public function isAllEvaluationsAcceptable(): bool
+    {
+        $count = 0;
+        foreach ($this->getEvaluations() as $evaluation) {
+            # status <=> acceptable
+            if (3 <= $evaluation->getStatus() && 2 <= $evaluation->getGlobalStatus()) {
+                $count++;
+            }
+        }
+        return self::EVALUATION_NUMBER <= $count;
+    }
+
+    /**
+     * @return bool
+     */
     public function isPiaValidated($request): bool
     {
         if (2 > $this->getStatus() && 2 <= $request->get('status'))
