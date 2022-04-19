@@ -12,14 +12,32 @@ namespace PiaApi\Controller\Pia;
 
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Answer;
+use PiaApi\Entity\Pia\Pia;
+use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class AnswerController extends PiaSubController
 {
+    /**
+     * @var trackingService
+     */
+    protected $trackingService;
+
+    public function __construct(
+        PropertyAccessorInterface $propertyAccessor,
+        SerializerInterface $serializer,
+        TrackingService $trackingService
+    ) {
+        parent::__construct($propertyAccessor, $serializer);
+        $this->trackingService = $trackingService;
+    }
+
     /**
      * Lists all Answers for a specific Treatment.
      *
@@ -142,7 +160,9 @@ class AnswerController extends PiaSubController
      */
     public function createAction(Request $request, $piaId)
     {
-        return parent::createAction($request, $piaId);
+        $view = parent::createAction($request, $piaId);
+        $this->logActivityLastUpdate($piaId);
+        return $view;
     }
 
     /**
@@ -198,7 +218,9 @@ class AnswerController extends PiaSubController
      */
     public function updateAction(Request $request, $piaId, $id)
     {
-        return parent::updateAction($request, $piaId, $id);
+        $view = parent::updateAction($request, $piaId, $id);
+        $this->logActivityLastUpdate($piaId);
+        return $view;
     }
 
     /**
@@ -242,6 +264,14 @@ class AnswerController extends PiaSubController
     public function deleteAction(Request $request, $piaId, $id)
     {
         return parent::deleteAction($request, $piaId, $id);
+    }
+
+    public function logActivityLastUpdate($piaId)
+    {
+        $pia = $this->getResource($piaId, Pia::class);
+        if (null !== $pia) {
+            $this->trackingService->logActivityLastUpdate($pia->getProcessing());
+        }
     }
 
     protected function getEntityClass()
