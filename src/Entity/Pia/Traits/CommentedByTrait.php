@@ -43,7 +43,7 @@ trait CommentedByTrait
 
     /**
      * @JMS\VirtualProperty
-     * @JMS\SerializedName("commentedBy")
+     * @JMS\SerializedName("commented_by")
      * 
      * @return array
      */
