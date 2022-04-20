@@ -14,6 +14,7 @@ use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -58,6 +59,21 @@ class ProcessingComment implements Timestampable
      * @var User
      */
     protected $user;
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("connecteduser")
+     * 
+     * @return array
+     */
+    public function getConnectedUser()
+    {
+        return [
+            'firstName' => $this->getUser()->getProfile()->getFirstName(),
+            'lastName' => $this->getUser()->getProfile()->getLastName(),
+            'roles' => $this->getUser()->getRoles(),
+        ];
+    }
 
     public function __construct(Processing $processing, string $content, string $field, User $user)
     {
