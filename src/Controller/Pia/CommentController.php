@@ -14,9 +14,11 @@ use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use PiaApi\Entity\Pia\Comment;
+use PiaApi\Entity\Pia\Pia;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends PiaSubController
 {
@@ -151,7 +153,13 @@ class CommentController extends PiaSubController
      */
     public function createAction(Request $request, $piaId)
     {
-        return parent::createAction($request, $piaId);
+        $pia = $this->getResource($piaId, Pia::class);
+        $description = $request->get('description', null);
+        $referenceTo = $request->get('reference_to', null);
+        $forMeasure = $request->get('for_measure', null);
+        $piaComment = new Comment($pia, $description, $referenceTo, $forMeasure, $this->getUser());
+        $this->persist($piaComment);
+        return $this->view($piaComment, Response::HTTP_OK);
     }
 
     /**
