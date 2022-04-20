@@ -50,7 +50,7 @@ trait CommentedByTrait
     public function getCommentedBy()
     {
         if (null == $this->getUser()) {
-            return null;
+            return [];
         }
         return [
             'firstName' => $this->getUser()->getProfile()->getFirstName(),
