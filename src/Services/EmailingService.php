@@ -155,11 +155,10 @@ class EmailingService
             ;
 
         // dev environment: log email
-            /*
         if ($this->isDevEnvironment()) {
             $this->logger->info('Emailing to ' . json_encode($to) . ' : ' . $subject . "\n" . $body);
             return 0; // number of successful recipients reached
-        }*/
+        }
 
         // number of successful recipients reached
         return $this->mailer->send($email);
