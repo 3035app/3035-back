@@ -10,10 +10,12 @@
 
 namespace PiaApi\Entity\Pia;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Traits\CommentedByTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -22,8 +24,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class ProcessingComment implements Timestampable
 {
-    use ResourceTrait,
-        TimestampableEntity;
+    use CommentedByTrait, ResourceTrait, TimestampableEntity;
 
     /**
      * @ORM\Column(type="text")
@@ -50,11 +51,12 @@ class ProcessingComment implements Timestampable
      */
     protected $processing;
 
-    public function __construct(Processing $processing, string $content, string $field)
+    public function __construct(Processing $processing, string $content, string $field, User $user)
     {
         $this->processing = $processing;
         $this->content = $content;
         $this->field = $field;
+        $this->user = $user;
     }
 
     /**
