@@ -10,7 +10,6 @@
 
 namespace PiaApi\Services;
 
-use FOS\UserBundle\Mailer\MailerInterface;
 use PiaApi\Entity\Pia\Processing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -29,7 +28,7 @@ class EmailingService
     public function __construct(
         \Twig_Environment $twig,
         LoggerInterface $logger,
-        MailerInterface $mailer,
+        \Swift_Mailer $mailer,
         UrlGeneratorInterface $router,
         string $PialabEnvironment,
         array $PialabFromEmail,
