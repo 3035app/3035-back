@@ -10,11 +10,12 @@
 
 namespace PiaApi\Entity\Pia;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Traits\CommentedByTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
@@ -23,8 +24,7 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class ProcessingComment implements Timestampable
 {
-    use ResourceTrait,
-        TimestampableEntity;
+    use CommentedByTrait, ResourceTrait, TimestampableEntity;
 
     /**
      * @ORM\Column(type="text")
@@ -50,30 +50,6 @@ class ProcessingComment implements Timestampable
      * @var Processing
      */
     protected $processing;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="PiaApi\Entity\Oauth\User", inversedBy="comments")
-     * @JMS\Groups({"Default", "Export"})
-     * @JMS\Exclude()
-     *
-     * @var User
-     */
-    protected $user;
-
-    /**
-     * @JMS\VirtualProperty
-     * @JMS\SerializedName("connecteduser")
-     * 
-     * @return array
-     */
-    public function getConnectedUser()
-    {
-        return [
-            'firstName' => $this->getUser()->getProfile()->getFirstName(),
-            'lastName' => $this->getUser()->getProfile()->getLastName(),
-            'roles' => $this->getUser()->getRoles(),
-        ];
-    }
 
     public function __construct(Processing $processing, string $content, string $field, User $user)
     {
@@ -129,21 +105,5 @@ class ProcessingComment implements Timestampable
     public function setProcessing(Processing $processing): void
     {
         $this->processing = $processing;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
     }
 }

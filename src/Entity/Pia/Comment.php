@@ -10,12 +10,15 @@
 
 namespace PiaApi\Entity\Pia;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use PiaApi\Entity\Pia\Traits\ResourceTrait;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Pia;
+use PiaApi\Entity\Pia\Traits\CommentedByTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
+use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
  * @ORM\Entity
@@ -23,9 +26,7 @@ use PiaApi\Entity\Pia\Traits\HasPiaTrait;
  */
 class Comment implements Timestampable
 {
-    use ResourceTrait,
-        HasPiaTrait,
-        TimestampableEntity;
+    use CommentedByTrait, HasPiaTrait, ResourceTrait, TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pia", inversedBy="comments")
@@ -58,4 +59,13 @@ class Comment implements Timestampable
      * @var bool
      */
     protected $forMeasure = false;
+
+    public function __construct(Pia $pia, string $description, string $referenceTo, bool $forMeasure, User $user)
+    {
+        $this->pia = $pia;
+        $this->description = $description;
+        $this->referenceTo = $referenceTo;
+        $this->forMeasure = $forMeasure;
+        $this->user = $user;
+    }
 }
