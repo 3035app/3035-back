@@ -825,9 +825,6 @@ class ProcessingController extends RestController
             $recipient = $processing->getRedactor();
             $source = $processing->getEvaluatorPending();
             $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
-
-            # add an evaluation tracking
-            $this->trackingService->logActivityEvaluation($processing);
         }
     }
 }

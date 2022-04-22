@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "Roles and permissions",
     "Processing",
-    "Folders and processings"
+    "Folders and processings",
+    "Evaluation"
   ]
 }
