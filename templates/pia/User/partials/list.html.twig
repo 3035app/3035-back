@@ -59,7 +59,7 @@
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
-              {% for role in user.roles if role != 'ROLE_USER' %}
+              {% for role in user.roles %}
                 <span class="ui label">{{ role }}</span>
               {% endfor %}
             </td>
