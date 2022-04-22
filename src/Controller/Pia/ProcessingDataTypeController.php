@@ -288,7 +288,7 @@ class ProcessingDataTypeController extends RestController
      *     description="Empty content"
      * )
      *
-     * @Security("is_granted('CAN_DELETE_PROCESSING')")
+     * @Security("is_granted('CAN_EDIT_PROCESSING')")
      *
      * @return array
      */
