@@ -24,7 +24,7 @@ class ProcessingService extends AbstractService
     /**
      * @param string $name
      * @param Folder $folder
-     * @param User $redactor
+     * @param array $redactors
      * @param User $dataController
      * @param User $evaluatorPending
      * @param User $dataProtectionOfficerPending
@@ -34,12 +34,12 @@ class ProcessingService extends AbstractService
     public function createProcessing(
         string $name,
         Folder $folder,
-        User $redactor,
+        array $redactors,
         User $dataController,
         User $evaluatorPending=null,
         User $dataProtectionOfficerPending=null
         ): Processing
     {
-        return new Processing($name, $folder, $redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending);
+        return new Processing($name, $folder, $redactors, $dataController, $evaluatorPending, $dataProtectionOfficerPending);
     }
 }

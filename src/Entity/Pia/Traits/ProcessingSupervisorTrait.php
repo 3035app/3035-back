@@ -10,6 +10,7 @@
 
 namespace PiaApi\Entity\Pia\Traits;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
@@ -17,7 +18,23 @@ use PiaApi\Entity\Oauth\User;
 trait ProcessingSupervisorTrait
 {
     /**
+     * many processings have many redactors.
+     * @ORM\ManyToMany(targetEntity=User::class)
+     * @ORM\JoinTable(
+     *      name="pia_processings_redactors",
+     *      joinColumns={@ORM\JoinColumn(name="processing_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="redactor_id", referencedColumnName="id")}
+     * )
+     * @JMS\Exclude()
+     *
+     * @var Collection
+     */
+    protected $redactors;
+
+    /**
+     * @deprecated TO BE REMOVED!
      * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(nullable=true)
      * @JMS\Exclude()
      * 
      * @var User
@@ -59,7 +76,7 @@ trait ProcessingSupervisorTrait
     public function getProcessingSupervisors()
     {
         return [
-            'redactor_id' => $this->getSupervisor($this->getRedactor()),
+            'redactors_id' => $this->getSupervisors($this->getRedactors()),
             'data_controller_id' => $this->getSupervisor($this->getDataController()),
             'evaluator_pending_id' => $this->getSupervisor($this->getEvaluatorPending()),
             'data_protection_officer_pending_id' => $this->getSupervisor($this->getDataProtectionOfficerPending())
@@ -67,15 +84,17 @@ trait ProcessingSupervisorTrait
     }
 
     /**
+     * @deprecated TO BE REMOVED!
      * @return User
      */
-    public function getRedactor(): User
+    public function getRedactor(): ?User
     {
         return $this->redactor;
     }
 
     /**
      * Sets redactor.
+     * @deprecated TO BE REMOVED!
      * @param User $redactor
      * @return $this
      */
@@ -83,6 +102,34 @@ trait ProcessingSupervisorTrait
     {
         $this->redactor = $redactor;
         return $this;
+    }
+
+    /**
+     * @param User $redactor
+     */
+    public function addRedactor(User $redactor): void
+    {
+        if (null !== $this->redactors && !$this->redactors->contains($redactor)) {
+            $this->redactors->add($redactor);
+        }
+    }
+
+    /**
+     * @param User $redactor
+     */
+    public function removeRedactor(User $redactor): void
+    {
+        if (null !== $this->redactors && $this->redactors->contains($redactor)) {
+            $this->redactors->removeElement($redactor);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getRedactors(): ?Collection
+    {
+        return $this->redactors;
     }
 
     /**
@@ -152,6 +199,18 @@ trait ProcessingSupervisorTrait
             }
         }
         return $this;
+    }
+
+    private function getSupervisors($supervisors)
+    {
+        if (null === $supervisors) {
+            return [];
+        }
+        $ids = [];
+        foreach ($supervisors as $supervisor) {
+            array_push($ids, $supervisor->getId());
+        }
+        return $ids;
     }
 
     private function getSupervisor($obj)

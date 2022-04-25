@@ -48,6 +48,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $name;
 
     /**
+     * @deprecated TO BE REMOVED!
      * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -104,6 +105,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $processors;
 
     /**
+     * @deprecated TO BE REMOVED!
      * @ORM\Column(type="text", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -166,6 +168,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
      * @var string|null
      */
     protected $rightsGuarantee;
+
     /**
      * @ORM\Column(type="text", nullable=true)
      * @JMS\Groups({"Default", "Export"})
@@ -223,8 +226,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
      * @var Collection|ProcessingComment[]
      */
     protected $comments;
-    
-     /**
+
+    /**
      * @ORM\OneToMany(targetEntity="ProcessingAttachment", mappedBy="processing", cascade={"remove"})
      * @JMS\Groups({"Default", "Export"})
      * @JMS\MaxDepth(2)
@@ -327,14 +330,18 @@ class Processing implements ObjectManagerAware, TrackingInterface
     public function __construct(
         string $name,
         Folder $folder,
-        User $redactor,
+        array $redactors,
         User $dataController,
         User $evaluatorPending=null,
         User $dataProtectionOfficerPending=null
     ) {
+        $this->redactors = new ArrayCollection(); // ProcessingSupervisorTrait
+
         $this->setName($name);
         $this->setFolder($folder);
-        $this->setRedactor($redactor);
+        foreach ($redactors as $redactor) {
+            $this->addRedactor($redactor);
+        }
         $this->setDataController($dataController);
         $this->setEvaluatorPending($evaluatorPending);
         $this->setDataProtectionOfficerPending($dataProtectionOfficerPending);
@@ -361,6 +368,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated TO BE REMOVED!
      * @return string
      */
     public function getAuthor(): string
@@ -369,6 +377,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated TO BE REMOVED!
      * @param string $author
      */
     public function setAuthor(string $author): void
@@ -815,6 +824,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated TO BE REMOVED!
      * @return string
      */
     public function getDesignatedController(): string
@@ -823,6 +833,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated TO BE REMOVED!
      * @param string $designatedController
      */
     public function setDesignatedController(string $designatedController): void
