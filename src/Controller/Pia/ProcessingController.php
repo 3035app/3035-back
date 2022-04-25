@@ -759,8 +759,9 @@ class ProcessingController extends RestController
 
         if (array_key_exists('redactors_id', $supervisors))
         {
-            $redactor = $this->getResource($supervisors['redactors_id'], User::class);
-            $this->processingTransformer->setRedactor($redactor);            
+            foreach ($supervisors['redactors_id'] as $key) {
+                $this->processingTransformer->addRedactor($this->getResource($key, User::class));
+            }
         }
         if (array_key_exists('data_controller_id', $supervisors))
         {
