@@ -240,19 +240,20 @@ class ProcessingDataTypeController extends RestController
     public function updateAction(Request $request, $id)
     {
         $processingDataType = $this->getResource($id);
-        $this->canAccessResourceOr403($processingDataType);
 
+        if (null === $processingDataType) {
+            return $this->view([], Response::HTTP_OK);
+        }
+
+        $this->canAccessResourceOr403($processingDataType);
         $updatableAttributes = [
             'reference'         => RequestDataHandler::TYPE_STRING,
             'data'              => RequestDataHandler::TYPE_STRING,
             'retention_period'  => RequestDataHandler::TYPE_STRING,
             'sensitive'         => RequestDataHandler::TYPE_BOOL,
         ];
-
         $this->mergeFromRequest($processingDataType, $updatableAttributes, $request);
-
         $this->update($processingDataType);
-
         return $this->view($processingDataType, Response::HTTP_OK);
     }
 
