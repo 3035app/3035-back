@@ -385,7 +385,7 @@ class ProcessingController extends RestController
                 'consent'                    => RequestDataHandler::TYPE_STRING,
                 'concerned_people'           => RequestDataHandler::TYPE_STRING,
                 'status'                     => RequestDataHandler::TYPE_INT,
-                'informed_concerned_people'  => RequestDataHandler::TYPE_NULLABLE_ARRAY,
+                # @deprecated to be removed! 'informed_concerned_people'  => RequestDataHandler::TYPE_NULLABLE_ARRAY,
                 'consent_concerned_people'   => RequestDataHandler::TYPE_NULLABLE_ARRAY,
                 'access_concerned_people'    => RequestDataHandler::TYPE_NULLABLE_ARRAY,
                 'delete_concerned_people'    => RequestDataHandler::TYPE_NULLABLE_ARRAY,
