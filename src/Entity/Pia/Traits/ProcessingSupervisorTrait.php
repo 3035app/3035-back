@@ -124,6 +124,15 @@ trait ProcessingSupervisorTrait
         }
     }
 
+    public function removeAllRedactors(): void
+    {
+        if (null !== $this->redactors) {
+            foreach ($this->redactors as $redactor) {
+                $this->redactors->removeElement($redactor);
+            }
+        }
+    }
+
     /**
      * @return Collection
      */

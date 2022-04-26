@@ -691,7 +691,7 @@ throw new AccessDeniedHttpException($json);
     {
         $content = json_decode($request->getContent(), true);
         foreach ([
-            ['redactors_id', 'addRedactor'],
+            ['redactors_id', ['addRedactor', 'removeAllRedactors']],
             ] as $supervisor) {
             $this->methodArraySupervisors($processing, $content, $supervisor);
         }
@@ -810,8 +810,10 @@ throw new AccessDeniedHttpException($json);
         if (array_key_exists($supervisor[0], $content)) {
             $ids = $content[$supervisor[0]]; # array
             if (0 < count($ids)) {
+                // remove all to be restored!
+                call_user_func([$processing, $supervisor[1][1]]);
                 foreach ($ids as $id) {
-                    $this->callUserMethod($processing, $id, $supervisor[1]);
+                    $this->callUserMethod($processing, $id, $supervisor[1][0]);
                 }
             }
         }
