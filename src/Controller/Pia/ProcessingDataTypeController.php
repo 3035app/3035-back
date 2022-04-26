@@ -10,14 +10,14 @@
 
 namespace PiaApi\Controller\Pia;
 
-use JMS\Serializer\SerializerInterface;
-use PiaApi\DataHandler\RequestDataHandler;
-use PiaApi\Services\ProcessingDataTypeService;
-use PiaApi\Entity\Pia\ProcessingDataType;
-use PiaApi\Entity\Pia\Processing;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
+use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Pia\ProcessingDataType;
+use PiaApi\Entity\Pia\Processing;
+use PiaApi\Services\ProcessingDataTypeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,10 +83,7 @@ class ProcessingDataTypeController extends RestController
     public function listAction(Request $request)
     {
         $processingId = $request->get('processing');
-
-        $collection = $this->getRepository()
-            ->findBy(['processing' => $processingId]);
-
+        $collection = $this->getRepository()->findBy(['processing' => $processingId]);
         return $this->view($collection, Response::HTTP_OK);
     }
 
@@ -188,9 +185,7 @@ class ProcessingDataTypeController extends RestController
         $processingDataType->setRetentionPeriod($retention);
         $processingDataType->setSensitive($sensitive);
         $processingDataType->setData($data);
-
         $this->persist($processingDataType);
-
         return $this->view($processingDataType, Response::HTTP_OK);
     }
 
