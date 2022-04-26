@@ -407,6 +407,11 @@ class ProcessingController extends RestController
         // before merging!
         $this->notifyOrTrack($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
+
+        // detect that fields to save comments
+$json = json_encode($processing->getInformedConcernedPeople());
+throw new AccessDeniedHttpException($json);
+
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
