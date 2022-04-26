@@ -20,8 +20,6 @@ use PiaApi\Entity\Pia\Processing;
 use PiaApi\Services\ProcessingService;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 class ProcessingTransformer extends AbstractTransformer
 {
     /**
@@ -193,10 +191,6 @@ class ProcessingTransformer extends AbstractTransformer
         $descriptor->mergeDataTypes(
             $this->dataTypeTransformer->importDataTypes($processing->getProcessingDataTypes())
         );
-
-throw new AccessDeniedHttpException(
-    json_encode($descriptor->getInformedConcernedPeople())
-);
 
         return $descriptor;
     }
