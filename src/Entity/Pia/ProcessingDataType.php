@@ -112,7 +112,7 @@ class ProcessingDataType
     /**
      * @param bool $sensitive
      */
-    public function setSensitive(?bool $sensitive = true): void
+    public function setSensitive(?bool $sensitive=true): void
     {
         $this->sensitive = $sensitive;
     }
