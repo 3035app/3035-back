@@ -238,11 +238,12 @@ class EmailingService
         if (is_array($mixed) || $mixed instanceof \ArrayAccess) {
             $recipients = [];
             foreach ($mixed as $recipient) {
-                $recipients[] = [$recipient->getEmail() => $recipient->getProfile()->getFullname()];
+                $recipients[$recipient->getEmail()] = $recipient->getProfile()->getFullname();
             }
             return $recipients;
         } else {
-            return [$mixed->getEmail() => $mixed->getProfile()->getFullname()];
+            $arr = [$mixed->getEmail() => $mixed->getProfile()->getFullname()];
+            return $arr;
         }
     }
 
