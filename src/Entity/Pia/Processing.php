@@ -280,6 +280,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $canShow;
 
     /**
+     * @deprecated to be removed!
      * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -940,6 +941,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated to be removed!
      * @return array|null
      */
     public function getInformedConcernedPeople(): ?array
@@ -948,6 +950,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated to be removed!
      * @param array|null $informedConcernedPeople
      */
     public function setInformedConcernedPeople(?array $informedConcernedPeople = null): void

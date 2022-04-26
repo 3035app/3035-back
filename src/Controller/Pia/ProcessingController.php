@@ -209,7 +209,6 @@ class ProcessingController extends RestController
      *         @Swg\Property(property="attachments", type="array", @Swg\Items(
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
-     *         @Swg\Property(property="informed_concerned_people", type="array"),
      *         @Swg\Property(property="consent_concerned_people", type="array"),
      *         @Swg\Property(property="access_concerned_people", type="array"),
      *         @Swg\Property(property="delete_concerned_people", type="array"),
@@ -327,7 +326,6 @@ class ProcessingController extends RestController
      *              ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"Default"})
      *         )),
      *         @Swg\Property(property="recipients", type="string"),
-     *         @Swg\Property(property="informed_concerned_people", type="array"),
      *         @Swg\Property(property="consent_concerned_people", type="array"),
      *         @Swg\Property(property="access_concerned_people", type="array"),
      *         @Swg\Property(property="delete_concerned_people", type="array"),
@@ -410,7 +408,6 @@ class ProcessingController extends RestController
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
-
         return $this->view($processing, Response::HTTP_OK);
     }
 
