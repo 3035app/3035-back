@@ -10,6 +10,8 @@
 
 namespace PiaApi\DataExchange\Transformer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\SerializerInterface;
 use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
 use PiaApi\Entity\Oauth\User;
@@ -40,7 +42,7 @@ class ProcessingTransformer extends AbstractTransformer
      */
     protected $dataTypeTransformer;
 
-    protected $redactor;
+    protected $redactors;
     protected $dataController;
     protected $evaluatorPending;
     protected $dataProtectionOfficerPending;
@@ -53,6 +55,8 @@ class ProcessingTransformer extends AbstractTransformer
         DataTypeTransformer $dataTypeTransformer
     ) {
         parent::__construct($serializer, $validator);
+
+        $this->redactors = new ArrayCollection();
 
         $this->processingService = $processingService;
         $this->piaTransformer = $piaTransformer;
@@ -69,14 +73,18 @@ class ProcessingTransformer extends AbstractTransformer
         return $this->folder;
     }
 
-    public function setRedactor(User $redactor)
+    public function addRedactor(User $redactor)
     {
-        $this->redactor = $redactor;
+        $this->redactors->add($redactor);
     }
 
-    public function getRedactor(): User
+    public function getRedactors(): array
     {
-        return $this->redactor;
+        $redactors = [];
+        foreach ($this->redactors as $redactor) {
+            array_push($redactors, $redactor);
+        }
+        return $redactors;
     }
 
     public function setDataController(User $dataController)
@@ -114,7 +122,7 @@ class ProcessingTransformer extends AbstractTransformer
         $processing = $this->processingService->createProcessing(
             $descriptor->getName(),
             $this->getFolder(),
-            $this->getRedactor(),
+            $this->getRedactors(),
             $this->getDataController(),
             $this->getEvaluatorPending(),
             $this->getDataProtectionOfficerPending(),

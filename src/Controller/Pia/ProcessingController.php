@@ -181,9 +181,9 @@ class ProcessingController extends RestController
      *     required=false,
      *     @Swg\Schema(
      *         type="object",
-     *         required={"name", "redactor_id", "data_controller_id", "folder"},
+     *         required={"name", "redactors_id", "data_controller_id", "folder"},
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="redactors_id", type="number"),
      *         @Swg\Property(property="data_controller_id", type="number"),
      *         @Swg\Property(property="evaluator_pending_id", type="number"),
      *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
@@ -236,16 +236,17 @@ class ProcessingController extends RestController
     {
         $entity = $this->serializer->deserialize($request->getContent(), $this->getEntityClass(), 'json');
         $folder = $this->getResource($entity->getFolder()->getId(), Folder::class);
-        list($redactor,
+        list($redactors,
             $dataController,
             $evaluatorPending,
             $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
+
         $this->canCreateResourceOr403($folder);
 
         $processing = $this->processingService->createProcessing(
             $request->get('name'),
             $folder,
-            $redactor,
+            $redactors,
             $dataController,
             $evaluatorPending,
             $dataProtectionOfficerPending
@@ -290,7 +291,7 @@ class ProcessingController extends RestController
      *     @Swg\Schema(
      *         type="object",
      *         @Swg\Property(property="name", type="string"),
-     *         @Swg\Property(property="redactor_id", type="number"),
+     *         @Swg\Property(property="redactors_id", type="array"),
      *         @Swg\Property(property="data_controller_id", type="number"),
      *         @Swg\Property(property="evaluator_pending_id", type="number"),
      *         @Swg\Property(property="data_protection_officer_pending_id", type="number"),
@@ -685,7 +686,11 @@ class ProcessingController extends RestController
     {
         $content = json_decode($request->getContent(), true);
         foreach ([
-            ['redactor_id', 'setRedactor'],
+            ['redactors_id', ['addRedactor', 'removeAllRedactors']],
+            ] as $supervisor) {
+            $this->methodArraySupervisors($processing, $content, $supervisor);
+        }
+        foreach ([
             ['data_controller_id', 'setDataController'],
             ['evaluator_pending_id', 'setEvaluatorPending'],
             ['data_protection_officer_pending_id', 'setDataProtectionOfficerPending'],
@@ -728,7 +733,10 @@ class ProcessingController extends RestController
 
     private function getProcessingSupervisors($request): array
     {
-        $redactor = $this->getResource($request->get('redactor_id'), User::class);
+        $redactors = [];
+        foreach ($request->get('redactors_id') as $key) {
+            array_push($redactors, $this->getResource($key, User::class));
+        }
         $dataController = $this->getResource($request->get('data_controller_id'), User::class);
 
         // evaluator data for pia creation
@@ -743,16 +751,17 @@ class ProcessingController extends RestController
             ? $this->getResource($dataProtectionOfficerPendingId, User::class)
             : null;
 
-        return [$redactor, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
+        return [$redactors, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
     }
 
     private function setSupervisors($supervisors)
     {
 
-        if (array_key_exists('redactor_id', $supervisors))
+        if (array_key_exists('redactors_id', $supervisors))
         {
-            $redactor = $this->getResource($supervisors['redactor_id'], User::class);
-            $this->processingTransformer->setRedactor($redactor);            
+            foreach ($supervisors['redactors_id'] as $key) {
+                $this->processingTransformer->addRedactor($this->getResource($key, User::class));
+            }
         }
         if (array_key_exists('data_controller_id', $supervisors))
         {
@@ -783,15 +792,35 @@ class ProcessingController extends RestController
     {
         // property_id
         if (array_key_exists($supervisor[0], $content)) {
-            $id = $content[$supervisor[0]];
+            $id = $content[$supervisor[0]]; # null or string
             if (null != $id && '' != $id) {
-                $user = $this->getResource($id, User::class);
-                if (null !== $user) {
-                    // method_name, change pia as well
-                    call_user_func([$processing, $supervisor[1]], $user);
+                $this->callUserMethod($processing, $id, $supervisor[1]);
+            }
+        }
+    }
+
+    private function methodArraySupervisors($processing, $content, $supervisor): void
+    {
+        // property_id
+        if (array_key_exists($supervisor[0], $content)) {
+            $ids = $content[$supervisor[0]]; # array
+            if (0 < count($ids)) {
+                // remove all to be restored!
+                call_user_func([$processing, $supervisor[1][1]]);
+                foreach ($ids as $id) {
+                    $this->callUserMethod($processing, $id, $supervisor[1][0]);
                 }
             }
         }
+    }
+
+    private function callUserMethod($processing, $userid, $method): void
+    {
+        $user = $this->getResource($userid, User::class);
+        if (null !== $user) {
+            // method_name, change pia as well
+            call_user_func([$processing, $method], $user);
+        }        
     }
 
     /**
@@ -811,8 +840,8 @@ class ProcessingController extends RestController
                 // evaluator not defined!
                 throw new AccessDeniedHttpException('evaluator not defined!');
             } else {
-                $source = $processing->getRedactor();
-                $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $source);
+                $sources = $processing->getRedactors();
+                $this->emailingService->notifyAskForProcessingEvaluation($processingAttr, $recipient, $sources);
             }
             # FIXME add an evaluation request tracking? unfortunately, at this point we do not know the pia!
         }
@@ -822,9 +851,9 @@ class ProcessingController extends RestController
             // notify redactor
             $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
             array_push($processingAttr, $processing);
-            $recipient = $processing->getRedactor();
+            $recipients = $processing->getRedactors();
             $source = $processing->getEvaluatorPending();
-            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
+            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipients, $source);
         }
     }
 }
