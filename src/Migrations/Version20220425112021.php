@@ -35,9 +35,11 @@ class Version20220425112021 extends AbstractMigration implements ContainerAwareI
         $total = count($processings);
         $this->write("<info>number of processings: {$total}.</info>");
         foreach ($processings as $processing) {
-            $this->connection->insert('pia_processings_redactors', [
-                'processing_id' => $processing['id'], 'redactor_id' => $processing['redactor_id']
-            ]);
+            if (!empty($processing['redactor_id'])) {
+                $this->connection->insert('pia_processings_redactors', [
+                    'processing_id' => $processing['id'], 'redactor_id' => $processing['redactor_id']
+                ]);
+            }
         }
     }
 
