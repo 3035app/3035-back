@@ -10,6 +10,7 @@
 
 namespace PiaApi\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PiaApi\Entity\Pia\Processing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -165,9 +166,10 @@ class EmailingService
     }
 
     /**
+     * @param $mixed (User|array)
      * @return array
      */
-    private function getEmailParameters($objAttr, $recipient, $source, $tmpl)
+    private function getEmailParameters($objAttr, $mixed, $source, $tmpl)
     {
         $index = count($objAttr) - 1;
         if ($objAttr[$index] instanceof Processing) {
@@ -180,7 +182,7 @@ class EmailingService
         $template .= '%s.email.twig';
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = $this->getRecipient($recipient);
+        $to = $this->getRecipients($mixed);
         return [$subject, $body, $to];
     }
 
@@ -193,7 +195,7 @@ class EmailingService
         $params = [];
         $params['processing_name'] = $name;
         $params['processing_url'] = $this->getAbsoluteUrl($route, $routeAttr);
-        $params['source_name'] = $source->getProfile()->getFullname();
+        $params['source_name'] = $this->getSourceParameters($source);
         return $params;
     }
 
@@ -206,16 +208,43 @@ class EmailingService
         $params = [];
         $params['pia_name'] = $name;
         $params['pia_url'] = $this->getAbsoluteUrl($route, $routeAttr);
-        $params['source_name'] = $source->getProfile()->getFullname();
+        $params['source_name'] = $this->getSourceParameters($source);
         return $params;
     }
 
     /**
+     * @param $mixed (User|array)
      * @return array
      */
-    private function getRecipient($recipient)
+    private function getSourceParameters($mixed)
     {
-        return [$recipient->getEmail() => $recipient->getProfile()->getFullname()];
+        if (is_array($mixed) || $mixed instanceof \ArrayAccess) {
+            $sources_names = [];
+            foreach ($mixed as $source) {
+                array_push($sources_names, $source->getProfile()->getFullname());
+            }
+            return implode(' ou ', $sources_names);
+        } else {
+            return $mixed->getProfile()->getFullname();
+        }
+    }
+
+    /**
+     * @param $mixed (User|array)
+     * @return array
+     */
+    private function getRecipients($mixed)
+    {
+        if (is_array($mixed) || $mixed instanceof \ArrayAccess) {
+            $recipients = [];
+            foreach ($mixed as $recipient) {
+                $recipients[$recipient->getEmail()] = $recipient->getProfile()->getFullname();
+            }
+            return $recipients;
+        } else {
+            $arr = [$mixed->getEmail() => $mixed->getProfile()->getFullname()];
+            return $arr;
+        }
     }
 
     /**

@@ -329,8 +329,8 @@ class EvaluationController extends PiaSubController
         $piaAttr = $this->getEvaluationRoute($evaluation);
         array_push($piaAttr, $pia);
         $recipient = $pia->getEvaluator();
-        $source = $processing->getRedactor();
-        $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $recipient, $source);
+        $sources = $processing->getRedactors();
+        $this->emailingService->notifyAskForPiaEvaluation($piaAttr, $recipient, $sources);
 
         // check if all evaluations requested for that pia
         // and one evaluation requested for that processing
@@ -356,9 +356,9 @@ class EvaluationController extends PiaSubController
             // notify redactor after evaluating each page of pia
             $piaAttr = $this->getEvaluationRoute($evaluation);
             array_push($piaAttr, $pia);
-            $recipient = $processing->getRedactor();
+            $recipients = $processing->getRedactors();
             $source = $pia->getEvaluator();
-            $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
+            $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipients, $source);
         }
     }
 
