@@ -10,14 +10,14 @@
 
 namespace PiaApi\Controller\Pia;
 
-use JMS\Serializer\SerializerInterface;
-use PiaApi\DataHandler\RequestDataHandler;
-use PiaApi\Services\ProcessingDataTypeService;
-use PiaApi\Entity\Pia\ProcessingDataType;
-use PiaApi\Entity\Pia\Processing;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
+use PiaApi\DataHandler\RequestDataHandler;
+use PiaApi\Entity\Pia\ProcessingDataType;
+use PiaApi\Entity\Pia\Processing;
+use PiaApi\Services\ProcessingDataTypeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,10 +83,7 @@ class ProcessingDataTypeController extends RestController
     public function listAction(Request $request)
     {
         $processingId = $request->get('processing');
-
-        $collection = $this->getRepository()
-            ->findBy(['processing' => $processingId]);
-
+        $collection = $this->getRepository()->findBy(['processing' => $processingId]);
         return $this->view($collection, Response::HTTP_OK);
     }
 
@@ -176,21 +173,19 @@ class ProcessingDataTypeController extends RestController
     {
         $processing = $this->getResource($request->get('processing_id', -1), Processing::class);
         $reference = $request->get('reference', null);
+        $data = $request->get('data', null);
         $retention = $request->get('retention_period', null);
         $sensitive = $request->get('sensitive', null);
-        $data = $request->get('data', null);
 
         $processingDataType = $this->processingDataTypeService->createProcessingDataType(
             $processing,
             $reference
         );
 
+        $processingDataType->setData($data);
         $processingDataType->setRetentionPeriod($retention);
         $processingDataType->setSensitive($sensitive);
-        $processingDataType->setData($data);
-
         $this->persist($processingDataType);
-
         return $this->view($processingDataType, Response::HTTP_OK);
     }
 
@@ -245,19 +240,20 @@ class ProcessingDataTypeController extends RestController
     public function updateAction(Request $request, $id)
     {
         $processingDataType = $this->getResource($id);
-        $this->canAccessResourceOr403($processingDataType);
 
+        if (null === $processingDataType) {
+            return $this->view([], Response::HTTP_OK);
+        }
+
+        $this->canAccessResourceOr403($processingDataType);
         $updatableAttributes = [
             'reference'         => RequestDataHandler::TYPE_STRING,
             'data'              => RequestDataHandler::TYPE_STRING,
             'retention_period'  => RequestDataHandler::TYPE_STRING,
             'sensitive'         => RequestDataHandler::TYPE_BOOL,
         ];
-
         $this->mergeFromRequest($processingDataType, $updatableAttributes, $request);
-
         $this->update($processingDataType);
-
         return $this->view($processingDataType, Response::HTTP_OK);
     }
 
