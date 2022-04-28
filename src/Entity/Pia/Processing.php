@@ -48,7 +48,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $name;
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -105,7 +105,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $processors;
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @ORM\Column(type="text", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -280,6 +280,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     protected $canShow;
 
     /**
+     * @deprecated to be removed!
      * @ORM\Column(type="array", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -368,7 +369,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @return string
      */
     public function getAuthor(): string
@@ -377,7 +378,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @param string $author
      */
     public function setAuthor(string $author): void
@@ -824,7 +825,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @return string
      */
     public function getDesignatedController(): string
@@ -833,7 +834,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @param string $designatedController
      */
     public function setDesignatedController(string $designatedController): void
@@ -940,6 +941,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated to be removed!
      * @return array|null
      */
     public function getInformedConcernedPeople(): ?array
@@ -948,6 +950,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @deprecated to be removed!
      * @param array|null $informedConcernedPeople
      */
     public function setInformedConcernedPeople(?array $informedConcernedPeople = null): void

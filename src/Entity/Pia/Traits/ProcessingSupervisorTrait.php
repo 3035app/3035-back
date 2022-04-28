@@ -32,7 +32,7 @@ trait ProcessingSupervisorTrait
     protected $redactors;
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=true)
      * @JMS\Exclude()
@@ -84,7 +84,7 @@ trait ProcessingSupervisorTrait
     }
 
     /**
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @return User
      */
     public function getRedactor(): ?User
@@ -94,7 +94,7 @@ trait ProcessingSupervisorTrait
 
     /**
      * Sets redactor.
-     * @deprecated TO BE REMOVED!
+     * @deprecated to be removed!
      * @param User $redactor
      * @return $this
      */

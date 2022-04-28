@@ -57,7 +57,6 @@ class ProcessingTransformer extends AbstractTransformer
         parent::__construct($serializer, $validator);
 
         $this->redactors = new ArrayCollection();
-
         $this->processingService = $processingService;
         $this->piaTransformer = $piaTransformer;
         $this->dataTypeTransformer = $dataTypeTransformer;
