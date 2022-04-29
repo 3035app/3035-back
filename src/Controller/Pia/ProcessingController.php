@@ -256,6 +256,8 @@ class ProcessingController extends RestController
             $processing->addUser($user);
         }
 
+        # 1/ assigning user email
+
         // attach connected user (creator) to that processing
         $processing->addUser($this->getUser());
         $this->persist($processing);
@@ -401,6 +403,10 @@ class ProcessingController extends RestController
                 'evaluation_state'          => RequestDataHandler::TYPE_INT,
             ]);
         }
+
+        # 1/ get ids from request
+        # 2/ compare with get<user> methods
+        # 3/ assigning user email if different
 
         // before merging!
         $this->notifyOrTrack($request, $processing);

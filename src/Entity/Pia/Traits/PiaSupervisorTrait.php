@@ -33,6 +33,20 @@ trait PiaSupervisorTrait
     protected $dataProtectionOfficer;
 
     /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("supervisors")
+     * 
+     * @return array
+     */
+    public function getPiaSupervisors()
+    {
+        return [
+            'evaluator' => $this->getSupervisor($this->getEvaluator()),
+            'data_protection_officer' => $this->getSupervisor($this->getDataProtectionOfficer()),
+        ];
+    }
+
+    /**
      * @return User
      */
     public function getEvaluator(): User
@@ -68,5 +82,10 @@ trait PiaSupervisorTrait
     {
         $this->dataProtectionOfficer = $dataProtectionOfficer;
         return $this;
+    }
+
+    private function getSupervisor($obj)
+    {
+        return ['id' => $obj->getId(), 'name' => $obj->getProfile()->getFullname()];
     }
 }

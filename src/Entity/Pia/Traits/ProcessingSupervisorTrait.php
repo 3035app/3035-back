@@ -76,10 +76,10 @@ trait ProcessingSupervisorTrait
     public function getProcessingSupervisors()
     {
         return [
-            'redactors_id' => $this->getSupervisors($this->getRedactors()),
-            'data_controller_id' => $this->getSupervisor($this->getDataController()),
-            'evaluator_pending_id' => $this->getSupervisor($this->getEvaluatorPending()),
-            'data_protection_officer_pending_id' => $this->getSupervisor($this->getDataProtectionOfficerPending())
+            'redactors' => $this->getSupervisors($this->getRedactors()),
+            'data_controller' => $this->getSupervisor($this->getDataController()),
+            'evaluator_pending' => $this->getSupervisor($this->getEvaluatorPending()),
+            'data_protection_officer_pending' => $this->getSupervisor($this->getDataProtectionOfficerPending()),
         ];
     }
 
@@ -215,18 +215,18 @@ trait ProcessingSupervisorTrait
         if (null === $supervisors) {
             return [];
         }
-        $ids = [];
+        $back = [];
         foreach ($supervisors as $supervisor) {
-            array_push($ids, $supervisor->getId());
+            array_push($back, $this->getSupervisor($supervisor));
         }
-        return $ids;
+        return $back;
     }
 
     private function getSupervisor($obj)
     {
         if (null === $obj) {
-            return null;
+            return ['id' => null, 'name' => null];
         }
-        return $obj->getId();
+        return ['id' => $obj->getId(), 'name' => $obj->getProfile()->getFullname()];
     }
 }
