@@ -244,6 +244,10 @@ class PiaController extends RestController
             return $this->view(['You must set Structure to create PIA'], Response::HTTP_BAD_REQUEST);
         }
 
+        # 1/ get users from request
+        # 2/ compare with get<user> methods and keep any different
+        # 3/ assigning users email
+
         $pia = $this->newFromRequest($request);
         $pia->setProcessing($processing);
         $pia->setStructure($structure);

@@ -256,11 +256,15 @@ class ProcessingController extends RestController
             $processing->addUser($user);
         }
 
-        # 1/ assigning user email
-
         // attach connected user (creator) to that processing
         $processing->addUser($this->getUser());
         $this->persist($processing);
+
+        # 1/ assigning users email
+        # do it after persist to get id!
+        $recipients = $this->getAvailableRecipients($processing);
+        $this->assigningUsersEmail($processing, $recipients);
+
         return $this->view($processing, Response::HTTP_OK);
     }
 
@@ -404,9 +408,24 @@ class ProcessingController extends RestController
             ]);
         }
 
-        # 1/ get ids from request
-        # 2/ compare with get<user> methods
-        # 3/ assigning user email if different
+        # 1/ get users from request
+        list($redactors,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
+foreach ($redactors as $redactor) {
+    print_r($redactor->getProfile()->getFullname());
+}
+print_r($dataController->getProfile()->getFullname());
+if (null != $evaluatorPending) print_r($evaluatorPending->getProfile()->getFullname());
+if (null != $dataProtectionOfficerPending) print_r($dataProtectionOfficerPending->getProfile()->getFullname());
+
+        # 2/ compare with get<user> methods and keep any different
+        # do it before update!
+        $recipients = $this->getRequestedRecipients($processing, $redactors, $dataController,
+            $evaluatorPending, $dataProtectionOfficerPending);
+        # 3/ assigning users email
+        $this->assigningUsersEmail($processing, $recipients);
 
         // before merging!
         $this->notifyOrTrack($request, $processing);
@@ -734,8 +753,66 @@ class ProcessingController extends RestController
         }
     }
 
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer.
+     */
+    public function getAvailableRecipients($processing): array
+    {
+        $recipients = [];
+        foreach ($processing->getRedactors() as $redactor) {
+            array_push($recipients, $redactor);
+        }
+        array_push($recipients, $processing->getDataController());
+        if (null !== $processing->getEvaluatorPending()) {
+            array_push($recipients, $processing->getEvaluatorPending());
+        }
+        if (null !== $processing->getDataProtectionOfficerPending()) {
+            array_push($recipients, $processing->getDataProtectionOfficerPending());
+        }
+        return $recipients;
+    }
+
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer,
+     * if they are different from those who are in db.
+     */
+    public function getRequestedRecipients($processing, $redactors, $dataController,
+            $evaluatorPending, $dataProtectionOfficerPending): array
+    {
+        $recipients = [];
+        foreach ($redactors as $redactor) {
+            array_push($recipients, $redactor['id']);
+        }
+        array_push($recipients, $dataController['id']);
+        if (null !== $evaluatorPending['id']) {
+            array_push($recipients, $evaluatorPending['id']);
+        }
+        if (null !== $dataProtectionOfficerPending['id']) {
+            array_push($recipients, $dataProtectionOfficerPending['id']);
+        }
+throw new AccessDeniedHttpException('coucou! ' . implode('*', $recipients));
+
+        return $recipients;
+    }
+
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer from processing,
+     * if exist and send email.
+     */
+    public function assigningUsersEmail($processing, $recipients): void
+    {
+        // notify users on processing
+        $processingAttr = [$processing->getName(), '/processing/{id}',
+            ['{id}' => $processing->getId()]];
+        array_push($processingAttr, $processing);
+        $this->emailingService->notifyAssignProcessingAndPiaUsers($processingAttr, $recipients,
+            $this->getUser());
+    }
+
     private function getProcessingSupervisors($request): array
     {
+throw new AccessDeniedHttpException('coucou!');
+
         $redactors = [];
         foreach ($request->get('redactors_id') as $key) {
             array_push($redactors, $this->getResource($key, User::class));

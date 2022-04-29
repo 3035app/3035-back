@@ -45,6 +45,28 @@ class EmailingService
     }
 
     /**
+     * send email to users when they are assigning processing or pia.
+     */
+    public function notifyAssignProcessingAndPiaUsers($attributes, $recipients, $source)
+    {
+        list($name, $route, $routeAttr) = $attributes;
+        $params = [];
+        $params['object_name'] = $name;
+        $params['source_name'] = $this->getSourceParameters($source);
+        $params['source_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+
+        $template = 'pia/Email/assigning_processing_and_pia_user%s.email.twig';
+        $subject = $this->twig->render(sprintf($template, '_subject'), $params);
+        $body = $this->twig->render(sprintf($template, '_body'), $params);
+
+        foreach ($recipients as $recipient) {
+            $to = $this->getRecipients($recipient);
+            $this->sendEmail($subject, $body, $this->from, $to);
+        }
+        return true;
+    }
+
+    /**
      * send email to evaluator when a redactor ask for evaluating a processing.
      */
     public function notifyAskForProcessingEvaluation($processingAttr, $recipient, $source)
@@ -189,9 +211,9 @@ class EmailingService
     /**
      * @return array
      */
-    private function getProcessingParameters($processing, $source)
+    private function getProcessingParameters($attributes, $source)
     {
-        list($name, $route, $routeAttr) = $processing;
+        list($name, $route, $routeAttr) = $attributes;
         $params = [];
         $params['processing_name'] = $name;
         $params['processing_url'] = $this->getAbsoluteUrl($route, $routeAttr);
