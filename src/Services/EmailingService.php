@@ -171,7 +171,7 @@ class EmailingService
      */
     private function getEmailParameters($objAttr, $recipient, $source, $tmpl)
     {
-        $index = count($objAttr) - 1;
+        $index = count($objAttr) - 1; // object is last item
         if ($objAttr[$index] instanceof Processing) {
             $params = $this->getProcessingParameters($objAttr, $source);
             $template = sprintf('pia/Email/processing/%s', $tmpl);
