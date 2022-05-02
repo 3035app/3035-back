@@ -215,11 +215,11 @@ trait ProcessingSupervisorTrait
         if (null === $supervisors) {
             return [];
         }
-        $ids = [];
+        $users = [];
         foreach ($supervisors as $supervisor) {
-            array_push($ids, $supervisor->getId());
+            array_push($users, $supervisor->getId());
         }
-        return $ids;
+        return $users;
     }
 
     private function getSupervisor($obj)

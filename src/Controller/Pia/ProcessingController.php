@@ -259,6 +259,12 @@ class ProcessingController extends RestController
         // attach connected user (creator) to that processing
         $processing->addUser($this->getUser());
         $this->persist($processing);
+
+        # 1/ assigning users email
+        # do it after persist to get id!
+        $recipients = $this->getAvailableRecipients($processing);
+        $this->assigningUsersEmail($this->emailingService, $processing, $recipients);
+
         return $this->view($processing, Response::HTTP_OK);
     }
 
@@ -402,12 +408,31 @@ class ProcessingController extends RestController
             ]);
         }
 
+        # 1/ get users from request
+        # do it before update!
+        list($redactors,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
+        # 2/ keep users who are in request and not in db
+        $redactors = $this->intersectRedactorsFromRequestAndDb($processing, $redactors);
+
         // before merging!
         $this->notifyOrTrack($request, $processing);
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
         $this->update($processing);
+
+        # 3/ check those who are not null and keep them
+        $recipients = $this->getRequestedRecipients(
+            $redactors,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending);
+        # 4/ assigning users email
+        $this->assigningUsersEmail($this->emailingService, $processing, $recipients);
+
         return $this->view($processing, Response::HTTP_OK);
     }
 
@@ -728,13 +753,26 @@ class ProcessingController extends RestController
         }
     }
 
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer,
+     * from request if exist.
+     */
     private function getProcessingSupervisors($request): array
     {
+        // redactors
         $redactors = [];
-        foreach ($request->get('redactors_id') as $key) {
-            array_push($redactors, $this->getResource($key, User::class));
+        $redactorIds = $request->get('redactors_id');
+        if (null != $redactorIds) {
+            foreach ($redactorIds as $key) {
+                array_push($redactors, $this->getResource($key, User::class));
+            }
         }
-        $dataController = $this->getResource($request->get('data_controller_id'), User::class);
+
+        // data controller
+        $dataControllerId = $request->get('data_controller_id');
+        $dataController = (null != $dataControllerId)
+            ? $this->getResource($dataControllerId, User::class)
+            : null;
 
         // evaluator data for pia creation
         $evaluatorPendingId = $request->get('evaluator_pending_id');
@@ -749,6 +787,74 @@ class ProcessingController extends RestController
             : null;
 
         return [$redactors, $dataController, $evaluatorPending, $dataProtectionOfficerPending];
+    }
+
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer.
+     */
+    private function getAvailableRecipients($processing): array
+    {
+        $recipients = [];
+        foreach ($processing->getRedactors() as $redactor) {
+            array_push($recipients, $redactor);
+        }
+        array_push($recipients, $processing->getDataController());
+        if (null !== $processing->getEvaluatorPending()) {
+            array_push($recipients, $processing->getEvaluatorPending());
+        }
+        if (null !== $processing->getDataProtectionOfficerPending()) {
+            array_push($recipients, $processing->getDataProtectionOfficerPending());
+        }
+        return $recipients;
+    }
+
+    /**
+     * Gets redactors, dataController, evaluator and dataProtectionOfficer,
+     * if they are different from those who are in db.
+     */
+    private function getRequestedRecipients(
+            $redactors,
+            $dataController,
+            $evaluatorPending,
+            $dataProtectionOfficerPending): array
+    {
+        $recipients = [];
+        if (!empty($redactors)) {
+            foreach ($redactors as $redactor) {
+                array_push($recipients, $redactor);
+            }
+        }
+        if (null !== $dataController) {
+            array_push($recipients, $dataController);
+        }
+        if (null !== $evaluatorPending) {
+            array_push($recipients, $evaluatorPending);
+        }
+        if (null !== $dataProtectionOfficerPending) {
+            array_push($recipients, $dataProtectionOfficerPending);
+        }
+        return $recipients;
+    }
+
+    /**
+     * Keeps users who are in request and not in db.
+     */
+    private function intersectRedactorsFromRequestAndDb($processing, $redactors): array
+    {
+        $arrDb = [];
+        foreach ($processing->getRedactors() as $redactor) {
+            $arrDb[] = $redactor->getId();
+        }
+
+        $arrRequest = [];
+        if (!empty($redactors)) {
+            foreach ($redactors as $redactor) {
+                if (!in_array($redactor->getId(), $arrDb)) {
+                    array_push($arrRequest, $redactor);
+                }
+            }
+        }
+        return $arrRequest;
     }
 
     private function setSupervisors($supervisors)
