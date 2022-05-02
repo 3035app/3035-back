@@ -954,9 +954,10 @@ class ProcessingController extends RestController
             // notify redactor
             $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
             array_push($processingAttr, $processing);
-            $recipients = $processing->getRedactors();
             $source = $processing->getEvaluatorPending();
-            $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipients, $source);
+            foreach ($processing->getRedactors() as $recipient) {
+                $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
+            }
         }
     }
 }

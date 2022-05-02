@@ -180,20 +180,20 @@ class EmailingService
         // dev environment: log email
         if ($this->isDevEnvironment()) {
             $this->logger->info('Emailing to ' . json_encode($to) . ' : ' . $subject . "\n" . $body);
-            return 0; // number of successful recipients reached
+            return 0;
         }
 
-        // number of successful recipients reached
+        // only 1 recipient
         return $this->mailer->send($email);
     }
 
     /**
-     * @param $mixed (User|array)
+     * @param $recipient User
      * @return array
      */
-    private function getEmailParameters($objAttr, $mixed, $source, $tmpl)
+    private function getEmailParameters($objAttr, $recipient, $source, $tmpl)
     {
-        $index = count($objAttr) - 1;
+        $index = count($objAttr) - 1; // object is last item
         if ($objAttr[$index] instanceof Processing) {
             $params = $this->getProcessingParameters($objAttr, $source);
             $template = sprintf('pia/Email/processing/%s', $tmpl);
@@ -204,7 +204,7 @@ class EmailingService
         $template .= '%s.email.twig';
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
-        $to = $this->getRecipients($mixed);
+        $to = $this->getRecipient($recipient);
         return [$subject, $body, $to];
     }
 
@@ -252,21 +252,12 @@ class EmailingService
     }
 
     /**
-     * @param $mixed (User|array)
+     * @param $recipient User
      * @return array
      */
-    private function getRecipients($mixed)
+    private function getRecipient($recipient)
     {
-        if (is_array($mixed) || $mixed instanceof \ArrayAccess) {
-            $recipients = [];
-            foreach ($mixed as $recipient) {
-                $recipients[$recipient->getEmail()] = $recipient->getProfile()->getFullname();
-            }
-            return $recipients;
-        } else {
-            $arr = [$mixed->getEmail() => $mixed->getProfile()->getFullname()];
-            return $arr;
-        }
+        return [$recipient->getEmail() => $recipient->getProfile()->getFullname()];
     }
 
     /**
