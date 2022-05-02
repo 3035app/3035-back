@@ -20,6 +20,7 @@ use PiaApi\DataHandler\RequestDataHandler;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Pia;
 use PiaApi\Entity\Pia\Processing;
+use PiaApi\Services\EmailingService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -281,6 +282,21 @@ abstract class RestController extends AbstractFOSRestController
         $this->canAccessResourceOr403($entity);
 
         return $this->view($entity, Response::HTTP_OK);
+    }
+
+    /**
+     * Send email to recipients with processing data.
+     */
+    public function assigningUsersEmail(EmailingService $emailing, $processing, $recipients): void
+    {
+        // notify users on processing
+        $processingAttr = [$processing->getName(), '/processing/{id}',
+            ['{id}' => $processing->getId()]];
+        array_push($processingAttr, $processing);
+        foreach ($recipients as $recipient) {
+            $emailing->notifyAssignProcessingAndPiaUsers($processingAttr, $recipient,
+                $this->getUser());
+        }
     }
 
     /**

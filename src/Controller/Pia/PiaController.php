@@ -244,11 +244,20 @@ class PiaController extends RestController
             return $this->view(['You must set Structure to create PIA'], Response::HTTP_BAD_REQUEST);
         }
 
+        # 1/ get users from request
+        # do it before persist!
+        list($evaluator, $dataProtectionOfficer) = $this->getPiaSupervisors($request);
+        # 2/ keep users who are in request and not in db
+        $recipients = $this->intersectSupervisors($processing, $evaluator, $dataProtectionOfficer);
+
         $pia = $this->newFromRequest($request);
         $pia->setProcessing($processing);
         $pia->setStructure($structure);
         $pia = $this->setPiaSupervisors($request, $pia);
         $this->persist($pia);
+
+        # 3/ assigning users email
+        $this->assigningUsersEmail($this->emailingService, $processing, $recipients);
 
         return $this->view($pia, Response::HTTP_OK);
     }
@@ -517,6 +526,49 @@ class PiaController extends RestController
         if (!in_array($resourceStructure, $structures)) {
             throw new AccessDeniedHttpException();
         }
+    }
+
+    /**
+     * Gets evaluator and dataProtectionOfficer from request if exist.
+     */
+    private function getPiaSupervisors($request): array
+    {
+        // evaluator data for pia creation
+        $evaluatorId = $request->get('evaluator_id');
+        $evaluator = (null != $evaluatorId)
+            ? $this->getResource($evaluatorId, User::class)
+            : null;
+
+        // dpo data for pia creation
+        $dataProtectionOfficerId = $request->get('data_protection_officer_id');
+        $dataProtectionOfficer = (null != $dataProtectionOfficerId)
+            ? $this->getResource($dataProtectionOfficerId, User::class)
+            : null;
+
+        return [$evaluator, $dataProtectionOfficer];
+    }
+
+    /**
+     * Keeps users who are in request and not in db.
+     */
+    private function intersectSupervisors($processing, $evaluator, $dataProtectionOfficer): array
+    {
+        $arrDb = [];
+        if (null !== $processing->getEvaluatorPending()) {
+            $arrDb[] = $processing->getEvaluatorPending()->getId();
+        }
+        if (null !== $processing->getDataProtectionOfficerPending()) {
+            $arrDb[] = $processing->getDataProtectionOfficerPending()->getId();
+        }
+
+        $arrRequest = [];
+        if (!in_array($evaluator->getId(), $arrDb)) {
+            array_push($arrRequest, $evaluator);
+        }
+        if (!in_array($dataProtectionOfficer->getId(), $arrDb)) {
+            array_push($arrRequest, $dataProtectionOfficer);
+        }
+        return $arrRequest;
     }
 
     private function setPiaSupervisors($request, $pia)
