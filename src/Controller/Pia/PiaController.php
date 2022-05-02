@@ -576,9 +576,10 @@ class PiaController extends RestController
             // notify redactor
             $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
-            $recipients = $pia->getProcessing()->getRedactors();
             $source = $pia->getDataProtectionOfficer();
-            $this->emailingService->notifyEmitObservations($piaAttr, $recipients, $source);
+            foreach ($pia->getProcessing()->getRedactors() as $recipient) {
+                $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
+            }
 
             # add a notice request tracking
             $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
