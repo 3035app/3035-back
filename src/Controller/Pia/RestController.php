@@ -293,8 +293,10 @@ abstract class RestController extends AbstractFOSRestController
         $processingAttr = [$processing->getName(), '/processing/{id}',
             ['{id}' => $processing->getId()]];
         array_push($processingAttr, $processing);
-        $emailing->notifyAssignProcessingAndPiaUsers($processingAttr, $recipients,
-            $this->getUser());
+        foreach ($recipients as $recipient) {
+            $emailing->notifyAssignProcessingAndPiaUsers($processingAttr, $recipient,
+                $this->getUser());
+        }
     }
 
     /**

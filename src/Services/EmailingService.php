@@ -47,7 +47,7 @@ class EmailingService
     /**
      * send email to users when they are assigning processing or pia.
      */
-    public function notifyAssignProcessingAndPiaUsers($attributes, $recipients, $source)
+    public function notifyAssignProcessingAndPiaUsers($attributes, $recipient, $source)
     {
         list($name, $route, $routeAttr) = $attributes;
         $params = [];
@@ -58,11 +58,7 @@ class EmailingService
         $template = 'pia/Email/assigning_processing_and_pia_user%s.email.twig';
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
         $body = $this->twig->render(sprintf($template, '_body'), $params);
-
-        foreach ($recipients as $recipient) {
-            $to = $this->getRecipients($recipient);
-            $this->sendEmail($subject, $body, $this->from, $to);
-        }
+        $this->sendEmail($subject, $body, $this->from, $this->getRecipient($recipient));
         return true;
     }
 
