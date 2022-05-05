@@ -160,12 +160,6 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getDesignatedController(),
             $processing->getControllers(),
             $processing->getDescription(),
-            $processing->getProcessors(),
-            $processing->getNonEuTransfer(),
-            $processing->getLifeCycle(),
-            $processing->getStorage(),
-            $processing->getStandards(),
-            $processing->getStatusName(),
             $processing->getLawfulness(),
             $processing->getMinimization(),
             $processing->getRightsGuarantee(),
@@ -174,6 +168,12 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getConcernedPeople(),
             $processing->getContextOfImplementation(),
             $processing->getRecipients(),
+            $processing->getProcessors(),
+            $processing->getNonEuTransfer(),
+            $processing->getLifeCycle(),
+            $processing->getStorage(),
+            $processing->getStandards(),
+            $processing->getStatusName(), 
             $processing->getCreatedAt(),
             $processing->getUpdatedAt(),
             $processing->getInformedConcernedPeople(),
@@ -198,7 +198,6 @@ class ProcessingTransformer extends AbstractTransformer
     public function processingToJson(Processing $processing): string
     {
         $descriptor = $this->fromProcessing($processing);
-
         return $this->toJson($descriptor);
     }
 
