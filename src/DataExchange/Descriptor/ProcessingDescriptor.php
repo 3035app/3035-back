@@ -194,6 +194,12 @@ class ProcessingDescriptor extends AbstractDescriptor
      * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      */
+    protected $comments = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     */
     protected $processingDataTypes = [];
 
     /**
@@ -305,6 +311,11 @@ class ProcessingDescriptor extends AbstractDescriptor
     public function mergePias(array $pias)
     {
         $this->pias = array_merge($this->pias, $pias);
+    }
+
+    public function mergeComments(array $comments)
+    {
+        $this->comments = array_merge($this->comments, $comments);
     }
 
     public function mergeDataTypes(array $types)

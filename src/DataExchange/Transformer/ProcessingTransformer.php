@@ -38,6 +38,11 @@ class ProcessingTransformer extends AbstractTransformer
     protected $piaTransformer;
 
     /**
+     * @var processingCommentTransformer
+     */
+    protected $processingCommentTransformer;
+
+    /**
      * @var DataTypeTransformer
      */
     protected $dataTypeTransformer;
@@ -52,6 +57,7 @@ class ProcessingTransformer extends AbstractTransformer
         ProcessingService $processingService,
         ValidatorInterface $validator,
         PiaTransformer $piaTransformer,
+        ProcessingCommentTransformer $processingCommentTransformer,
         DataTypeTransformer $dataTypeTransformer
     ) {
         parent::__construct($serializer, $validator);
@@ -59,6 +65,7 @@ class ProcessingTransformer extends AbstractTransformer
         $this->redactors = new ArrayCollection();
         $this->processingService = $processingService;
         $this->piaTransformer = $piaTransformer;
+        $this->processingCommentTransformer = $processingCommentTransformer;
         $this->dataTypeTransformer = $dataTypeTransformer;
     }
 
@@ -186,6 +193,10 @@ class ProcessingTransformer extends AbstractTransformer
 
         $descriptor->mergePias(
             $this->piaTransformer->importPias($processing->getPias())
+        );
+
+        $descriptor->mergeComments(
+            $this->processingCommentTransformer->importComments($processing->getComments())
         );
 
         $descriptor->mergeDataTypes(
