@@ -68,4 +68,28 @@ class Comment implements Timestampable
         $this->forMeasure = $forMeasure;
         $this->user = $user;
     }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferenceTo(): string
+    {
+        return $this->referenceTo;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getForMeasure(): bool
+    {
+        return $this->forMeasure;
+    }
 }

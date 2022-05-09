@@ -44,14 +44,21 @@ class PiaTransformer extends AbstractTransformer
      */
     protected $answerTransformer;
 
+    /**
+     * @var CommentTransformer
+     */
+    protected $commentTransformer;
+
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        AnswerTransformer $answerTransformer
+        AnswerTransformer $answerTransformer,
+        CommentTransformer $commentTransformer
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->answerTransformer = $answerTransformer;
+        $this->commentTransformer = $commentTransformer;
     }
 
     public function setProcessing(Processing $processing)
@@ -118,6 +125,10 @@ class PiaTransformer extends AbstractTransformer
 
         $descriptor->mergeAnswers(
             $this->answerTransformer->importAnswers($pia->getAnswers()->getValues())
+        );
+
+        $descriptor->mergeComments(
+            $this->commentTransformer->importComments($pia->getComments()->getValues())
         );
 
         return $descriptor;
