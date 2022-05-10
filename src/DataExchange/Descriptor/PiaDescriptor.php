@@ -188,6 +188,12 @@ class PiaDescriptor extends AbstractDescriptor
      */
     protected $answers = [];
 
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     */
+    protected $comments = [];
+
     public function __construct(
         string $status,
         string $author,
@@ -235,5 +241,10 @@ class PiaDescriptor extends AbstractDescriptor
     public function mergeAnswers(array $answers)
     {
         $this->answers = array_merge($this->answers, $answers);
+    }
+
+    public function mergeComments(array $comments)
+    {
+        $this->comments = array_merge($this->comments, $comments);
     }
 }

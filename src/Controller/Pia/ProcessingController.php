@@ -521,9 +521,7 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
-
         $json = $this->processingTransformer->processingToJson($processing);
-
         return new Response($json, Response::HTTP_OK);
     }
 

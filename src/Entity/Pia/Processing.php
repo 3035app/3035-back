@@ -50,7 +50,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @deprecated to be removed!
      * @ORM\Column(type="string", nullable=true)
-     * @JMS\Groups({"Default", "Export"})
+     * _JMS\Groups({"Default", "Export"})
+     * @JMS\Exclude()
      *
      * @var string
      */
@@ -107,7 +108,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @deprecated to be removed!
      * @ORM\Column(type="text", nullable=true)
-     * @JMS\Groups({"Default", "Export"})
+     * _JMS\Groups({"Default", "Export"})
+     * @JMS\Exclude()
      *
      * @var string
      */
@@ -371,10 +373,29 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @deprecated to be removed!
      * @return string
-     */
     public function getAuthor(): string
     {
         return $this->author;
+    }
+     */
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("author")
+     * @JMS\Groups({"Default", "Export"})
+     * @return string
+     */
+    public function getAuthor(): string
+    {
+        $collection = $this->getRedactors();
+        if (null === $collection) {
+            return '';
+        }
+        $arr = [];
+        foreach ($collection as $redactor) {
+            array_push($arr, $redactor->getProfile()->getFullname());
+        }
+        return implode(', ', $arr);
     }
 
     /**
@@ -827,11 +848,11 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @deprecated to be removed!
      * @return string
-     */
     public function getDesignatedController(): string
     {
         return $this->designatedController;
     }
+     */
 
     /**
      * @deprecated to be removed!
@@ -840,6 +861,21 @@ class Processing implements ObjectManagerAware, TrackingInterface
     public function setDesignatedController(string $designatedController): void
     {
         $this->designatedController = $designatedController;
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("designated_controller")
+     * @JMS\Groups({"Default", "Export"})
+     * @return string
+     */
+    public function getDesignatedController(): string
+    {
+        $obj = $this->getDataController();
+        if (null === $obj) {
+            return '';
+        }
+        return $obj->getProfile()->getFullname();
     }
 
     /**
