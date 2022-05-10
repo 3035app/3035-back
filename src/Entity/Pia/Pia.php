@@ -395,7 +395,15 @@ class Pia implements Timestampable
      */
     public function getAuthorName(): string
     {
-        return $this->authorName;
+        $collection = $this->getProcessing()->getRedactors();
+        if (null === $collection) {
+            return '';
+        }
+        $arr = [];
+        foreach ($collection as $redactor) {
+            array_push($arr, $redactor->getProfile()->getFullname());
+        }
+        return implode(', ', $arr);
     }
 
     /**
@@ -411,7 +419,7 @@ class Pia implements Timestampable
      */
     public function getEvaluatorName(): string
     {
-        return $this->evaluatorName;
+        return $this->getEvaluator()->getProfile()->getFullname();
     }
 
     /**
@@ -427,7 +435,7 @@ class Pia implements Timestampable
      */
     public function getValidatorName(): string
     {
-        return $this->validatorName;
+        return $this->getProcessing()->getDataController()->getProfile()->getFullname();
     }
 
     /**
@@ -579,7 +587,7 @@ class Pia implements Timestampable
      */
     public function getDposNames(): string
     {
-        return $this->dposNames;
+        return $this->getDataProtectionOfficer()->getProfile()->getFullname();
     }
 
     /**
