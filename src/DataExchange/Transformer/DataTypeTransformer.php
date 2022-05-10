@@ -76,25 +76,21 @@ class DataTypeTransformer extends AbstractTransformer
     public function importDataTypes(array $types): array
     {
         $descriptors = [];
-
         foreach ($types as $type) {
             $descriptors[] = $this->fromDataType($type);
         }
-
         return $descriptors;
     }
 
     public function dataTypeToJson(ProcessingDataType $type): string
     {
         $descriptor = $this->fromDataType($type);
-
         return $this->toJson($descriptor);
     }
 
     public function jsonToDataType(array $json): ProcessingDataType
     {
         $descriptor = $this->fromJson($json, DataTypeDescriptor::class);
-
         return $this->toDataType($descriptor);
     }
 }

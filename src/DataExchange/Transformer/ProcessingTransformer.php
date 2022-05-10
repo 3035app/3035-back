@@ -38,9 +38,19 @@ class ProcessingTransformer extends AbstractTransformer
     protected $piaTransformer;
 
     /**
+     * @var ProcessingCommentTransformer
+     */
+    protected $processingCommentTransformer;
+
+    /**
      * @var DataTypeTransformer
      */
     protected $dataTypeTransformer;
+
+    /**
+     * @var TrackingTransformer
+     */
+    protected $trackingTransformer;
 
     protected $redactors;
     protected $dataController;
@@ -52,14 +62,18 @@ class ProcessingTransformer extends AbstractTransformer
         ProcessingService $processingService,
         ValidatorInterface $validator,
         PiaTransformer $piaTransformer,
-        DataTypeTransformer $dataTypeTransformer
+        ProcessingCommentTransformer $processingCommentTransformer,
+        DataTypeTransformer $dataTypeTransformer,
+        TrackingTransformer $trackingTransformer
     ) {
         parent::__construct($serializer, $validator);
 
         $this->redactors = new ArrayCollection();
         $this->processingService = $processingService;
         $this->piaTransformer = $piaTransformer;
+        $this->processingCommentTransformer = $processingCommentTransformer;
         $this->dataTypeTransformer = $dataTypeTransformer;
+        $this->trackingTransformer = $trackingTransformer;
     }
 
     public function setFolder(Folder $folder)
@@ -160,12 +174,6 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getDesignatedController(),
             $processing->getControllers(),
             $processing->getDescription(),
-            $processing->getProcessors(),
-            $processing->getNonEuTransfer(),
-            $processing->getLifeCycle(),
-            $processing->getStorage(),
-            $processing->getStandards(),
-            $processing->getStatusName(),
             $processing->getLawfulness(),
             $processing->getMinimization(),
             $processing->getRightsGuarantee(),
@@ -174,6 +182,12 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getConcernedPeople(),
             $processing->getContextOfImplementation(),
             $processing->getRecipients(),
+            $processing->getProcessors(),
+            $processing->getNonEuTransfer(),
+            $processing->getLifeCycle(),
+            $processing->getStorage(),
+            $processing->getStandards(),
+            $processing->getStatusName(), 
             $processing->getCreatedAt(),
             $processing->getUpdatedAt(),
             $processing->getInformedConcernedPeople(),
@@ -188,8 +202,16 @@ class ProcessingTransformer extends AbstractTransformer
             $this->piaTransformer->importPias($processing->getPias())
         );
 
+        $descriptor->mergeComments(
+            $this->processingCommentTransformer->importComments($processing->getComments())
+        );
+
         $descriptor->mergeDataTypes(
             $this->dataTypeTransformer->importDataTypes($processing->getProcessingDataTypes())
+        );
+
+        $descriptor->mergeTrackings(
+            $this->trackingTransformer->importTrackings($processing->getTrackingsObjectList())
         );
 
         return $descriptor;
@@ -198,7 +220,6 @@ class ProcessingTransformer extends AbstractTransformer
     public function processingToJson(Processing $processing): string
     {
         $descriptor = $this->fromProcessing($processing);
-
         return $this->toJson($descriptor);
     }
 

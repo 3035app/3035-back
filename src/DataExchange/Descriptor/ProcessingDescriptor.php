@@ -36,17 +36,17 @@ class ProcessingDescriptor extends AbstractDescriptor
      * @JMS\Type("string")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string|null
+     * @var string
      */
-    protected $controllers = '';
+    protected $designatedController = '';
 
     /**
      * @JMS\Type("string")
      * @JMS\Groups({"Default", "Export"})
      *
-     * @var string
+     * @var string|null
      */
-    protected $designatedController = '';
+    protected $controllers = '';
 
     /**
      * @JMS\Type("string")
@@ -194,7 +194,19 @@ class ProcessingDescriptor extends AbstractDescriptor
      * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
      */
+    protected $comments = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     */
     protected $processingDataTypes = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     */
+    protected $trackings = [];
 
     /**
      * @JMS\Type("array")
@@ -250,12 +262,6 @@ class ProcessingDescriptor extends AbstractDescriptor
         string $designatedController,
         string $controllers = null,
         string $description = null,
-        string $processors = null,
-        string $nonEuTransfer = null,
-        string $lifeCycle = null,
-        string $storage = null,
-        string $standards = null,
-        string $status = null,
         string $lawfulness = null,
         string $minimization = null,
         string $rightsGuarantee = null,
@@ -264,6 +270,12 @@ class ProcessingDescriptor extends AbstractDescriptor
         string $concernedPeople = null,
         string $contextOfImplementation = null,
         string $recipients = null,
+        string $processors = null,
+        string $nonEuTransfer = null,
+        string $lifeCycle = null,
+        string $storage = null,
+        string $standards = null,
+        string $status = null,
         \DateTime $createdAt = null,
         \DateTime $updatedAt = null,
         array $informedConcernedPeople = null,
@@ -278,12 +290,6 @@ class ProcessingDescriptor extends AbstractDescriptor
         $this->designatedController = $designatedController;
         $this->controllers = $controllers;
         $this->description = $description;
-        $this->processors = $processors;
-        $this->nonEuTransfer = $nonEuTransfer;
-        $this->lifeCycle = $lifeCycle;
-        $this->storage = $storage;
-        $this->standards = $standards;
-        $this->status = $status;
         $this->lawfulness = $lawfulness;
         $this->minimization = $minimization;
         $this->rightsGuarantee = $rightsGuarantee;
@@ -292,6 +298,12 @@ class ProcessingDescriptor extends AbstractDescriptor
         $this->concernedPeople = $concernedPeople;
         $this->contextOfImplementation = $contextOfImplementation;
         $this->recipients = $recipients;
+        $this->processors = $processors;
+        $this->nonEuTransfer = $nonEuTransfer;
+        $this->lifeCycle = $lifeCycle;
+        $this->storage = $storage;
+        $this->standards = $standards;
+        $this->status = $status;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
         $this->informedConcernedPeople = $informedConcernedPeople;
@@ -307,8 +319,18 @@ class ProcessingDescriptor extends AbstractDescriptor
         $this->pias = array_merge($this->pias, $pias);
     }
 
+    public function mergeComments(array $comments)
+    {
+        $this->comments = array_merge($this->comments, $comments);
+    }
+
     public function mergeDataTypes(array $types)
     {
         $this->processingDataTypes = array_merge($this->processingDataTypes, $types);
+    }
+
+    public function mergeTrackings(array $trackings)
+    {
+        $this->trackings = array_merge($this->trackings, $trackings);
     }
 }

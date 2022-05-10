@@ -36,6 +36,21 @@ trait TrackingLogTrait
     }
 
     /**
+     * Returns the tracking log entries object list for the current object.
+     * 
+     * @JMS\Exclude()
+     */
+    public function getTrackingsObjectList()
+    {
+        if (isset($this->entityManager) && null !== $this->entityManager)
+        {
+            $options = ['contentType' => $this->getEntityClass(), 'entityId' => $this->getId()];
+            return $this->entityManager->getRepository(TrackingLog::class)->findBy($options);
+        }
+        return [];
+    }
+
+    /**
      * Retrieves entityManager injected by ObjectManagerAware interface.
      * not retrieved in creation mode.
      */
