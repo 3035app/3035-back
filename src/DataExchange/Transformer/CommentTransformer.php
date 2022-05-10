@@ -10,12 +10,12 @@
 
 namespace PiaApi\DataExchange\Transformer;
 
-use PiaApi\Entity\Pia\ProcessingComment;
-use PiaApi\DataExchange\Descriptor\ProcessingCommentDescriptor;
+use PiaApi\Entity\Pia\Comment;
+use PiaApi\DataExchange\Descriptor\CommentDescriptor;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ProcessingCommentTransformer extends AbstractTransformer
+class CommentTransformer extends AbstractTransformer
 {
     /**
      * @var SerializerInterface
@@ -40,14 +40,15 @@ class ProcessingCommentTransformer extends AbstractTransformer
         $this->validator = $validator;
     }
 
-    public function toComment(ProcessingCommentDescriptor $descriptor): ProcessingComment
+    public function toComment(CommentDescriptor $descriptor): Comment
     {}
 
-    public function fromComment(ProcessingComment $comment): ProcessingCommentDescriptor
+    public function fromComment(Comment $comment): CommentDescriptor
     {
-        $descriptor = new ProcessingCommentDescriptor(
-            $comment->getContent(),
-            $comment->getField(),
+        $descriptor = new CommentDescriptor(
+            $comment->getDescription(),
+            $comment->getReferenceTo(),
+            $comment->getForMeasure(),
             $comment->getCreatedAt(),
             $comment->getUpdatedAt(),
             $comment->getCommentedBy(),
@@ -64,15 +65,15 @@ class ProcessingCommentTransformer extends AbstractTransformer
         return $descriptors;
     }
 
-    public function commentToJson(ProcessingComment $comment): string
+    public function commentToJson(Comment $comment): string
     {
         $descriptor = $this->fromComment($comment);
         return $this->toJson($descriptor);
     }
 
-    public function jsonToComment(array $json): ProcessingComment
+    public function jsonToComment(array $json): Comment
     {
-        $descriptor = $this->fromJson($json, ProcessingCommentDescriptor::class);
+        $descriptor = $this->fromJson($json, CommentDescriptor::class);
         return $this->toComment($descriptor);
     }
 }

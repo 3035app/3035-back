@@ -38,7 +38,7 @@ class ProcessingTransformer extends AbstractTransformer
     protected $piaTransformer;
 
     /**
-     * @var processingCommentTransformer
+     * @var ProcessingCommentTransformer
      */
     protected $processingCommentTransformer;
 
@@ -46,6 +46,11 @@ class ProcessingTransformer extends AbstractTransformer
      * @var DataTypeTransformer
      */
     protected $dataTypeTransformer;
+
+    /**
+     * @var TrackingTransformer
+     */
+    protected $trackingTransformer;
 
     protected $redactors;
     protected $dataController;
@@ -58,7 +63,8 @@ class ProcessingTransformer extends AbstractTransformer
         ValidatorInterface $validator,
         PiaTransformer $piaTransformer,
         ProcessingCommentTransformer $processingCommentTransformer,
-        DataTypeTransformer $dataTypeTransformer
+        DataTypeTransformer $dataTypeTransformer,
+        TrackingTransformer $trackingTransformer
     ) {
         parent::__construct($serializer, $validator);
 
@@ -67,6 +73,7 @@ class ProcessingTransformer extends AbstractTransformer
         $this->piaTransformer = $piaTransformer;
         $this->processingCommentTransformer = $processingCommentTransformer;
         $this->dataTypeTransformer = $dataTypeTransformer;
+        $this->trackingTransformer = $trackingTransformer;
     }
 
     public function setFolder(Folder $folder)
@@ -201,6 +208,10 @@ class ProcessingTransformer extends AbstractTransformer
 
         $descriptor->mergeDataTypes(
             $this->dataTypeTransformer->importDataTypes($processing->getProcessingDataTypes())
+        );
+
+        $descriptor->mergeTrackings(
+            $this->trackingTransformer->importTrackings($processing->getTrackingsObjectList())
         );
 
         return $descriptor;

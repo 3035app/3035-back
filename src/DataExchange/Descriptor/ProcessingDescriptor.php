@@ -205,6 +205,12 @@ class ProcessingDescriptor extends AbstractDescriptor
     /**
      * @JMS\Type("array")
      * @JMS\Groups({"Default", "Export"})
+     */
+    protected $trackings = [];
+
+    /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
      *
      * @var array|null
      */
@@ -321,5 +327,10 @@ class ProcessingDescriptor extends AbstractDescriptor
     public function mergeDataTypes(array $types)
     {
         $this->processingDataTypes = array_merge($this->processingDataTypes, $types);
+    }
+
+    public function mergeTrackings(array $trackings)
+    {
+        $this->trackings = array_merge($this->trackings, $trackings);
     }
 }
