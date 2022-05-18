@@ -30,7 +30,7 @@ class TrackingLogRepository extends ServiceEntityRepository
                 ->leftJoin('tl.owner', 'u')
                 ->leftJoin('u.profile', 'p')
                 ->select('tl.activity')
-                ->addSelect("CONCAT(CONCAT(p.firstName, ' '), p.lastName) AS fullname")
+                ->addSelect("CONCAT(CONCAT(p.firstName, ' '), p.lastName) AS owner")
                 ->addSelect('tl.date')
                 ->andWhere('tl.contentType = :contentType')
                 ->andWhere('tl.entityId = :entityId')

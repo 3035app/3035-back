@@ -521,6 +521,10 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
+        # do not export if no access authorized!
+        if (!$processing->canShow($this->getUser())) {
+            throw new AccessDeniedHttpException('no access and not authorized to export');
+        }
         $json = $this->processingTransformer->processingToJson($processing);
         return new Response($json, Response::HTTP_OK);
     }
@@ -560,6 +564,7 @@ class ProcessingController extends RestController
         try {
             $processing = $this->processingTransformer->jsonToProcessing($data);
             $this->persist($processing);
+            $processing->setStatus(Processing::STATUS_DOING); # initialize status
             $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
             foreach ($descriptor->getPias() as $pia) {
                 $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
