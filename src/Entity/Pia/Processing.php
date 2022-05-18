@@ -823,6 +823,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
         if (!in_array($status, [
             self::STATUS_DOING,
             self::STATUS_UNDER_EVALUATION,
+            self::STATUS_EVALUATED,
             self::STATUS_UNDER_VALIDATION,
             self::STATUS_VALIDATED,
             self::STATUS_ARCHIVED,
@@ -952,7 +953,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
             $evaluationState === Processing::EVALUATION_STATE_IMPROVABLE
         ) {
             // Self validate if Processing is evaluated as acceptable
-            # replace STATUS_VALIDATED by STATUS_EVALUATED
+            # replacing to STATUS_EVALUATED
             $this->setStatus(Processing::STATUS_EVALUATED);
         } elseif (
             $evaluationState === Processing::EVALUATION_STATE_TO_CORRECT
