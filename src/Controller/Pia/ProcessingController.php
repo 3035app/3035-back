@@ -560,6 +560,7 @@ class ProcessingController extends RestController
         try {
             $processing = $this->processingTransformer->jsonToProcessing($data);
             $this->persist($processing);
+            $processing->setStatus(Processing::STATUS_DOING); # initialize status
             $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
             foreach ($descriptor->getPias() as $pia) {
                 $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
