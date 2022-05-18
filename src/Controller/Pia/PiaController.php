@@ -616,6 +616,10 @@ class PiaController extends RestController
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
 
+            # change status to under validation
+            $pia->getProcessing()->setStatus(Processing::STATUS_UNDER_VALIDATION);
+            $this->persist($pia->getProcessing());
+
             # add a notice request tracking
             $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
@@ -632,10 +636,6 @@ class PiaController extends RestController
             foreach ($pia->getProcessing()->getRedactors() as $recipient) {
                 $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
             }
-
-            # change status to under validation
-            $pia->getProcessing()->setStatus(Processing::STATUS_UNDER_VALIDATION);
-            $this->persist($pia->getProcessing());
 
             # add a notice request tracking
             $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
