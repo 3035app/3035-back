@@ -521,6 +521,10 @@ class ProcessingController extends RestController
     {
         $processing = $this->getResource($id);
         $this->canAccessResourceOr403($processing);
+        # do not export if no access authorized!
+        if (!$processing->canShow($this->getUser())) {
+            throw new AccessDeniedHttpException('no access and not authorized to export');
+        }
         $json = $this->processingTransformer->processingToJson($processing);
         return new Response($json, Response::HTTP_OK);
     }
