@@ -30,8 +30,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
     use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity, TrackingLogTrait;
 
     const STATUS_DOING = 0;
-    const STATUS_UNDER_EVALUATION = 1;
-    const STATUS_EVALUATED = 2;
+    const STATUS_UNDER_EVALUATION = 1; # replace STATUS_UNDER_VALIDATION by STATUS_UNDER_EVALUATION
+    const STATUS_EVALUATED = 2; # replace STATUS_VALIDATED by STATUS_EVALUATED
     const STATUS_UNDER_VALIDATION = 3;
     const STATUS_VALIDATED = 4;
     const STATUS_ARCHIVED = 5;
