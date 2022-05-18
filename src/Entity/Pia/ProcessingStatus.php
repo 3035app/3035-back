@@ -12,14 +12,17 @@ namespace PiaApi\Entity\Pia;
 
 class ProcessingStatus extends AbstractStatus
 {
-    public const STATUS_DOING = 0;
-    # public const STATUS_ARCHIVED = 1;
-    const STATUS_UNDER_VALIDATION = 1;
-    const STATUS_VALIDATED = 2;
-    const STATUS_ARCHIVED = 3;
+    const STATUS_DOING = 0;
+    const STATUS_UNDER_EVALUATION = 1;
+    const STATUS_EVALUATED = 2;
+    const STATUS_UNDER_VALIDATION = 3;
+    const STATUS_VALIDATED = 4;
+    const STATUS_ARCHIVED = 5;
 
     protected static $statusNames = [
         self::STATUS_DOING              => 'STATUS_DOING',
+        self::STATUS_UNDER_EVALUATION   => 'STATUS_UNDER_EVALUATION',
+        self::STATUS_EVALUATED          => 'STATUS_EVALUATED',
         self::STATUS_UNDER_VALIDATION   => 'STATUS_UNDER_VALIDATION',
         self::STATUS_VALIDATED          => 'STATUS_VALIDATED',
         self::STATUS_ARCHIVED           => 'STATUS_ARCHIVED',
