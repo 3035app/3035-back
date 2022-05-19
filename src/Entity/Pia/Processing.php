@@ -30,9 +30,11 @@ class Processing implements ObjectManagerAware, TrackingInterface
     use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity, TrackingLogTrait;
 
     const STATUS_DOING = 0;
-    const STATUS_UNDER_VALIDATION = 1;
-    const STATUS_VALIDATED = 2;
-    const STATUS_ARCHIVED = 3;
+    const STATUS_UNDER_EVALUATION = 1; # replace STATUS_UNDER_VALIDATION by STATUS_UNDER_EVALUATION
+    const STATUS_EVALUATED = 2; # replace STATUS_VALIDATED by STATUS_EVALUATED
+    const STATUS_UNDER_VALIDATION = 3;
+    const STATUS_VALIDATED = 4;
+    const STATUS_ARCHIVED = 5;
 
     const EVALUATION_STATE_NONE = -1;
     const EVALUATION_STATE_TO_CORRECT = 0;
@@ -820,6 +822,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
     {
         if (!in_array($status, [
             self::STATUS_DOING,
+            self::STATUS_UNDER_EVALUATION,
+            self::STATUS_EVALUATED,
             self::STATUS_UNDER_VALIDATION,
             self::STATUS_VALIDATED,
             self::STATUS_ARCHIVED,
@@ -949,7 +953,8 @@ class Processing implements ObjectManagerAware, TrackingInterface
             $evaluationState === Processing::EVALUATION_STATE_IMPROVABLE
         ) {
             // Self validate if Processing is evaluated as acceptable
-            $this->setStatus(Processing::STATUS_VALIDATED);
+            # replacing to STATUS_EVALUATED
+            $this->setStatus(Processing::STATUS_EVALUATED);
         } elseif (
             $evaluationState === Processing::EVALUATION_STATE_TO_CORRECT
         ) {
@@ -1124,8 +1129,9 @@ class Processing implements ObjectManagerAware, TrackingInterface
     public function canAskForProcessingEvaluation($request): bool
     {
         return
+            # replacing for STATUS_UNDER_EVALUATION
             Processing::STATUS_DOING == $this->getStatus() &&
-            Processing::STATUS_UNDER_VALIDATION == $request->get('status')
+            Processing::STATUS_UNDER_EVALUATION == $request->get('status')
             ;
     }
 
