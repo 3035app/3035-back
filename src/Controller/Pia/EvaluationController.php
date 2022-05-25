@@ -23,6 +23,8 @@ use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 class EvaluationController extends PiaSubController
 {
     /**
@@ -350,6 +352,8 @@ class EvaluationController extends PiaSubController
         //check if status and global status match this state
         if ($evaluation->canEmitPiaEvaluatorEvaluation($request))
         {
+throw new AccessDeniedHttpException('stop!');
+
             $pia = $evaluation->getPia();
             $processing = $pia->getProcessing();
             // notify redactor after evaluating each page of pia

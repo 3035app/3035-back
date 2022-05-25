@@ -9,12 +9,15 @@ use PiaApi\Entity\Pia\TrackingLog;
 
 trait EvaluationStateTrait
 {
-    protected static $stateNames = [
-        self::EVALUATION_STATE_NONE => "Aucune évaluation",
-        self::EVALUATION_STATE_TO_CORRECT => "À corriger",
-        self::EVALUATION_STATE_IMPROVABLE => "Améliorable",
-        self::EVALUATION_STATE_ACCEPTABLE => "Acceptable",
-    ];
+    public static function getStateNames(): array
+    {
+        return [
+            static::EVALUATION_STATE_NONE => "Aucune évaluation",
+            static::EVALUATION_STATE_TO_CORRECT => "À corriger",
+            static::EVALUATION_STATE_IMPROVABLE => "Améliorable",
+            static::EVALUATION_STATE_ACCEPTABLE => "Acceptable",
+        ];
+    }
 
     /**
      * @return string
@@ -33,14 +36,33 @@ trait EvaluationStateTrait
     }
 
     /**
-     * @param $mixed |
+     * @param $state int
+     * @return bool
+     */
+    public function hasState($state): bool {
+        if (array_key_exists($state, self::getStateNames())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $state int
+     * @return string
+     */
+    public function getStateName($state): string {
+        return self::getStateNames()[$state];
+    }
+
+    /**
+     * @param $mixed
      * @return string
      */
     public function _getEvaluationState($mixed): string
     {
-        if (array_key_exists($mixed, self::$stateNames)) {
-            return self::$stateNames[$mixed];
+        if ($this->hasState($mixed)) {
+            return $this->getStateName($mixed);
         }
-        return self::$stateNames[self::EVALUATION_STATE_NONE];
+        return $this->getStateName(static::EVALUATION_STATE_NONE);
     }
 }
