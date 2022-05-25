@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use PiaApi\Entity\Pia\Processing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -38,11 +39,11 @@ class EmailingService
     ) {
         $this->environment = $PialabEnvironment;
         $this->from = $PialabFromEmail;
+        $this->frontUrl = $this->getFrontUrl($tokenStorage);
         $this->logger = $logger;
         $this->mailer = $mailer;
         $this->router = $router;
         $this->twig = $twig;
-        $this->frontUrl = $this->getFrontUrl($tokenStorage);
     }
 
     /**
@@ -268,15 +269,20 @@ class EmailingService
     /**
      * @return string
      */
-    private function getFrontUrl($token): string
+    private function getFrontUrl($token): ?string
     {
         $user = null;
         // special case when logout
         if (null !== $token->getToken()) {
             $user = $token->getToken()->getUser();
         }
+        if (null == $user) {
+            throw new AccessDeniedHttpException('user must be authorized!');
+        }
         $frontUrl = $user->getApplication()->getUrl(); // get front url from app
-        assert(null != $frontUrl, 'application url must have been defined before sending email!');
+        if (null == $frontUrl) {
+            throw new NotFoundHttpException('application url must have been defined before sending email!');
+        }
         return $frontUrl;
     }
 
