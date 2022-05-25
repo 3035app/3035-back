@@ -247,13 +247,12 @@ class EvaluationController extends PiaSubController
      */
     public function updateAction(Request $request, $piaId, $id)
     {
-        $view = parent::updateAction($request, $piaId, $id);
         $evaluation = $this->getResource($id, Evaluation::class);
         if (null !== $evaluation) {
             $this->notifyRedactor($request, $evaluation);
             $this->notifyDpo($request, $evaluation->getPia());
         }
-        return $view;
+        return parent::updateAction($request, $piaId, $id);
     }
 
     /**
@@ -328,7 +327,7 @@ class EvaluationController extends PiaSubController
         $processing = $pia->getProcessing();
 
         // notify evaluator on each page of pia
-        $piaAttr = $this->getEvaluationRoute($evaluation);
+        $piaAttr = $this->getEvaluationRoute($request, $evaluation);
         array_push($piaAttr, $pia);
         $recipient = $pia->getEvaluator();
         $sources = $processing->getRedactors();
@@ -349,20 +348,31 @@ class EvaluationController extends PiaSubController
      */
     private function notifyRedactor($request, $evaluation): void
     {
-        //check if status and global status match this state
+        // check if status and global status match this state
         if ($evaluation->canEmitPiaEvaluatorEvaluation($request))
         {
-throw new AccessDeniedHttpException('stop!');
-
             $pia = $evaluation->getPia();
             $processing = $pia->getProcessing();
             // notify redactor after evaluating each page of pia
-            $piaAttr = $this->getEvaluationRoute($evaluation);
-            $piaAttr[] = ['evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
+            $piaAttr = $this->getEvaluationRoute($request, $evaluation);
             array_push($piaAttr, $pia);
             $source = $pia->getEvaluator();
             foreach ($processing->getRedactors() as $recipient) {
                 $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
+            }
+        }
+
+        // check if status and global status match this state
+        if ($evaluation->canEmitPiaEvaluatorCancelEvaluation($request))
+        {
+            $pia = $evaluation->getPia();
+            $processing = $pia->getProcessing();
+            // notify redactor after evaluating each page of pia
+            $piaAttr = $this->getEvaluationRoute($request, $evaluation);
+            array_push($piaAttr, $pia);
+            $source = $pia->getEvaluator();
+            foreach ($processing->getRedactors() as $recipient) {
+                $this->emailingService->notifyEmitPiaEvaluatorCancelEvaluation($piaAttr, $recipient, $source);
             }
         }
     }
@@ -394,12 +404,13 @@ throw new AccessDeniedHttpException('stop!');
         }
     }
 
-    private function getEvaluationRoute($evaluation): array
+    private function getEvaluationRoute($request, $evaluation): array
     {
         $params = [
             '{pia_id}' => $evaluation->getPia()->getId(),
             '{section_id}' => $evaluation->getSection(),
             '{item_id}' => $evaluation->getItemReference(),
+            'evaluation_state' => $evaluation->getEvaluationStateRequest($request, 'status'),
         ];
         return [$evaluation, '/entry/{pia_id}/section/{section_id}/item/{item_id}', $params];
     }

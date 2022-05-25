@@ -18,6 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Pia\Traits\PiaSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
+use PiaApi\Entity\Pia\Evaluation;
 
 /**
  * @ORM\Entity
@@ -724,12 +725,11 @@ class Pia implements Timestampable
     {
         foreach ($this->getEvaluations() as $evaluation) {
             # status <=> acceptable
-            if (3 <= $evaluation->getStatus() && 2 <= $evaluation->getGlobalStatus())
-            {
-                return true;
+            if (Evaluation::EVALUATION_STATE_ACCEPTABLE != $evaluation->getStatus()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**

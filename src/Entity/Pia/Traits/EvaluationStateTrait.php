@@ -7,6 +7,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\TrackingLog;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 trait EvaluationStateTrait
 {
     public static function getStateNames(): array
@@ -30,9 +32,9 @@ trait EvaluationStateTrait
     /**
      * @return string
      */
-    public function getEvaluationStateRequest($request): string
+    public function getEvaluationStateRequest($request, $state='evaluation_state'): string
     {
-        return $this->_getEvaluationState($request->get('evaluation_state'));
+        return $this->_getEvaluationState($request->get($state));
     }
 
     /**
@@ -40,7 +42,7 @@ trait EvaluationStateTrait
      * @return bool
      */
     public function hasState($state): bool {
-        if (array_key_exists($state, self::getStateNames())) {
+        if (array_key_exists($state, static::getStateNames())) {
             return true;
         }
         return false;
@@ -51,7 +53,7 @@ trait EvaluationStateTrait
      * @return string
      */
     public function getStateName($state): string {
-        return self::getStateNames()[$state];
+        return static::getStateNames()[$state];
     }
 
     /**

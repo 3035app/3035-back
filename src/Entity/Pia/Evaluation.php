@@ -19,6 +19,8 @@ use PiaApi\Entity\Pia\Traits\EvaluationStateTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="pia_evaluation")
@@ -176,14 +178,18 @@ class Evaluation implements Timestampable
      */
     public function canEmitPiaEvaluatorEvaluation($request): bool
     {
+        # add an evaluation
+        return $request->get('status') != $this->getStatus();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canEmitPiaEvaluatorCancelEvaluation($request): bool
+    {
         $old_status = $request->get('global_status');
-        return
-            # add an evaluation
-            2 == $old_status && $old_status == $this->getGlobalStatus()
-            ||
-            # remove an evaluation
-            1 == $old_status && $old_status == $this->getGlobalStatus()
-            ;
+        # cancel evaluation
+        return 2 > $old_status && $old_status != $this->getGlobalStatus();
     }
 
     /**
@@ -191,6 +197,6 @@ class Evaluation implements Timestampable
      **/
     public function __toString()
     {
-        return sprintf('%s (#%s)', $this->getPia()->getProcessing()->getName(), $this->getReferenceTo());
+        return sprintf('%s (section %s)', $this->getPia()->getProcessing()->getName(), $this->getItemReference());
     }
 }
