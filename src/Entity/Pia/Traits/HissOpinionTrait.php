@@ -95,4 +95,44 @@ trait HissOpinionTrait
     {
         return $this->hissName;
     }
+
+    /**
+     * Sets hissProcessingImplementedStatus.
+     * 
+     * @param $hissProcessingImplementedStatus int
+     * @return $this
+     */
+    public function setHissProcessingImplementedStatus(int $hissProcessingImplementedStatus)
+    {
+        $this->hissProcessingImplementedStatus = $hissProcessingImplementedStatus;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHissProcessingImplementedStatus(): ?int
+    {
+        return $this->hissProcessingImplementedStatus;
+    }
+
+    /**
+     * Sets hissOpinion.
+     * 
+     * @param $hissOpinion string
+     * @return $this
+     */
+    public function setHissProcessingImplementedStatus(string $hissOpinion)
+    {
+        $this->hissOpinion = $hissOpinion;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHissProcessingImplementedStatus(): ?string
+    {
+        return $this->hissOpinion;
+    }
 }
