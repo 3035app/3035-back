@@ -336,29 +336,33 @@ class PiaController extends RestController
         if ( $this->isGranted('CAN_VALIDATE_PIA') ) {
             error_log('CAN_VALIDATE_PIA');
             $updatableAttributes = array_merge($updatableAttributes, [
-                'status'                            => RequestDataHandler::TYPE_INT,
-                'rejection_reason'                  => RequestDataHandler::TYPE_STRING,
+                'status'           => RequestDataHandler::TYPE_INT,
+                'rejection_reason' => RequestDataHandler::TYPE_STRING,
             ]);
         }
 
         if ( $this->isGranted('CAN_EDIT_PIA') ) {
             error_log('CAN_EDIT_PIA');
             $updatableAttributes = array_merge($updatableAttributes, [
-                'author_name'                       => RequestDataHandler::TYPE_STRING,
-                'evaluator_name'                    => RequestDataHandler::TYPE_STRING,
-                'validator_name'                    => RequestDataHandler::TYPE_STRING,
-                'dpo_status'                        => RequestDataHandler::TYPE_INT,
-                'concerned_people_status'           => RequestDataHandler::TYPE_INT,
-                'dpo_opinion'                       => RequestDataHandler::TYPE_STRING,
-                'concerned_people_opinion'          => RequestDataHandler::TYPE_STRING,
-                'concerned_people_searched_opinion' => RequestDataHandler::TYPE_BOOL,
-                'concerned_people_searched_content' => RequestDataHandler::TYPE_STRING,
-                'rejection_reason'                  => RequestDataHandler::TYPE_STRING,
-                'applied_adjustments'               => RequestDataHandler::TYPE_STRING,
-                'dpos_names'                        => RequestDataHandler::TYPE_STRING,
-                'people_names'                      => RequestDataHandler::TYPE_STRING,
-                'type'                              => RequestDataHandler::TYPE_STRING,
-                'processing'                        => Processing::class,
+                'author_name'                           => RequestDataHandler::TYPE_STRING,
+                'evaluator_name'                        => RequestDataHandler::TYPE_STRING,
+                'validator_name'                        => RequestDataHandler::TYPE_STRING,
+                'dpo_status'                            => RequestDataHandler::TYPE_INT,
+                'concerned_people_status'               => RequestDataHandler::TYPE_INT,
+                'dpo_opinion'                           => RequestDataHandler::TYPE_STRING,
+                'concerned_people_opinion'              => RequestDataHandler::TYPE_STRING,
+                'concerned_people_searched_opinion'     => RequestDataHandler::TYPE_BOOL,
+                'concerned_people_searched_content'     => RequestDataHandler::TYPE_STRING,
+                'rejection_reason'                      => RequestDataHandler::TYPE_STRING,
+                'applied_adjustments'                   => RequestDataHandler::TYPE_STRING,
+                'dpos_names'                            => RequestDataHandler::TYPE_STRING,
+                'people_names'                          => RequestDataHandler::TYPE_STRING,
+                'type'                                  => RequestDataHandler::TYPE_STRING,
+                'requested_hiss_opinion'                => RequestDataHandler::TYPE_BOOL,
+                'hiss_name'                             => RequestDataHandler::TYPE_STRING,
+                'hiss_processing_implemented_status'    => RequestDataHandler::TYPE_INT,
+                'hiss_opinion'                          => RequestDataHandler::TYPE_STRING,
+                'processing'                            => Processing::class,
             ]);
         }
 
