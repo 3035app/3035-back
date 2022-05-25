@@ -212,21 +212,25 @@ class EmailingService
         list($name, $route, $routeAttr) = $attributes;
         $params = [];
         $params['processing_name'] = $name;
-        $params['processing_url'] = $this->getAbsoluteUrl($route, $routeAttr);
         $params['source_name'] = $this->getSourceParameters($source);
+        $params['processing_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        if (array_key_exists('evaluation_state', $routeAttr)) {
+            $params['evaluation_state'] = $routeAttr['evaluation_state'];
+        }
         return $params;
     }
 
     /**
      * @return array
      */
-    private function getPiaParameters($pia, $source)
+    private function getPiaParameters($attributes, $source)
     {
-        list($name, $route, $routeAttr) = $pia;
+        list($name, $route, $routeAttr) = $attributes;
         $params = [];
         $params['pia_name'] = $name;
-        $params['pia_url'] = $this->getAbsoluteUrl($route, $routeAttr);
         $params['source_name'] = $this->getSourceParameters($source);
+        $params['pia_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        $params['evaluation_state'] = '**';
         return $params;
     }
 

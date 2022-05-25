@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Pia\Traits\EvaluationStateTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
@@ -24,7 +25,12 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class Evaluation implements Timestampable
 {
-    use HasPiaTrait, ResourceTrait, TimestampableEntity;
+    use EvaluationStateTrait, HasPiaTrait, ResourceTrait, TimestampableEntity;
+
+    const EVALUATION_STATE_NONE = 0;
+    const EVALUATION_STATE_TO_CORRECT = 1;
+    const EVALUATION_STATE_IMPROVABLE = 2;
+    const EVALUATION_STATE_ACCEPTABLE = 3;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pia", inversedBy="evaluations")
@@ -155,6 +161,14 @@ class Evaluation implements Timestampable
     public function getGlobalStatus(): int
     {
         return $this->globalStatus;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEvaluationState(): int
+    {
+        return $this->getStatus();
     }
 
     /**

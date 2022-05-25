@@ -352,9 +352,9 @@ class EvaluationController extends PiaSubController
         {
             $pia = $evaluation->getPia();
             $processing = $pia->getProcessing();
-
             // notify redactor after evaluating each page of pia
             $piaAttr = $this->getEvaluationRoute($evaluation);
+            $piaAttr[] = ['evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
             array_push($piaAttr, $pia);
             $source = $pia->getEvaluator();
             foreach ($processing->getRedactors() as $recipient) {
