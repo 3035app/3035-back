@@ -15,6 +15,7 @@ use PiaApi\Entity\Pia\Processing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EmailingService
 {
@@ -31,17 +32,17 @@ class EmailingService
         LoggerInterface $logger,
         \Swift_Mailer $mailer,
         UrlGeneratorInterface $router,
+        TokenStorageInterface $tokenStorage,
         string $PialabEnvironment,
-        array $PialabFromEmail,
-        string $PialabFrontUrl
+        array $PialabFromEmail
     ) {
         $this->environment = $PialabEnvironment;
         $this->from = $PialabFromEmail;
-        $this->frontUrl = $PialabFrontUrl;
         $this->logger = $logger;
         $this->mailer = $mailer;
         $this->router = $router;
         $this->twig = $twig;
+        $this->frontUrl = $this->getFrontUrl($tokenStorage);
     }
 
     /**
@@ -153,10 +154,10 @@ class EmailingService
     }
 
     /**
-     * @param string       $subject
-     * @param string       $body
-     * @param array|string $from
-     * @param array|string $to
+     * @param $subject string
+     * @param $body string
+     * @param $from array|string
+     * @param $to array|string
      * @return int
      */
     private function sendEmail($subject, $body, $from, $to)
@@ -231,7 +232,7 @@ class EmailingService
     }
 
     /**
-     * @param $mixed (User|array)
+     * @param $mixed User|array
      * @return array
      */
     private function getSourceParameters($mixed)
@@ -262,6 +263,21 @@ class EmailingService
     private function getAbsoluteUrl($route, $replace)
     {
         return $this->frontUrl . str_replace(array_keys($replace), $replace, $route);
+    }
+
+    /**
+     * @return string
+     */
+    private function getFrontUrl($token): string
+    {
+        $user = null;
+        // special case when logout
+        if (null !== $token->getToken()) {
+            $user = $token->getToken()->getUser();
+        }
+        $frontUrl = $user->getApplication()->getUrl(); // get front url from app
+        assert(null != $frontUrl, 'application url must have been defined before sending email!');
+        return $frontUrl;
     }
 
     /**
