@@ -33,6 +33,14 @@ trait HissOpinionTrait
     protected $requestedHissOpinion;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var string
+     */
+    protected $requestedHissOpinionText = '';
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      * @JMS\Groups({"Default", "Export"})
      *
@@ -74,6 +82,26 @@ trait HissOpinionTrait
     public function getRequestedHissOpinion(): ?bool
     {
         return $this->requestedHissOpinion;
+    }
+
+    /**
+     * Sets requestedHissOpinionText.
+     * 
+     * @param $requestedHissOpinionText string
+     * @return $this
+     */
+    public function setRequestedHissOpinionText(string $requestedHissOpinionText)
+    {
+        $this->requestedHissOpinionText = $requestedHissOpinionText;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestedHissOpinionText(): ?string
+    {
+        return $this->requestedHissOpinionText;
     }
 
     /**
