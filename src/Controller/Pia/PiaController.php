@@ -303,6 +303,10 @@ class PiaController extends RestController
      *         @Swg\Property(property="applied_adjustments", type="string"),
      *         @Swg\Property(property="dpos_names", type="string"),
      *         @Swg\Property(property="people_names", type="string"),
+     *         @Swg\Property(property="requested_hiss_opinion", type="boolean"),
+     *         @Swg\Property(property="hiss_name", type="string"),
+     *         @Swg\Property(property="hiss_processing_implemented_status", type="number"),
+     *         @Swg\Property(property="hiss_opinion", type="string"),
      *         @Swg\Property(property="processing", type="object", required={"id"}, @Swg\Property(property="id", type="number"))
      *     ),
      *     description="The PIA content"
