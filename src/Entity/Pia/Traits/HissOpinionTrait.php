@@ -122,7 +122,7 @@ trait HissOpinionTrait
      * @param $hissOpinion string
      * @return $this
      */
-    public function setHissProcessingImplementedStatus(string $hissOpinion)
+    public function setHissOpinion(string $hissOpinion)
     {
         $this->hissOpinion = $hissOpinion;
         return $this;
@@ -131,7 +131,7 @@ trait HissOpinionTrait
     /**
      * @return string
      */
-    public function getHissProcessingImplementedStatus(): ?string
+    public function getHissOpinion(): ?string
     {
         return $this->hissOpinion;
     }
