@@ -11,6 +11,7 @@
 namespace PiaApi\Controller\Pia;
 
 use JMS\Serializer\SerializerInterface;
+use PiaApi\Services\EmailingService;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -22,13 +23,20 @@ abstract class LayerRestController extends RestController
      */
     private $authChecker;
 
+    /**
+     * @var EmailingService
+     */
+    protected $emailingService;
+
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
         SerializerInterface $serializer,
-        Security $authChecker
+        Security $authChecker,
+        EmailingService $emailingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
         $this->authChecker = $authChecker;
+        $this->emailingService = $emailingService;
     }
 
     /**
@@ -40,4 +48,15 @@ abstract class LayerRestController extends RestController
     {
         return $this->authChecker;
     }
+
+    /**
+     * Gets EmailingService resource.
+     *
+     * @return EmailingService
+     */
+    protected function getEmailingService(): EmailingService
+    {
+        return $this->emailingService;
+    }
+
 }

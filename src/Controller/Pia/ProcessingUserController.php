@@ -120,6 +120,7 @@ class ProcessingUserController extends LayerRestController
         // attach user to processing
         $processing->addUser($user);
         $this->getDoctrine()->getManager()->flush();
+        $this->notify($processing, $user);
 
         return $this->view($processing, Response::HTTP_OK);
     }
@@ -225,6 +226,17 @@ class ProcessingUserController extends LayerRestController
         if (!$resource->canShow($this->getUser()) && !$this->isGranted('CAN_REMOVE_PROCESSING_USER')) {
             // you are not allowed to delete this folder.
             throw new AccessDeniedHttpException('messages.http.403.6');
+        }
+    }
+
+    /**
+     * Some notifications to send.
+     */
+    private function notify($processing, $user): void
+    {
+        # send notification if user is guest!
+        if ($user->isOnlyGuest()) {
+            $this->assigningUsersEmail($this->getEmailingService(), $processing, [$user]);
         }
     }
 }
