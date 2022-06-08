@@ -90,6 +90,11 @@ class PiaTransformer extends AbstractTransformer
         $pia->setPeopleNames($descriptor->getPeopleNames());
         $pia->setIsExample($descriptor->getIsExample());
         $pia->setType($descriptor->getType());
+        $pia->setRequestedHissOpinion($descriptor->getRequestedHissOpinion());
+        $pia->setRequestedHissOpinionText($descriptor->getRequestedHissOpinionText());
+        $pia->setHissName($descriptor->getHissName());
+        $pia->setHissProcessingImplementedStatus($descriptor->getHissProcessingImplementedStatus());
+        $pia->setHissOpinion($descriptor->getHissOpinion());
 
         $pia->setProcessing($this->processing);
 
@@ -120,7 +125,12 @@ class PiaTransformer extends AbstractTransformer
             $pia->getUpdatedAt(),
             $pia->getType(),
             $pia->getNumberOfQuestions(),
-            $pia->computeProgress()
+            $pia->computeProgress(),
+            $pia->getRequestedHissOpinion(),
+            $pia->getRequestedHissOpinionText(),
+            $pia->getHissName(),
+            $pia->getHissProcessingImplementedStatus(),
+            $pia->getHissOpinion()
         );
 
         $descriptor->mergeAnswers(
