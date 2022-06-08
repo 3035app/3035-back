@@ -194,6 +194,38 @@ class PiaDescriptor extends AbstractDescriptor
      */
     protected $comments = [];
 
+    /**
+     * @JMS\Type("bool")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var bool
+     */
+    protected $requestedHissOpinion;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var string
+     */
+    protected $hissName;
+
+    /**
+     * @JMS\Type("int")
+     * @JMS\Groups({"Export"})
+     *
+     * @var int
+     */
+    protected $hissProcessingImplementedStatus;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var string
+     */
+    protected $hissOpinion;
+
     public function __construct(
         string $status,
         string $author,
@@ -214,7 +246,11 @@ class PiaDescriptor extends AbstractDescriptor
         \DateTime $updatedAt,
         string $type,
         int $numberOfQuestions,
-        int $progress
+        int $progress,
+        bool $requestedHissOpinion,
+        string $hissName,
+        int $hissProcessingImplementedStatus,
+        string $hissOpinion
     ) {
         $this->status = $status;
         $this->authorName = $author;
@@ -236,6 +272,10 @@ class PiaDescriptor extends AbstractDescriptor
         $this->type = $type;
         $this->numberOfQuestions = $numberOfQuestions;
         $this->progress = $progress;
+        $this->requestedHissOpinion = $requestedHissOpinion;
+        $this->hissName = $hissName;
+        $this->hissProcessingImplementedStatus = $hissProcessingImplementedStatus;
+        $this->hissOpinion = $hissOpinion;
     }
 
     public function mergeAnswers(array $answers)
