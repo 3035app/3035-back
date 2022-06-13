@@ -967,6 +967,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isAcceptable(): bool
+    {
+        return self::EVALUATION_STATE_ACCEPTABLE == $this->getEvaluationState();
+    }
+
+    /**
      * @return string|null
      */
     public function getEvaluationComment(): ?string
