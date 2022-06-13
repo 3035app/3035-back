@@ -391,14 +391,16 @@ class EvaluationController extends PiaSubController
     {
         // check if all evaluations are acceptable, then notify dpo!
         // at this point, all evaluations are created
-        if ($pia->isPiaEvaluationsAcceptable())
+        if ($pia->isPiaEvaluationsAcceptable($request))
         {
             // notify dpo
-            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/4/item/3', ['{pia_id}' => $pia->getId()]];
-            array_push($piaAttr, $pia);
-            $recipient = $pia->getDataProtectionOfficer();
-            $source = $pia->getEvaluator();
-            $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
+            if ($pia->isPiaEvaluationRequested($request)) {
+                $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/4/item/3', ['{pia_id}' => $pia->getId()]];
+                array_push($piaAttr, $pia);
+                $recipient = $pia->getDataProtectionOfficer();
+                $source = $pia->getEvaluator();
+                $this->emailingService->notifySubmitPiaToDpo($piaAttr, $recipient, $source);
+            }
 
             # all evaluations are acceptable!
             if ($pia->hasAllEvaluationsAcceptable()) {

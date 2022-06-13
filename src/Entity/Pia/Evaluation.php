@@ -176,10 +176,21 @@ class Evaluation implements Timestampable
     /**
      * @return bool
      */
+    public function isSameReference($request): bool
+    {
+        return $this->getReferenceTo() == $request->get('reference_to');
+    }
+
+    /**
+     * @return bool
+     */
     public function isAcceptable($request): bool
     {
-        $arr = [$request->get('status'), $this->getStatus()];
-        return in_array(self::EVALUATION_STATE_ACCEPTABLE, $arr);
+        return
+            (self::EVALUATION_STATE_ACCEPTABLE == $request->get('status') && $this->isSameReference($request))
+            ||
+            self::EVALUATION_STATE_ACCEPTABLE == $this->getStatus()
+            ;
     }
 
     /**

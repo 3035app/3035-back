@@ -722,11 +722,29 @@ class Pia implements Timestampable
     /**
      * @return bool
      */
-    public function isPiaEvaluationsAcceptable(): bool
+    public function isPiaEvaluationRequested($request): bool
     {
         foreach ($this->getEvaluations() as $evaluation) {
+            if ($evaluation->isSameReference($request)) {
+                if ($evaluation->getStatus() != $request->get('status')) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPiaEvaluationsAcceptable($request): bool
+    {
+        if (self::EVALUATION_NUMBER > count($this->getEvaluations())) {
+            return false;
+        }
+        foreach ($this->getEvaluations() as $evaluation) {
             # status <=> acceptable
-            if (Evaluation::EVALUATION_STATE_ACCEPTABLE != $evaluation->getStatus()) {
+            if (!$evaluation->isAcceptable($request)) {
                 return false;
             }
         }
