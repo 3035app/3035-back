@@ -15,8 +15,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Pia\Traits\EvaluationStateTrait;
 use PiaApi\Entity\Pia\Traits\HasPiaTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
+
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @ORM\Entity
@@ -24,7 +27,12 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class Evaluation implements Timestampable
 {
-    use HasPiaTrait, ResourceTrait, TimestampableEntity;
+    use EvaluationStateTrait, HasPiaTrait, ResourceTrait, TimestampableEntity;
+
+    const EVALUATION_STATE_NONE = 0;
+    const EVALUATION_STATE_TO_CORRECT = 1;
+    const EVALUATION_STATE_IMPROVABLE = 2;
+    const EVALUATION_STATE_ACCEPTABLE = 3;
 
     /**
      * @ORM\ManyToOne(targetEntity="Pia", inversedBy="evaluations")
@@ -158,18 +166,30 @@ class Evaluation implements Timestampable
     }
 
     /**
+     * @return int
+     */
+    public function getEvaluationState(): int
+    {
+        return $this->getStatus();
+    }
+
+    /**
      * @return bool
      */
     public function canEmitPiaEvaluatorEvaluation($request): bool
     {
+        # add an evaluation
+        return $request->get('status') != $this->getStatus();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canEmitPiaEvaluatorCancelEvaluation($request): bool
+    {
         $old_status = $request->get('global_status');
-        return
-            # add an evaluation
-            2 == $old_status && $old_status == $this->getGlobalStatus()
-            ||
-            # remove an evaluation
-            1 == $old_status && $old_status == $this->getGlobalStatus()
-            ;
+        # cancel evaluation
+        return 2 > $old_status && $old_status != $this->getGlobalStatus();
     }
 
     /**
@@ -177,6 +197,6 @@ class Evaluation implements Timestampable
      **/
     public function __toString()
     {
-        return sprintf('%s (#%s)', $this->getPia()->getProcessing()->getName(), $this->getReferenceTo());
+        return sprintf('%s (section %s)', $this->getPia()->getProcessing()->getName(), $this->getItemReference());
     }
 }

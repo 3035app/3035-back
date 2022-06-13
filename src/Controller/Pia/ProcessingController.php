@@ -938,7 +938,8 @@ class ProcessingController extends RestController
         if ($processing->canAskForProcessingEvaluation($request))
         {
             // notify evaluator on last page of processing
-            $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
+            $arr = ['{id}' => $processing->getId(), 'evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
+            $processingAttr = [$processing->getName(), '/processing/{id}', $arr];
             array_push($processingAttr, $processing);
             $recipient = $processing->getEvaluatorPending();
             if (null == $recipient)
@@ -955,7 +956,8 @@ class ProcessingController extends RestController
         if ($processing->canEmitEvaluatorEvaluation($request))
         {
             // notify redactor
-            $processingAttr = [$processing->getName(), '/processing/{id}', ['{id}' => $processing->getId()]];
+            $arr = ['{id}' => $processing->getId(), 'evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
+            $processingAttr = [$processing->getName(), '/processing/{id}', $arr];
             array_push($processingAttr, $processing);
             $source = $processing->getEvaluatorPending();
             foreach ($processing->getRedactors() as $recipient) {

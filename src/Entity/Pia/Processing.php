@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Oauth\User;
+use PiaApi\Entity\Pia\Traits\EvaluationStateTrait;
 use PiaApi\Entity\Pia\Traits\ProcessingSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 use PiaApi\Entity\Pia\Traits\TrackingLogTrait;
@@ -27,7 +28,7 @@ use PiaApi\Entity\Pia\Traits\TrackingLogTrait;
  */
 class Processing implements ObjectManagerAware, TrackingInterface
 {
-    use ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity, TrackingLogTrait;
+    use EvaluationStateTrait, ProcessingSupervisorTrait, ResourceTrait, TimestampableEntity, TrackingLogTrait;
 
     const STATUS_DOING = 0;
     const STATUS_UNDER_EVALUATION = 1; # replace STATUS_UNDER_VALIDATION by STATUS_UNDER_EVALUATION
@@ -1149,9 +1150,9 @@ class Processing implements ObjectManagerAware, TrackingInterface
                 # add an evaluation
                 Processing::EVALUATION_STATE_NONE == $old_status &&
                 in_array($new_status, [
-                    Processing::EVALUATION_STATE_TO_CORRECT,
-                    Processing::EVALUATION_STATE_IMPROVABLE,
-                    Processing::EVALUATION_STATE_ACCEPTABLE
+                    self::EVALUATION_STATE_TO_CORRECT,
+                    self::EVALUATION_STATE_IMPROVABLE,
+                    self::EVALUATION_STATE_ACCEPTABLE
                 ])
                 ||
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
