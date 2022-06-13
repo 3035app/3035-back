@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JMS\Serializer\Annotation as JMS;
+use PiaApi\Entity\Pia\Traits\HissOpinionTrait;
 use PiaApi\Entity\Pia\Traits\PiaSupervisorTrait;
 use PiaApi\Entity\Pia\Traits\ResourceTrait;
 use PiaApi\Entity\Pia\Evaluation;
@@ -26,7 +27,7 @@ use PiaApi\Entity\Pia\Evaluation;
  */
 class Pia implements Timestampable
 {
-    use PiaSupervisorTrait, ResourceTrait, TimestampableEntity;
+    use HissOpinionTrait, PiaSupervisorTrait, ResourceTrait, TimestampableEntity;
 
     const TYPE_REGULAR = 'regular';
     const TYPE_SIMPLIFIED = 'simplified';

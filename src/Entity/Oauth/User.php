@@ -423,4 +423,12 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
         return $allStructures->toArray();
     }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyGuest(): bool
+    {
+        return $this->hasRole('ROLE_USER') && 1 == count($this->getRoles());
+    }
 }
