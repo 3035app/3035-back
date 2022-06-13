@@ -357,8 +357,14 @@ class EvaluationController extends PiaSubController
             $piaAttr = $this->getEvaluationRoute($request, $evaluation);
             array_push($piaAttr, $pia);
             $source = $pia->getEvaluator();
+
+            $template = null;
+            if ($evaluation->isAcceptable($request)) {
+                $template = 'emit_pia_evaluator_evaluation_acceptable';
+            }
+
             foreach ($processing->getRedactors() as $recipient) {
-                $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source);
+                $this->emailingService->notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source, $template);
             }
         }
 

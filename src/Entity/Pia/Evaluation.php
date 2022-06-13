@@ -176,6 +176,15 @@ class Evaluation implements Timestampable
     /**
      * @return bool
      */
+    public function isAcceptable($request): bool
+    {
+        $arr = [$request->get('status'), $this->getStatus()];
+        return in_array(self::EVALUATION_STATE_ACCEPTABLE, $arr);
+    }
+
+    /**
+     * @return bool
+     */
     public function canEmitPiaEvaluatorEvaluation($request): bool
     {
         # add an evaluation

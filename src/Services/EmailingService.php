@@ -107,9 +107,9 @@ class EmailingService
     /**
      * send email to redactor when evaluator's opinion on a pia is TO_CORRECT or IMPROVABLE.
      */
-    public function notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source)
+    public function notifyEmitPiaEvaluatorEvaluation($piaAttr, $recipient, $source, $template=null)
     {
-        $template = 'emit_pia_evaluator_evaluation';
+        $template = (null == $template) ? 'emit_pia_evaluator_evaluation' : $template;
         list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
