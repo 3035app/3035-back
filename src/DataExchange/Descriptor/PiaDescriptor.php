@@ -208,6 +208,14 @@ class PiaDescriptor extends AbstractDescriptor
      *
      * @var string
      */
+    protected $requestedHissOpinionText;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Groups({"Default", "Export"})
+     *
+     * @var string
+     */
     protected $hissName;
 
     /**
@@ -248,6 +256,7 @@ class PiaDescriptor extends AbstractDescriptor
         int $numberOfQuestions,
         int $progress,
         bool $requestedHissOpinion,
+        string $requestedHissOpinionText,
         string $hissName,
         int $hissProcessingImplementedStatus,
         string $hissOpinion
@@ -273,6 +282,7 @@ class PiaDescriptor extends AbstractDescriptor
         $this->numberOfQuestions = $numberOfQuestions;
         $this->progress = $progress;
         $this->requestedHissOpinion = $requestedHissOpinion;
+        $this->requestedHissOpinionText = $requestedHissOpinionText;
         $this->hissName = $hissName;
         $this->hissProcessingImplementedStatus = $hissProcessingImplementedStatus;
         $this->hissOpinion = $hissOpinion;

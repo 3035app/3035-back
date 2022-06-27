@@ -41,12 +41,12 @@ trait HissOpinionTrait
     protected $requestedHissOpinionText = '';
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string")
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
      */
-    protected $hissName;
+    protected $hissName = '';
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
@@ -119,9 +119,9 @@ trait HissOpinionTrait
     /**
      * @return string
      */
-    public function getHissName(): ?string
+    public function getHissName(): string
     {
-        return $this->hissName;
+        return $this->hissName ? $this->hissName : '';
     }
 
     /**
