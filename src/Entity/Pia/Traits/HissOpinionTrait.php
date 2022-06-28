@@ -41,23 +41,23 @@ trait HissOpinionTrait
     protected $requestedHissOpinionText = '';
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string")
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
      */
-    protected $hissName;
+    protected $hissName = '';
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(type="smallint")
      * @JMS\Groups({"Default", "Export"})
      *
      * @var int
      */
-    protected $hissProcessingImplementedStatus;
+    protected $hissProcessingImplementedStatus = 0;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      * @JMS\Groups({"Default", "Export"})
      *
      * @var string
@@ -119,9 +119,9 @@ trait HissOpinionTrait
     /**
      * @return string
      */
-    public function getHissName(): ?string
+    public function getHissName(): string
     {
-        return $this->hissName;
+        return $this->hissName ? $this->hissName : '';
     }
 
     /**
@@ -159,8 +159,8 @@ trait HissOpinionTrait
     /**
      * @return string
      */
-    public function getHissOpinion(): ?string
+    public function getHissOpinion(): string
     {
-        return $this->hissOpinion;
+        return $this->hissOpinion ? $this->hissName : '';
     }
 }
