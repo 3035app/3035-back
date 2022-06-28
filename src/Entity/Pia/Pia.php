@@ -603,7 +603,7 @@ class Pia implements Timestampable
     /**
      * @return string
      */
-    public function getPeopeNames(): string
+    public function getPeopleNames(): string
     {
         return $this->peopleNames;
     }
