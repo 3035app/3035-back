@@ -119,7 +119,7 @@ class PiaTransformer extends AbstractTransformer
             $pia->getRejectionReason(),
             $pia->getAppliedAdjustments(),
             $pia->getDposNames(),
-            $pia->getPeopeNames(),
+            $pia->getPeopleNames(),
             $pia->getIsExample(),
             $pia->getCreatedAt(),
             $pia->getUpdatedAt(),
