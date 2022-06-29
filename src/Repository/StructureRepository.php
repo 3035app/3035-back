@@ -15,7 +15,6 @@ use PiaApi\Entity\Pia\Structure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use PiaApi\Entity\Pia\Portfolio;
-use Pagerfanta\Pagerfante;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -53,13 +52,13 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null  $defaultLimit
      * @param int|null  $page
      *
-     * @return Pagerfante
+     * @return Pagerfanta
      */
     public function getPaginatedStructuresByPortfolio(
         Portfolio $portfolio,
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): Pagerfante {
+    ): Pagerfanta {
         $queryBuilder = $this->createQueryBuilder('e');
 
         $queryBuilder
@@ -81,13 +80,13 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null $defaultLimit
      * @param int|null $page
      *
-     * @return Pagerfante
+     * @return Pagerfanta
      */
     public function getPaginatedStructuresForPortfolios(
         array $portfolios,
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): Pagerfante {
+    ): Pagerfanta {
         $queryBuilder = $this->createQueryBuilder('s');
 
         $queryBuilder
@@ -108,12 +107,12 @@ class StructureRepository extends ServiceEntityRepository
      * @param int|null $defaultLimit
      * @param int|null $page
      *
-     * @return Pagerfante
+     * @return Pagerfanta
      */
     public function getPaginatedStructures(
         ?int $defaultLimit = 20,
         ?int $page = 1
-    ): Pagerfante {
+    ): Pagerfanta {
         $queryBuilder = $this->createQueryBuilder('e');
 
         $queryBuilder
