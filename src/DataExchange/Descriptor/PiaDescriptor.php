@@ -200,7 +200,7 @@ class PiaDescriptor extends AbstractDescriptor
      *
      * @var bool
      */
-    protected $requestedHissOpinion;
+    protected $requestedHissOpinion = false;
 
     /**
      * @JMS\Type("string")
@@ -208,7 +208,7 @@ class PiaDescriptor extends AbstractDescriptor
      *
      * @var string
      */
-    protected $requestedHissOpinionText;
+    protected $requestedHissOpinionText = '';
 
     /**
      * @JMS\Type("string")
@@ -216,7 +216,7 @@ class PiaDescriptor extends AbstractDescriptor
      *
      * @var string
      */
-    protected $hissName;
+    protected $hissName = '';
 
     /**
      * @JMS\Type("int")
@@ -232,7 +232,7 @@ class PiaDescriptor extends AbstractDescriptor
      *
      * @var string
      */
-    protected $hissOpinion;
+    protected $hissOpinion = '';
 
     public function __construct(
         string $status,
