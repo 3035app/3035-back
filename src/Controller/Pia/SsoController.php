@@ -12,6 +12,9 @@ namespace PiaApi\Controller\Pia;
 
 use Codeception\Lib\Connector\Guzzle;
 use JMS\Serializer\SerializerInterface;
+use PHPUnit\Util\Json;
+use PiaApi\Entity\Oauth\User;
+use PiaApi\Repository\UserRepository;
 use PiaApi\Services\PiaSearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as Swg;
@@ -28,15 +31,60 @@ use GuzzleHttp\Client;
 class SsoController
 {
     /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+    /**
      * @FOSRest\Get("/authBySso/{code}")
      */
     public function __invoke(string $code)
     {
-        new Client([
-            'base_uri' => 'URL pour récupérer les infos sur la plateforme SSO',
+        $client = new Client([
+            'base_uri' => 'https://idp-dev.sncf.fr:443/openam/oauth2/IDP/',
             // You can set any number of default request options.
             'timeout'  => 2.0,
         ]);
-        return new JsonResponse('TODO');
+
+        $response = $client->request('POST', 'access_token', [
+            'headers' => [
+                'Authorization' => 'Basic UGlhbGFiOnp3b1BERUZBdDJEYWxpUjFQSTlW',
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'form_params' => [
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+                'redirect_uri' => 'http://localhost:4200/callback/'
+            ]
+        ]);
+
+        $accessToken = json_decode($response->getBody()->getContents(), true)['access_token'];
+
+        $response = $client->request('POST', 'userinfo', [
+            'headers' => [
+                'Authorization' => "Bearer $accessToken",
+            ],
+            'form_params' => [
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+                'redirect_uri' => 'http://localhost:4200/callback/'
+            ]
+        ]);
+
+        $user = $this->userRepository->findOneBy([
+           'usernameForSncfConnect' => json_decode($response->getBody()->getContents(), true)['sub']
+        ]);
+
+        if (!$user instanceof User) {
+            return new JsonResponse('User not found for this code', 404);
+        }
+
+
+
+        return new JsonResponse($response->getBody()->getContents(), 200, [], true);
     }
 }
