@@ -10,81 +10,28 @@
 
 namespace PiaApi\Controller\Pia;
 
-use Codeception\Lib\Connector\Guzzle;
-use JMS\Serializer\SerializerInterface;
-use PHPUnit\Util\Json;
-use PiaApi\Entity\Oauth\User;
-use PiaApi\Repository\UserRepository;
-use PiaApi\Services\PiaSearchService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Swagger\Annotations as Swg;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use PiaApi\Auth\SncfConnect;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use PiaApi\Model\SearchResultModel;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use GuzzleHttp\Client;
 
 
 class SsoController
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private $sncfConnect;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(SncfConnect $sncfConnect)
     {
-        $this->userRepository = $userRepository;
+        $this->sncfConnect = $sncfConnect;
     }
     /**
      * @FOSRest\Get("/authBySso/{code}")
      */
-    public function __invoke(string $code)
+    public function __invoke(Request $request, string $code)
     {
-        $client = new Client([
-            'base_uri' => 'https://idp-dev.sncf.fr:443/openam/oauth2/IDP/',
-            // You can set any number of default request options.
-            'timeout'  => 2.0,
-        ]);
 
-        $response = $client->request('POST', 'access_token', [
-            'headers' => [
-                'Authorization' => 'Basic UGlhbGFiOnp3b1BERUZBdDJEYWxpUjFQSTlW',
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ],
-            'form_params' => [
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_uri' => 'http://localhost:4200/callback/'
-            ]
-        ]);
+        $token = $this->sncfConnect->generateToken($code, $request->query->get('redirect_uri'));
 
-        $accessToken = json_decode($response->getBody()->getContents(), true)['access_token'];
-
-        $response = $client->request('POST', 'userinfo', [
-            'headers' => [
-                'Authorization' => "Bearer $accessToken",
-            ],
-            'form_params' => [
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_uri' => 'http://localhost:4200/callback/'
-            ]
-        ]);
-
-        $user = $this->userRepository->findOneBy([
-           'usernameForSncfConnect' => json_decode($response->getBody()->getContents(), true)['sub']
-        ]);
-
-        if (!$user instanceof User) {
-            return new JsonResponse('User not found for this code', 404);
-        }
-
-
-
-        return new JsonResponse($response->getBody()->getContents(), 200, [], true);
+        return new Response(json_encode($token), 200);
     }
 }
