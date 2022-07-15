@@ -431,4 +431,12 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     {
         return $this->hasRole('ROLE_USER') && 1 == count($this->getRoles());
     }
+
+    public function isSharedDpo(): bool
+    {
+        if (in_array('ROLE_SHARED_DPO', $this->getRoles())) {
+            return true;
+        }
+        return false;
+    }
 }
