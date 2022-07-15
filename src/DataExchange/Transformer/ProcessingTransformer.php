@@ -163,8 +163,6 @@ class ProcessingTransformer extends AbstractTransformer
         $processing->setLimitConcernedPeople($descriptor->getLimitConcernedPeople());
         $processing->setSubcontractorsObligations($descriptor->getSubcontractorsObligations());
 
-        // save processing data types
-
         return $processing;
     }
 
