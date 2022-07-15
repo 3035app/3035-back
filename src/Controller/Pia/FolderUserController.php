@@ -195,7 +195,7 @@ class FolderUserController extends LayerRestController
     public function canAccessResourceOr403($resource): void
     {
         if (!$resource instanceof Folder) {
-            throw new AccessDeniedHttpException('*');
+            throw new AccessDeniedHttpException();
         }
 
         // check that folder is in user's structure
