@@ -26,6 +26,7 @@ use PiaApi\Entity\Pia\ProcessingTemplate;
 use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
 use PiaApi\Services\EmailingService;
+use PiaApi\Services\ProcessingDataTypeService;
 use PiaApi\Services\ProcessingService;
 use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -37,6 +38,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class ProcessingController extends RestController
 {
+    /**
+     * @var ProcessingDataTypeService
+     */
+    protected $processingDataTypeService;
+
     /**
      * @var ProcessingService
      */
@@ -64,16 +70,18 @@ class ProcessingController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
+        SerializerInterface $serializer,
+        ProcessingDataTypeService $processingDataTypeService,
         ProcessingService $processingService,
         ProcessingTransformer $processingTransformer,
-        SerializerInterface $serializer,
         EmailingService $emailingService,
         TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
+        $this->serializer = $serializer;
+        $this->processingDataTypeService = $processingDataTypeService;
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;
-        $this->serializer = $serializer;
         $this->emailingService = $emailingService;
         $this->trackingService = $trackingService;
     }
@@ -560,18 +568,37 @@ class ProcessingController extends RestController
         } else {
             throw new AccessDeniedHttpException('need supervisors object!');
         }
+        
+        // get current processing to be duplicated
+        $currentProcessing = $this->getResource($data['id'], Processing::class);
 
         try {
+            // duplicate processing
             $processing = $this->processingTransformer->jsonToProcessing($data);
             $this->persist($processing);
             $processing->setStatus(Processing::STATUS_DOING); # initialize status
             $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
+            // duplicate pia(s)
             foreach ($descriptor->getPias() as $pia) {
                 $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
             }
-            foreach ($descriptor->getProcessingDataTypes() as $types) {
-                $processing->addProcessingDataType($this->processingTransformer->extractDataType($processing, $types));
+            // duplicate data types
+            foreach ($currentProcessing->getAllProcessingDataTypes() as $dataType) {
+                $processingDataType = $this->processingDataTypeService->create(
+                    $processing,
+                    $dataType->getReference(),
+                    $dataType->getData(),
+                    $dataType->getRetentionPeriod(),
+                    $dataType->isSensitive(),
+                );
+                $this->persist($processingDataType);
+                $processing->addProcessingDataType($processingDataType);
             }
+            // duplicate users
+            foreach ($currentProcessing->getUsers() as $user) {
+                $processing->addUser($user);
+            }
+            // save duplicated processing
             $this->persist($processing);
         } catch (DataImportException $ex) {
             return $this->view(unserialize($ex->getMessage()), Response::HTTP_OK);

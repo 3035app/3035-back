@@ -30,4 +30,17 @@ class ProcessingDataTypeService extends AbstractService
     {
         return new ProcessingDataType($processing, $reference);
     }
+
+    /**
+     * 
+     * @return ProcessingDataType
+     */
+    public function create(Processing $processing, string $reference, string $data, string $retentionPeriod, bool $sensitive): ProcessingDataType
+    {
+        $processingDataType = $this->createProcessingDataType($processing, $reference);
+        $processingDataType->setData($data);
+        $processingDataType->setRetentionPeriod($retentionPeriod);
+        $processingDataType->setSensitive($sensitive);
+        return $processingDataType;
+    }
 }
