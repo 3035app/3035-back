@@ -671,6 +671,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @return Collection|ProcessingDataType[]
+     */
+    public function getAllProcessingDataTypes(): Collection
+    {
+        return $this->processingDataTypes;
+    }
+
+    /**
      * @return array|ProcessingDataType[]
      */
     public function getProcessingDataTypes(): array
