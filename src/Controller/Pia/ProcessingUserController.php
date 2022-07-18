@@ -198,8 +198,8 @@ class ProcessingUserController extends LayerRestController
         }
 
         // check that folder is in user's structure
-        if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure()) {
-            throw new AccessDeniedHttpException();
+        if ($resource->getFolder()->getStructure() !== $this->getUser()->getStructure() && !$this->getUser()->isSharedDpo()) {
+            throw new AccessDeniedHttpException("the structure of folder is different from user's structure.");
         }
     }
 
