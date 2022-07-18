@@ -678,6 +678,11 @@ class PiaController extends RestController
             $this->trackingService->logActivityValidated($pia->getProcessing());
         }
 
+        if ($pia->isRejected($request)) {
+            # add a rejected tracking
+            $this->trackingService->logActivityRejected($pia->getProcessing());
+        }
+
         // check if dpo noticed the pia
         if ($pia->canLogNoticeRequest($request))
         {

@@ -62,6 +62,11 @@ class TrackingService
         $this->removeAndLogActivity(TrackingLog::ACTIVITY_VALIDATED, $entity);
     }
 
+    public function logActivityRejected($entity): void
+    {
+        $this->removeAndLogActivity(TrackingLog::ACTIVITY_REJECTED, $entity);
+    }
+
     public function logActivityArchivedProcessing($entity): void
     {
         $this->removeAndLogActivity(TrackingLog::ACTIVITY_ARCHIVED, $entity);
