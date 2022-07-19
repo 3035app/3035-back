@@ -1178,6 +1178,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     /**
      * @return bool
      */
+    public function isUnderEvaluation(): bool
+    {
+        return Processing::STATUS_UNDER_EVALUATION;
+    }
+
+    /**
+     * @return bool
+     */
     public function isUnderValidation(): bool
     {
         return Processing::STATUS_UNDER_VALIDATION;
