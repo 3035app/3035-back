@@ -613,6 +613,7 @@ class PiaController extends RestController
     private function notifyOrTrack($request, $pia): void
     {
         $canNotifyDataController = false;
+        $this->trackingService->logActivityLastUpdate($pia->getProcessing());
 
         if ($pia->canEmitOpinionOrObservations($request))
         {
