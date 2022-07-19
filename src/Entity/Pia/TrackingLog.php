@@ -32,6 +32,7 @@ class TrackingLog
     const ACTIVITY_NOTICE_REQUEST = 'notice-issued';
     const ACTIVITY_VALIDATION_REQUEST = 'validation-request';
     const ACTIVITY_VALIDATED = 'validated';
+    const ACTIVITY_REJECTED = 'rejected';
     const ACTIVITY_ARCHIVED = 'archived';
 
     /**
@@ -215,6 +216,7 @@ class TrackingLog
             self::ACTIVITY_NOTICE_REQUEST,
             self::ACTIVITY_VALIDATION_REQUEST,
             self::ACTIVITY_VALIDATED,
+            self::ACTIVITY_REJECTED,
             self::ACTIVITY_ARCHIVED,
         ];
     }

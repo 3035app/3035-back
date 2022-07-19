@@ -779,6 +779,18 @@ class Pia implements Timestampable
     }
 
     /**
+     * @return bool
+     */
+    public function isRejected($request): bool
+    {
+        if (1 >= $this->getStatus() && 1 == $request->get('status'))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * dpo_status: 1 && dpos_names: abc
      * ||
      * dpo_status: 0 && dpo_opinion: abc && dpos_names: abc
