@@ -39,16 +39,19 @@ class TrackingService
 
     public function logActivityEvaluation($entity): void
     {
+        # évaluation effectuée
         $this->removeAndLogActivity(TrackingLog::ACTIVITY_EVALUATION, $entity);
     }
 
     public function logActivityIssueRequest($entity): void
     {
+        # émettre une demande/demande d'émission d'un avis
         $this->removeAndLogActivity(TrackingLog::ACTIVITY_ISSUE_REQUEST, $entity);
     }
 
     public function logActivityNoticeRequest($entity): void
     {
+        # émission d'un avis
         $this->removeAndLogActivity(TrackingLog::ACTIVITY_NOTICE_REQUEST, $entity);
     }
 

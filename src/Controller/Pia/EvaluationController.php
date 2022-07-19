@@ -249,6 +249,7 @@ class EvaluationController extends PiaSubController
     {
         $evaluation = $this->getResource($id, Evaluation::class);
         if (null !== $evaluation) {
+            $this->trackingService->logActivityLastUpdate($evaluation->getPia()->getProcessing());
             $this->notifyRedactor($request, $evaluation);
             $this->notifyDpo($request, $evaluation->getPia());
         }
@@ -403,12 +404,10 @@ class EvaluationController extends PiaSubController
             }
 
             # all evaluations are acceptable!
-            if ($pia->hasAllEvaluationsAcceptable()) {
-                # add an issue request tracking
-                $this->trackingService->logActivityIssueRequest($pia->getProcessing());
-                # add an evaluation tracking
-                $this->trackingService->logActivityEvaluation($pia->getProcessing());
-            }
+            # add an issue request tracking
+            $this->trackingService->logActivityIssueRequest($pia->getProcessing());
+            # add an evaluation tracking
+            $this->trackingService->logActivityEvaluation($pia->getProcessing());
         }
     }
 
