@@ -228,6 +228,7 @@ pia:
       locked: Verrouillé
       created_at: Créé le
       expires_at: Expire le
+      usernameForSncfConnect: "Identifiant Groupe SNCF"
 
     add:
       title: Ajouter un utilisateur
@@ -256,7 +257,10 @@ pia:
         portfolios: Portefeuilles client
         sendResettingEmail: "Envoyer l'email de RàZ de mot de passe ?"
         sendResettingEmail_help: "Envoyer automatiquement l'email de réinitialisation de mot de passe à l'adresse email saisie"
+        usernameForSncfConnect: "Identifiant Groupe SNCF"
         submit: "Créer l'utilisateur"
+
+
       edit:
         username: "Alias"
         roles: Rôles
@@ -264,6 +268,7 @@ pia:
         enabled: Actif
         locked: Verrouillé
         cancel: Annuler
+        usernameForSncfConnect: "Identifiant Groupe SNCF"
         submit: "Enregistrer l'utilisateur"
       remove:
         submit: "Supprimer l'utilisateur"

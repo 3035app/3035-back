@@ -22,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,6 +81,10 @@ class CreateUserForm extends BaseForm
             ])
             ->add('email', EmailType::class, [
                 'label'    => 'pia.users.forms.create.email',
+            ])
+            ->add('usernameForSncfConnect', TextType::class, [
+                'required'     => false,
+                'label'        => 'pia.users.forms.create.usernameForSncfConnect'
             ])
             ->add('password', PasswordType::class, [
                 'label'    => 'pia.users.forms.create.password',
