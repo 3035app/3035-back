@@ -128,6 +128,7 @@ class UserController extends BackOfficeAbstractController
             }
 
             $user->setProfile($userData['profile']);
+            $user->setUsernameForSncfConnect($userData['usernameForSncfConnect']);
 
             $this->getDoctrine()->getManager()->persist($user);
 

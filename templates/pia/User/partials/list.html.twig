@@ -20,6 +20,7 @@
           {% endif %}
           <th>{{ 'pia.users.list.username'|trans }}</th>
           <th>{{ 'pia.users.list.email'|trans }}</th>
+          <th>{{ 'pia.users.list.usernameForSncfConnect'|trans }}</th>
           <th>{{ 'pia.users.list.roles'|trans }}</th>
           <th>{{ 'pia.users.list.enabled'|trans }}</th>
           <th>{{ 'pia.users.list.locked'|trans }}</th>
@@ -58,6 +59,7 @@
             {% endif %}
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
+            <td>{{ user.usernameForSncfConnect }}</td>
             <td>
               {% for role in user.roles %}
                 <span class="ui label">{{ role }}</span>

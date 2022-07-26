@@ -31,7 +31,8 @@
         "symfony/twig-bundle": "^4.0",
         "symfony/yaml": "^4.0",
         "cocur/slugify": "^3.2",
-        "alom/graphviz": "^1.1"
+        "alom/graphviz": "^1.1",
+        "ext-json": "*"
     },
     "require-dev": {
         "codeception/codeception": "2.4.0",
@@ -44,7 +45,11 @@
             "*": "dist"
         },
         "bin-dir": "bin",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {

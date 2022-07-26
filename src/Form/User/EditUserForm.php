@@ -69,6 +69,10 @@ class EditUserForm extends CreateUserForm
                 'multiple' => true,
                 'label'    => 'pia.users.forms.create.portfolios',
             ])
+            ->add('usernameForSncfConnect', null, [
+                'required'     => false,
+                'label'        => 'pia.users.forms.edit.usernameForSncfConnect'
+            ])
             ->add('cancel', ButtonType::class, [
                 'attr' => [
                     'class' => 'red cancel',
