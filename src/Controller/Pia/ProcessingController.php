@@ -556,7 +556,7 @@ class ProcessingController extends RestController
         }
 
         if (array_key_exists('supervisors', $data)) {
-            $this->setSupervisors($data['supervisors']);            
+            $this->setSupervisors($data['supervisors']);
         } else {
             throw new AccessDeniedHttpException('need supervisors object!');
         }
@@ -564,7 +564,7 @@ class ProcessingController extends RestController
         try {
             $processing = $this->processingTransformer->jsonToProcessing($data);
             $this->persist($processing);
-            $processing->setStatus(Processing::STATUS_DOING); # initialize status
+            $processing->setStatus(Processing::STATUS_DOING); // initialize status
             $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
             foreach ($descriptor->getPias() as $pia) {
                 $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
