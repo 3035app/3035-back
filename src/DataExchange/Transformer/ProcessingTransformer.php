@@ -146,6 +146,7 @@ class ProcessingTransformer extends AbstractTransformer
         $processing->setNonEuTransfer($descriptor->getNonEuTransfer());
         $processing->setLifeCycle($descriptor->getLifeCycle());
         $processing->setStorage($descriptor->getStorage());
+        $processing->setControllers($descriptor->getControllers());
         $processing->setStandards($descriptor->getStandards());
         $processing->setStatus((int) $descriptor->getStatus());
         $processing->setLawfulness($descriptor->getLawfulness());
