@@ -55,6 +55,8 @@ class DataTypeTransformer extends AbstractTransformer
     {
         $type = new ProcessingDataType($this->processing, $descriptor->getReference());
 
+        $type->setReference($descriptor->getReference());
+        $type->setRetentionPeriod($descriptor->getRetentionPeriod());
         $type->setData($descriptor->getData());
         $type->setSensitive($descriptor->getSensitive());
 

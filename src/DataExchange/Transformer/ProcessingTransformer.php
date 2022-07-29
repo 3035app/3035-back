@@ -17,6 +17,8 @@ use PiaApi\DataExchange\Descriptor\ProcessingDescriptor;
 use PiaApi\Entity\Oauth\User;
 use PiaApi\Entity\Pia\Folder;
 use PiaApi\Entity\Pia\Processing;
+use PiaApi\Entity\Pia\ProcessingDataType;
+use PiaApi\Entity\Pia\Pia;
 use PiaApi\Services\ProcessingService;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -164,6 +166,13 @@ class ProcessingTransformer extends AbstractTransformer
         $processing->setLimitConcernedPeople($descriptor->getLimitConcernedPeople());
         $processing->setSubcontractorsObligations($descriptor->getSubcontractorsObligations());
 
+        // Datatypes and other subobjects data
+        $this->dataTypeTransformer->setProcessing($processing);
+        foreach ( $descriptor->getProcessingDataTypes() as $datatype ) {
+          $processing->addProcessingDataType($this->dataTypeTransformer->jsonToDataType($datatype));
+        }
+        // other subobjects are skipped because, such as PIAs or comments, they have not to be duplicated when duplicating a Processing
+
         return $processing;
     }
 
@@ -188,7 +197,7 @@ class ProcessingTransformer extends AbstractTransformer
             $processing->getLifeCycle(),
             $processing->getStorage(),
             $processing->getStandards(),
-            $processing->getStatusName(), 
+            $processing->getStatusName(),
             $processing->getCreatedAt(),
             $processing->getUpdatedAt(),
             $processing->getInformedConcernedPeople(),
@@ -231,14 +240,14 @@ class ProcessingTransformer extends AbstractTransformer
         return $this->toProcessing($descriptor);
     }
 
-    public function extractPia(Processing $processing, array $json)
+    public function extractPia(Processing $processing, array $json): Pia
     {
         $this->piaTransformer->setProcessing($processing);
 
         return $this->piaTransformer->jsonToPia($json);
     }
 
-    public function extractDataType(Processing $processing, array $json)
+    public function extractDataType(Processing $processing, array $json): ProcessingDataType
     {
         $this->dataTypeTransformer->setProcessing($processing);
 

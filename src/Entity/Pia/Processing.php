@@ -355,6 +355,7 @@ class Processing implements ObjectManagerAware, TrackingInterface
         $this->processingDataTypes = new ArrayCollection();
         $this->pias = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**

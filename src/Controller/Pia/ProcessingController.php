@@ -408,13 +408,13 @@ class ProcessingController extends RestController
             ]);
         }
 
-        # 1/ get users from request
-        # do it before update!
+        // 1/ get users from request
+        // do it before update!
         list($redactors,
             $dataController,
             $evaluatorPending,
             $dataProtectionOfficerPending) = $this->getProcessingSupervisors($request);
-        # 2/ keep users who are in request and not in db
+        // 2/ keep users who are in request and not in db
         $redactors = $this->intersectRedactorsFromRequestAndDb($processing, $redactors);
 
         // before merging!
@@ -562,16 +562,17 @@ class ProcessingController extends RestController
         }
 
         try {
-            $processing = $this->processingTransformer->jsonToProcessing($data);
-            $this->persist($processing);
+            $orig = $this->getResource($data['id']); // restart from database
+            $data = $this->processingTransformer->processingToJson($orig);
+            $processing = $this->processingTransformer->jsonToProcessing(json_decode($data, true));
             $processing->setStatus(Processing::STATUS_DOING); // initialize status
-            $descriptor = $this->processingTransformer->fromJson($data, ProcessingDescriptor::class);
-            foreach ($descriptor->getPias() as $pia) {
-                $processing->addPia($this->processingTransformer->extractPia($processing, $pia));
+            $descriptor = $this->processingTransformer->fromProcessing($processing);
+
+            foreach ($descriptor->getProcessingDataTypes() as $type) {
+                $json = json_decode($this->processingTransformer->toJson($type), true);
+                $processing->addProcessingDataType($this->processingTransformer->extractDataType($processing, $json));
             }
-            foreach ($descriptor->getProcessingDataTypes() as $types) {
-                $processing->addProcessingDataType($this->processingTransformer->extractDataType($processing, $types));
-            }
+
             $this->persist($processing);
         } catch (DataImportException $ex) {
             return $this->view(unserialize($ex->getMessage()), Response::HTTP_OK);
