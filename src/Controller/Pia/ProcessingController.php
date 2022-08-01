@@ -26,6 +26,7 @@ use PiaApi\Entity\Pia\ProcessingTemplate;
 use PiaApi\Exception\ApiException;
 use PiaApi\Exception\DataImportException;
 use PiaApi\Services\EmailingService;
+use PiaApi\Services\ProcessingDataTypeService;
 use PiaApi\Services\ProcessingService;
 use PiaApi\Services\TrackingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -37,6 +38,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class ProcessingController extends RestController
 {
+    /**
+     * @var ProcessingDataTypeService
+     */
+    protected $processingDataTypeService;
+
     /**
      * @var ProcessingService
      */
@@ -64,16 +70,18 @@ class ProcessingController extends RestController
 
     public function __construct(
         PropertyAccessorInterface $propertyAccessor,
+        SerializerInterface $serializer,
+        ProcessingDataTypeService $processingDataTypeService,
         ProcessingService $processingService,
         ProcessingTransformer $processingTransformer,
-        SerializerInterface $serializer,
         EmailingService $emailingService,
         TrackingService $trackingService
     ) {
         parent::__construct($propertyAccessor, $serializer);
+        $this->serializer = $serializer;
+        $this->processingDataTypeService = $processingDataTypeService;
         $this->processingService = $processingService;
         $this->processingTransformer = $processingTransformer;
-        $this->serializer = $serializer;
         $this->emailingService = $emailingService;
         $this->trackingService = $trackingService;
     }
@@ -560,6 +568,9 @@ class ProcessingController extends RestController
         } else {
             throw new AccessDeniedHttpException('need supervisors object!');
         }
+        
+        // get current processing to be duplicated
+        $currentProcessing = $this->getResource($data['id'], Processing::class);
 
         try {
             $orig = $this->getResource($data['id']); // restart from database

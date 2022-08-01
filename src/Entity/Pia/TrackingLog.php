@@ -24,15 +24,16 @@ class TrackingLog
 {
     use ResourceTrait;
 
-    const ACTIVITY_CREATED = 'created';
-    const ACTIVITY_LAST_UPDATE = 'last-update';
-    const ACTIVITY_EVALUATION_REQUEST = 'evaluation-request';
-    const ACTIVITY_EVALUATION = 'evaluation';
-    const ACTIVITY_ISSUE_REQUEST = 'issue-request';
-    const ACTIVITY_NOTICE_REQUEST = 'notice-issued';
-    const ACTIVITY_VALIDATION_REQUEST = 'validation-request';
-    const ACTIVITY_VALIDATED = 'validated';
-    const ACTIVITY_ARCHIVED = 'archived';
+    const ACTIVITY_CREATED = 'created';  # création d'un PIA
+    const ACTIVITY_LAST_UPDATE = 'last-update';  # dernière modification
+    const ACTIVITY_EVALUATION_REQUEST = 'evaluation-request';  # demande d'évaluation
+    const ACTIVITY_EVALUATION = 'evaluation';  # évaluation effectuée
+    const ACTIVITY_ISSUE_REQUEST = 'issue-request';  # émettre une demande/demande d'émission d'un avis
+    const ACTIVITY_NOTICE_REQUEST = 'notice-issued';  # émission d'un avis
+    const ACTIVITY_VALIDATION_REQUEST = 'validation-request';  # demande de validation
+    const ACTIVITY_VALIDATED = 'validated';  # PIA validé
+    const ACTIVITY_REJECTED = 'rejected';  # PIA refusé
+    const ACTIVITY_ARCHIVED = 'archived';  # archivage
 
     /**
      * @ORM\Column(type="string")
@@ -215,6 +216,7 @@ class TrackingLog
             self::ACTIVITY_NOTICE_REQUEST,
             self::ACTIVITY_VALIDATION_REQUEST,
             self::ACTIVITY_VALIDATED,
+            self::ACTIVITY_REJECTED,
             self::ACTIVITY_ARCHIVED,
         ];
     }

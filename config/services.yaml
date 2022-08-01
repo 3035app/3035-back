@@ -72,6 +72,13 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
 
+    PiaApi\Auth\SncfConnect:
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@fos_oauth_server.server'
+            - '%env(SNCF_CONNECT_URL)%'
+            - '%env(SNCF_CONNECT_ID)%'
+            - '%env(SNCF_CONNECT_SECRET)%'
     # Used to fix bug when updating and entity througth REST api
     # jms_serializer.object_constructor:
     #     alias: jms_serializer.doctrine_object_constructor

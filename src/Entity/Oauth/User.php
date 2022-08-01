@@ -46,6 +46,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\Column(name="expirationDate", type="datetime")
+     *
      * @JMS\Type("DateTime")
      *
      * @var \DateTime
@@ -61,6 +62,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * Encrypted password. Must be persisted.
+     *
      * @JMS\Exclude()
      *
      * @var string
@@ -68,7 +70,17 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     protected $password;
 
     /**
+     * @ORM\Column(name="username_for_sncf_connect", type="string")
+     *
+     * @JMS\Exclude()
+     *
+     * @var string
+     */
+    protected $usernameForSncfConnect = null;
+
+    /**
      * @ORM\OneToOne(targetEntity="PiaApi\Entity\Pia\UserProfile", mappedBy="user", cascade={"persist", "remove"})
+     *
      * @JMS\MaxDepth(2)
      *
      * @var bool
@@ -77,6 +89,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="users")
+     *
      * @JMS\MaxDepth(1)
      *
      * @var Client
@@ -85,6 +98,7 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\ManyToOne(targetEntity="PiaApi\Entity\Pia\Structure", inversedBy="users")
+     *
      * @JMS\MaxDepth(1)
      *
      * @var Structure
@@ -425,10 +439,34 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     }
 
     /**
+     * @return string
+     */
+    public function getUsernameForSncfConnect(): ?string
+    {
+        return $this->usernameForSncfConnect;
+    }
+
+    /**
+     * @param string $usernameForSncfConnect
+     */
+    public function setUsernameForSncfConnect(?string $usernameForSncfConnect = null): void
+    {
+        $this->usernameForSncfConnect = $usernameForSncfConnect;
+    }
+
+    /**
      * @return bool
      */
     public function isOnlyGuest(): bool
     {
         return $this->hasRole('ROLE_USER') && 1 == count($this->getRoles());
+    }
+
+    public function isSharedDpo(): bool
+    {
+        if (in_array('ROLE_SHARED_DPO', $this->getRoles())) {
+            return true;
+        }
+        return false;
     }
 }

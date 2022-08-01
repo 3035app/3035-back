@@ -712,7 +712,7 @@ class Pia implements Timestampable
     public function canLogEvaluationRequest(): bool
     {
         if (self::EVALUATION_NUMBER == count($this->getEvaluations())
-            && $this->getProcessing()->isUnderValidation())
+            && $this->getProcessing()->isUnderEvaluation())
         {
             return true;
         }
@@ -772,6 +772,18 @@ class Pia implements Timestampable
     public function isPiaValidated($request): bool
     {
         if (2 > $this->getStatus() && 2 <= $request->get('status'))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRejected($request): bool
+    {
+        if (1 >= $this->getStatus() && 1 == $request->get('status'))
         {
             return true;
         }

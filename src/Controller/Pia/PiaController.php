@@ -613,6 +613,7 @@ class PiaController extends RestController
     private function notifyOrTrack($request, $pia): void
     {
         $canNotifyDataController = false;
+        $this->trackingService->logActivityLastUpdate($pia->getProcessing());
 
         if ($pia->canEmitOpinionOrObservations($request))
         {
@@ -676,6 +677,11 @@ class PiaController extends RestController
 
             # add a validation tracking
             $this->trackingService->logActivityValidated($pia->getProcessing());
+        }
+
+        if ($pia->isRejected($request)) {
+            # add a rejected tracking
+            $this->trackingService->logActivityRejected($pia->getProcessing());
         }
 
         // check if dpo noticed the pia

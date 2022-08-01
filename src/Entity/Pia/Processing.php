@@ -672,6 +672,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
     }
 
     /**
+     * @return Collection|ProcessingDataType[]
+     */
+    public function getAllProcessingDataTypes(): Collection
+    {
+        return $this->processingDataTypes;
+    }
+
+    /**
      * @return array|ProcessingDataType[]
      */
     public function getProcessingDataTypes(): array
@@ -1166,6 +1174,14 @@ class Processing implements ObjectManagerAware, TrackingInterface
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
                 Processing::EVALUATION_STATE_NONE == $new_status
             );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnderEvaluation(): bool
+    {
+        return Processing::STATUS_UNDER_EVALUATION;
     }
 
     /**
