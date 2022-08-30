@@ -23,8 +23,6 @@ use Swagger\Annotations as Swg;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 class EvaluationController extends PiaSubController
 {
     /**
