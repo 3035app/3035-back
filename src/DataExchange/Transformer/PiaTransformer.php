@@ -45,6 +45,11 @@ class PiaTransformer extends AbstractTransformer
     protected $answerTransformer;
 
     /**
+     * @var EvaluationTransformer
+     */
+    protected $evaluationTransformer;
+
+    /**
      * @var CommentTransformer
      */
     protected $commentTransformer;
@@ -53,11 +58,13 @@ class PiaTransformer extends AbstractTransformer
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         AnswerTransformer $answerTransformer,
+        EvaluationTransformer $evaluationTransformer,
         CommentTransformer $commentTransformer
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->answerTransformer = $answerTransformer;
+        $this->evaluationTransformer = $evaluationTransformer;
         $this->commentTransformer = $commentTransformer;
     }
 
@@ -97,8 +104,8 @@ class PiaTransformer extends AbstractTransformer
         $pia->setHissOpinion($descriptor->getHissOpinion());
 
         $pia->setProcessing($this->processing);
-
         $pia->setAnswers(new ArrayCollection($descriptor->getAnswers()));
+        $pia->setEvaluations(new ArrayCollection($descriptor->getEvaluations()));
 
         return $pia;
     }
@@ -139,6 +146,10 @@ class PiaTransformer extends AbstractTransformer
 
         $descriptor->mergeComments(
             $this->commentTransformer->importComments($pia->getComments()->getValues())
+        );
+
+        $descriptor->mergeEvaluations(
+            $this->evaluationTransformer->importEvaluations($pia->getEvaluations()->getValues())
         );
 
         return $descriptor;

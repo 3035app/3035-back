@@ -157,6 +157,27 @@ class Evaluation implements Timestampable
         return $this->status;
     }
 
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEvaluationComment(): string
+    {
+        return $this->evaluationComment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEvaluationDate(): ?\DateTime
+    {
+        return $this->evaluationDate;
+    }
+
     /**
      * @return int
      */
