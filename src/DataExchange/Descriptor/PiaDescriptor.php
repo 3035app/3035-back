@@ -195,6 +195,12 @@ class PiaDescriptor extends AbstractDescriptor
     protected $comments = [];
 
     /**
+     * @JMS\Type("array")
+     * @JMS\Groups({"Default", "Export"})
+     */
+    protected $evaluations = [];
+
+    /**
      * @JMS\Type("bool")
      * @JMS\Groups({"Default", "Export"})
      *
@@ -296,5 +302,10 @@ class PiaDescriptor extends AbstractDescriptor
     public function mergeComments(array $comments)
     {
         $this->comments = array_merge($this->comments, $comments);
+    }
+
+    public function mergeEvaluations(array $evaluations)
+    {
+        $this->evaluations = array_merge($this->evaluations, $evaluations);
     }
 }
