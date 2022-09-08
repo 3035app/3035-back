@@ -40,7 +40,7 @@ class EvaluationDescriptor extends AbstractDescriptor
     /**
      * @JMS\Type("string")
      * @JMS\Groups({"Default", "Export"})
-     * @var string
+     * @var string|null
      */
     protected $evaluationComment;
 

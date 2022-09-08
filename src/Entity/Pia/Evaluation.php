@@ -167,7 +167,7 @@ class Evaluation implements Timestampable
      */
     public function getEvaluationComment(): string
     {
-        return $this->evaluationComment;
+        return (null !== $this->evaluationComment) ? $this->evaluationComment : '';
     }
 
     /**

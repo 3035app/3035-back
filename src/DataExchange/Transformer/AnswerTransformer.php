@@ -33,11 +33,6 @@ class AnswerTransformer extends AbstractTransformer
      */
     protected $pia = null;
 
-    /**
-     * @ var AnswerTransformer
-    protected $answerTransformer;
-     */
-
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator
