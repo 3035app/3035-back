@@ -56,6 +56,7 @@ class EmailingService
         $params['object_name'] = $name;
         $params['source_name'] = $this->getSourceParameters($source);
         $params['source_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        $params['recipient_role'] = $recipient->getRole();
 
         $template = 'pia/Email/assigning_processing_and_pia_user%s.email.twig';
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);

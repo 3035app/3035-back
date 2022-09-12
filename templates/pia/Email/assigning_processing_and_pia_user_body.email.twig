@@ -1,8 +1,20 @@
 <p>Bonjour,</p>
 
-{# que Rédacteur, qu'Évaluateur, que Responsable de traitement #}
-
-<p>Vous avez été affecté à une analyse d’impact sur la vie privée « {{ object_name }} » en tant que Rédacteur par {{ source_name }}.</p>
+<p>Vous avez été affecté à une analyse d’impact sur la vie privée « {{ object_name }} » en tant {% if recipient_role == "ROLE_REDACTOR" -%}
+que Rédacteur
+{%- else -%}
+    {%- if recipient_role == "ROLE_EVALUATOR" -%}
+qu'Évaluateur
+    {%- else -%}
+        {%- if recipient_role == "ROLE_CONTROLLER" -%}
+que Responsable de traitement
+        {%- else -%}
+            {%- if recipient_role == "ROLE_DPO" -%}
+que DPO
+            {%- endif -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endif %} par {{ source_name }}.</p>
 
 <p>Vous pouvez y accéder en cliquant sur le lien suivant : <a href="{{ source_url }}">{{ object_name }}</a>.</p>
 
