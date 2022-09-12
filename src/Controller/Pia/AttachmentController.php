@@ -147,7 +147,7 @@ class AttachmentController extends PiaSubController
      *     )
      * )
      *
-     * @Security("is_granted('CAN_EDIT_PIA')")
+     * @Security("is_granted('CAN_CREATE_ATTACHMENT')")
      */
     public function createAction(Request $request, $piaId)
     {
