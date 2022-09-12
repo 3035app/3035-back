@@ -156,10 +156,31 @@ class EmailingService
 
     /**
      * send email to dpo when a data controller validate a pia.
+     * @deprecated to be removed!
      */
     public function notifyDataProtectionOfficer($piaAttr, $recipient, $source)
     {
         $template = 'emit_data_controller_validation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
+    /**
+     * send email to dpo when a data controller validate a pia.
+     */
+    public function notifyPiaSimpleValidation($piaAttr, $recipient, $source)
+    {
+        $template = 'emit_data_controller_validation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
+    /**
+     * send email when Data Controller rejected a pia.
+     */
+    public function notifyPiaRejection($piaAttr, $recipient, $source)
+    {
+        $template = 'emit_data_controller_rejection';
         list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }

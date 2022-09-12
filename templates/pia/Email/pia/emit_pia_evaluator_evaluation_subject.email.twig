@@ -1,1 +1,9 @@
+{%- if evaluation_state == "À corriger" -%}
 PIA à corriger
+{%- else -%}
+    {%- if evaluation_state == "Améliorable" -%}
+PIA améliorable
+    {%- else -%}
+PIA acceptable
+    {%- endif -%}
+{%- endif -%}

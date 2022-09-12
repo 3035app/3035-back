@@ -85,7 +85,7 @@ fi
 
 if [ -z "$MailerSenderName" ]
 then
-    MailerSenderName='PiaLab Account Manager'
+    MailerSenderName='30|35 Account Manager'
 fi
 
 if [ -z "${CLIENTURL}" ]
