@@ -607,6 +607,20 @@ class PiaController extends RestController
     }
 
     /**
+     * Gets evaluator, dataProtectionOfficer and redactors from pia.
+     */
+    private function getEDRRecipients($pia): array
+    {
+        $recipients = [];
+        array_push($recipients, $pia->getEvaluator());
+        array_push($recipients, $pia->getDataProtectionOfficer());
+        foreach ($pia->getProcessing()->getRedactors() as $redactor) {
+            array_push($recipients, $redactor);
+        }
+        return $recipients;
+    }
+
+    /**
      * Some notifications to send.
      * specifications: #2, #7, #9, #10
      */
@@ -664,22 +678,28 @@ class PiaController extends RestController
 
         if ($pia->isPiaValidated($request))
         {
-            // notify dpo
             $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
-            $recipient = $pia->getDataProtectionOfficer();
-            $source = $pia->getProcessing()->getDataController();
-            $this->emailingService->notifyDataProtectionOfficer($piaAttr, $recipient, $source);
-
+            // notify redactor(s), evaluator and dpo
+            foreach ($this->getEDRRecipients($pia) as $recipient) {
+                $this->emailingService->notifyPiaSimpleValidation(
+                    $piaAttr, $recipient, $pia->getProcessing()->getDataController()
+                );
+            }
             # change status to validated
             $pia->getProcessing()->setStatus(Processing::STATUS_VALIDATED);
             $this->persist($pia->getProcessing());
-
             # add a validation tracking
             $this->trackingService->logActivityValidated($pia->getProcessing());
         }
 
+        // notify dpo after rejecting by rt
         if ($pia->isRejected($request)) {
+            $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
+            array_push($piaAttr, $pia);
+            $this->emailingService->notifyPiaRejection(
+                $piaAttr, $pia->getDataProtectionOfficer(), $pia->getProcessing()->getDataController()
+            );
             # add a rejected tracking
             $this->trackingService->logActivityRejected($pia->getProcessing());
         }
