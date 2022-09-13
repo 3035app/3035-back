@@ -56,6 +56,7 @@ class EmailingService
         $params['object_name'] = $name;
         $params['source_name'] = $this->getSourceParameters($source);
         $params['source_url'] = $this->getAbsoluteUrl($route, $routeAttr);
+        $params['recipient_role'] = $recipient->getRole();
 
         $template = 'pia/Email/assigning_processing_and_pia_user%s.email.twig';
         $subject = $this->twig->render(sprintf($template, '_subject'), $params);
@@ -156,10 +157,31 @@ class EmailingService
 
     /**
      * send email to dpo when a data controller validate a pia.
+     * @deprecated to be removed!
      */
     public function notifyDataProtectionOfficer($piaAttr, $recipient, $source)
     {
         $template = 'emit_data_controller_validation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
+    /**
+     * send email to dpo when a data controller validate a pia.
+     */
+    public function notifyPiaSimpleValidation($piaAttr, $recipient, $source)
+    {
+        $template = 'emit_data_controller_validation';
+        list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
+        return $this->sendEmail($subject, $body, $this->from, $to);
+    }
+
+    /**
+     * send email when Data Controller rejected a pia.
+     */
+    public function notifyPiaRejection($piaAttr, $recipient, $source)
+    {
+        $template = 'emit_data_controller_rejection';
         list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
