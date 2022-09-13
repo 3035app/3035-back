@@ -462,6 +462,20 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         return $this->hasRole('ROLE_USER') && 1 == count($this->getRoles());
     }
 
+    /**
+     * @return string
+     */
+    public function getRole(): ?string
+    {
+        // redactor or data_controller
+        foreach (['ROLE_REDACTOR', 'ROLE_DPO', 'ROLE_EVALUATOR', 'ROLE_CONTROLLER'] as $role) {
+            if (in_array($role, $this->getRoles())) {
+                return $role;
+            }
+        }
+        return null;
+    }
+
     public function isSharedDpo(): bool
     {
         if (in_array('ROLE_SHARED_DPO', $this->getRoles())) {

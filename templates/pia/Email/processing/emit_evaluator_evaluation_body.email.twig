@@ -1,5 +1,23 @@
 <p>Bonjour,</p>
 
-<p>Suite à l’évaluation réalisée par {{ source_name }} le {{ "now"|date("d/m/Y") }} veuillez cliquer sur le lien suivant <a href="{{ processing_url }}">{{ processing_name }}</a> afin de compléter le PIA que l’évaluateur a considéré comme "{{ evaluation_state }}".</p>
+{%- if evaluation_state == "À corriger" -%}
+    <p>Suite à l’évaluation « {{ evaluation_state }} » de l’évaluateur {{ source_name }} pour l’analyse d’impact « {{ processing_name }} »,
+    vous êtes invité à procéder à une modification de son contenu en cliquant sur le lien suivant <a href="{{ processing_url }}">{{ processing_name }}</a>
+    puis à faire une nouvelle demande d’évaluation.</p>
+
+{%- else -%}
+    {%- if evaluation_state == "Améliorable" -%}
+        <p>Suite à l’évaluation « {{ evaluation_state }} » de l’évaluateur {{ source_name }} pour l’analyse d’impact « {{ processing_name }} »,
+        vous pouvez ajouter des commentaires pour apporter des précisions en cliquant sur le lien suivant <a href="{{ processing_url }}">{{ processing_name }}</a>.
+        Si aucun élément n’est à ajouter, le processus d’évaluation continuera avec les autres acteurs concernés.</p>
+
+    {%- else -%}
+        {# Acceptable #}
+        <p>L’évaluateur {{ source_name }} a évalué l’analyse d’impact « {{ processing_name }} » comme étant « {{ evaluation_state }} ».
+        Le processus d’évaluation va continuer avec les autres acteurs concernés.
+        Vous pouvez consulter l’analyse d’impact en cliquant sur le lien suivant <a href="{{ processing_url }}">{{ processing_name }}</a>.</p>
+
+    {%- endif -%}
+{%- endif -%}
 
 <p>Cordialement,</p>
