@@ -645,8 +645,8 @@ class PiaController extends RestController
             $pia->getProcessing()->setStatus(Processing::STATUS_UNDER_VALIDATION);
             $this->persist($pia->getProcessing());
 
-            # add a notice request tracking (only for dpo)
-            // print_r('-- logActivityNoticeRequest #1\n');
+            # add a notice request tracking
+            // FIXME is it usefull?
             // $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
@@ -663,8 +663,8 @@ class PiaController extends RestController
                 $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
             }
 
-            # add a notice request tracking (only for dpo)
-            // print_r('-- logActivityNoticeRequest #2\n');
+            # add a notice request tracking
+            // FIXME is it usefull?
             // $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
@@ -715,7 +715,6 @@ class PiaController extends RestController
         {
             # add a notice request tracking (only for dpo)
             if ($this->getUser()->isDpo()) {
-                print_r('-- logActivityNoticeRequest #3\n');
                 $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
             }
         }
@@ -725,7 +724,6 @@ class PiaController extends RestController
         {
             # add a validation request tracking (only for dpo)
             if ($this->getUser()->isDpo()) {
-                print_r('-- logActivityNoticeRequest #3\n');
                 $this->trackingService->logActivityValidationRequest($pia->getProcessing());
             }
         }
