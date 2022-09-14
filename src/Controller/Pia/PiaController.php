@@ -645,8 +645,9 @@ class PiaController extends RestController
             $pia->getProcessing()->setStatus(Processing::STATUS_UNDER_VALIDATION);
             $this->persist($pia->getProcessing());
 
-            # add a notice request tracking
-            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+            # add a notice request tracking (only for dpo)
+            // print_r('-- logActivityNoticeRequest #1\n');
+            // $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($pia->canEmitObservations($request))
@@ -662,8 +663,9 @@ class PiaController extends RestController
                 $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
             }
 
-            # add a notice request tracking
-            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+            # add a notice request tracking (only for dpo)
+            // print_r('-- logActivityNoticeRequest #2\n');
+            // $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
         }
 
         if ($canNotifyDataController)
@@ -689,8 +691,10 @@ class PiaController extends RestController
             # change status to validated
             $pia->getProcessing()->setStatus(Processing::STATUS_VALIDATED);
             $this->persist($pia->getProcessing());
-            # add a validation tracking
-            $this->trackingService->logActivityValidated($pia->getProcessing());
+            # add a validation tracking (only for controller)
+            if ($this->getUser()->isController()) {
+                $this->trackingService->logActivityValidated($pia->getProcessing());
+            }
         }
 
         // notify dpo after rejecting by rt
@@ -700,22 +704,30 @@ class PiaController extends RestController
             $this->emailingService->notifyPiaRejection(
                 $piaAttr, $pia->getDataProtectionOfficer(), $pia->getProcessing()->getDataController()
             );
-            # add a rejected tracking
-            $this->trackingService->logActivityRejected($pia->getProcessing());
+            # add a rejected tracking (only for controller)
+            if ($this->getUser()->isController()) {
+                $this->trackingService->logActivityRejected($pia->getProcessing());
+            }
         }
 
         // check if dpo noticed the pia
         if ($pia->canLogNoticeRequest($request))
         {
-            # add a notice request tracking.
-            $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+            # add a notice request tracking (only for dpo)
+            if ($this->getUser()->isDpo()) {
+                print_r('-- logActivityNoticeRequest #3\n');
+                $this->trackingService->logActivityNoticeRequest($pia->getProcessing());
+            }
         }
 
-        // check if is is a validation request tracking
+        // check if is a validation request tracking
         if ($pia->canLogValidationRequest($request))
         {
-            # add a validation request tracking
-            $this->trackingService->logActivityValidationRequest($pia->getProcessing());
+            # add a validation request tracking (only for dpo)
+            if ($this->getUser()->isDpo()) {
+                print_r('-- logActivityNoticeRequest #3\n');
+                $this->trackingService->logActivityValidationRequest($pia->getProcessing());
+            }
         }
 
         # add historical comments
