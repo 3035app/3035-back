@@ -476,6 +476,22 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
         return null;
     }
 
+    /**
+     * @return bool
+     */
+    public function isController(): bool
+    {
+        return $this->hasRole('ROLE_CONTROLLER') || $this->hasRole('ROLE_CONTROLLER_MULTI');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDpo(): bool
+    {
+        return $this->hasRole('ROLE_DPO') || $this->isSharedDpo();
+    }
+
     public function isSharedDpo(): bool
     {
         if (in_array('ROLE_SHARED_DPO', $this->getRoles())) {
