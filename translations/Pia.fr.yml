@@ -1,5 +1,5 @@
 pia:
-  app_name: PiaLab
+  app_name: 30-35
 
   http_error:
     503: >
