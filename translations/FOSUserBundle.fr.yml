@@ -6,14 +6,14 @@ resetting:
             Pour (ré)initialiser votre mot de passe, merci de vous rendre sur %confirmationUrl%
 
             Cordialement,
-            L'équipe PiaLab
+            L'équipe 30-35
         message_html: >
             <p>Bonjour <b>%username%</b> !</p>
 
             <p>Pour (ré)initialiser votre mot de passe, merci de vous rendre sur <a href="%confirmationUrl%">%confirmationUrl%</a></p>
 
             <p>Cordialement,<br />
-            L'équipe PiaLab</p>
+            L'équipe 30-35</p>
     request:
         cancel: Annuler
         submit: Réinitialiser
