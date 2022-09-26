@@ -403,11 +403,13 @@ class EvaluationController extends PiaSubController
             }
 
             # all evaluations are acceptable!
-            # add an issue request tracking
-            $this->trackingService->logActivityIssueRequest($pia->getProcessing());
-            # add an evaluation tracking
-            $this->trackingService->logActivityEvaluation($pia->getProcessing());
         }
+
+        # whatever status of evaluations
+        # add an evaluation tracking
+        $this->trackingService->logActivityEvaluation($pia->getProcessing());
+        # add an issue request tracking
+        $this->trackingService->logActivityIssueRequest($pia->getProcessing());
     }
 
     private function getEvaluationRoute($request, $evaluation): array
