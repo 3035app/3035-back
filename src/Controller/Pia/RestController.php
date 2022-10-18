@@ -290,7 +290,7 @@ abstract class RestController extends AbstractFOSRestController
     public function assigningUsersEmail(EmailingService $emailing, $processing, $recipients): void
     {
         // notify users on processing
-        $processingAttr = [$processing->getName(), '/#/processing/{id}',
+        $processingAttr = [$processing->getName(), '/processing/{id}',
             ['{id}' => $processing->getId()]];
         array_push($processingAttr, $processing);
         foreach ($recipients as $recipient) {
