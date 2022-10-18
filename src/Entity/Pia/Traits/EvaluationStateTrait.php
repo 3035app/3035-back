@@ -21,6 +21,15 @@ trait EvaluationStateTrait
         ];
     }
 
+    public static function getEvaluationStates(): array
+    {
+        return [
+            static::EVALUATION_STATE_TO_CORRECT => "À corriger",
+            static::EVALUATION_STATE_IMPROVABLE => "Améliorable",
+            static::EVALUATION_STATE_ACCEPTABLE => "Acceptable",
+        ];
+    }
+
     /**
      * @return string
      */

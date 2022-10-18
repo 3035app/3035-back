@@ -1152,20 +1152,24 @@ class Processing implements ObjectManagerAware, TrackingInterface
     {
         $new_status = $request->get('evaluation_state');
         $old_status = $this->getEvaluationState();
+        $evaluation_states = [
+            self::EVALUATION_STATE_TO_CORRECT,
+            self::EVALUATION_STATE_IMPROVABLE,
+            self::EVALUATION_STATE_ACCEPTABLE
+        ];
         return
             null !== $new_status
             &&
             (
                 # add an evaluation
                 Processing::EVALUATION_STATE_NONE == $old_status &&
-                in_array($new_status, [
-                    self::EVALUATION_STATE_TO_CORRECT,
-                    self::EVALUATION_STATE_IMPROVABLE,
-                    self::EVALUATION_STATE_ACCEPTABLE
-                ])
+                in_array($new_status, $evaluation_states)
                 ||
                 Processing::EVALUATION_STATE_TO_CORRECT == $old_status &&
                 Processing::EVALUATION_STATE_IMPROVABLE == $new_status
+                ||
+                in_array($old_status, $evaluation_states) &&
+                in_array($new_status, $evaluation_states)
                 ||
                 # remove an evaluation
                 Processing::EVALUATION_STATE_IMPROVABLE == $old_status &&
