@@ -947,8 +947,10 @@ class ProcessingController extends RestController
      */
     private function notifyOrTrack($request, $processing): void
     {
+        $canEmitEvaluatorEvaluation = true;
         if ($processing->canAskForProcessingEvaluation($request))
         {
+            $canEmitEvaluatorEvaluation = false;  # if notify evaluator, do not notify redactor
             // notify evaluator on last page of processing
             $arr = ['{id}' => $processing->getId(), 'evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
             $processingAttr = [$processing->getName(), '/#/processing/{id}', $arr];
@@ -965,15 +967,19 @@ class ProcessingController extends RestController
             # FIXME add an evaluation request tracking? unfortunately, at this point we do not know the pia!
         }
 
-        if ($processing->canEmitEvaluatorEvaluation($request))
+        if ($processing->canEmitEvaluatorEvaluation($request) && $canEmitEvaluatorEvaluation)
         {
-            // notify redactor
-            $arr = ['{id}' => $processing->getId(), 'evaluation_state' => $processing->getEvaluationStateRequest($request)]; // not stored yet!
-            $processingAttr = [$processing->getName(), '/#/processing/{id}', $arr];
-            array_push($processingAttr, $processing);
-            $source = $processing->getEvaluatorPending();
-            foreach ($processing->getRedactors() as $recipient) {
-                $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
+            $evaluation_state = $processing->getEvaluationStateRequest($request);
+            if (in_array($evaluation_state, Processing::getEvaluationStates()))
+            {
+                // notify redactor
+                $arr = ['{id}' => $processing->getId(), 'evaluation_state' => $evaluation_state]; // not stored yet!
+                $processingAttr = [$processing->getName(), '/#/processing/{id}', $arr];
+                array_push($processingAttr, $processing);
+                $source = $processing->getEvaluatorPending();
+                foreach ($processing->getRedactors() as $recipient) {
+                    $this->emailingService->notifyEmitEvaluatorEvaluation($processingAttr, $recipient, $source);
+                }
             }
         }
     }
