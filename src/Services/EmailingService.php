@@ -90,7 +90,7 @@ class EmailingService
      */
     public function notifyEmitOpinionOrObservations($piaAttr, $recipient, $source)
     {
-        $template = 'emit_opinion_or_observations';
+        $template = 'emit_opinion_or_observations'; # Un avis a été émis
         list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }
@@ -130,7 +130,7 @@ class EmailingService
      */
     public function notifyEmitObservations($piaAttr, $recipient, $source)
     {
-        $template = 'emit_observations';
+        $template = 'emit_observations'; # PIA à compléter
         list($subject, $body, $to) = $this->getEmailParameters($piaAttr, $recipient, $source, $template);
         return $this->sendEmail($subject, $body, $this->from, $to);
     }

@@ -641,6 +641,11 @@ class PiaController extends RestController
             $source = $pia->getDataProtectionOfficer();
             $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
 
+            // notify redactor
+            foreach ($pia->getProcessing()->getRedactors() as $recipient) {
+                $this->emailingService->notifyEmitOpinionOrObservations($piaAttr, $recipient, $source);
+            }
+
             # change status to under validation
             $pia->getProcessing()->setStatus(Processing::STATUS_UNDER_VALIDATION);
             $this->persist($pia->getProcessing());
@@ -655,13 +660,14 @@ class PiaController extends RestController
             // notify data controller
             $canNotifyDataController = true;
 
-            // notify redactor
+            /* notify redactor
             $piaAttr = [$pia->__toString(), '/entry/{pia_id}/section/3/item/1', ['{pia_id}' => $pia->getId()]];
             array_push($piaAttr, $pia);
             $source = $pia->getDataProtectionOfficer();
             foreach ($pia->getProcessing()->getRedactors() as $recipient) {
                 $this->emailingService->notifyEmitObservations($piaAttr, $recipient, $source);
             }
+            */
 
             # add a notice request tracking
             // FIXME is it usefull?
