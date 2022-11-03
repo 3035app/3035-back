@@ -368,7 +368,7 @@ class EvaluationController extends PiaSubController
             }
         }
 
-        // check if status and global status match this state
+        /* check if status and global status match this state
         if ($evaluation->canEmitPiaEvaluatorCancelEvaluation($request))
         {
             $pia = $evaluation->getPia();
@@ -381,6 +381,7 @@ class EvaluationController extends PiaSubController
                 $this->emailingService->notifyEmitPiaEvaluatorCancelEvaluation($piaAttr, $recipient, $source);
             }
         }
+        */
     }
 
     /**
