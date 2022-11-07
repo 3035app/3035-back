@@ -426,7 +426,10 @@ class ProcessingController extends RestController
         $redactors = $this->intersectRedactorsFromRequestAndDb($processing, $redactors);
 
         // before merging!
-        $this->notifyOrTrack($request, $processing);
+        // check if update processing or not!
+        if ($this->canNotify($request, $processing)) {
+            $this->notifyOrTrack($request, $processing);
+        }
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
         $this->detachUsersAttachUsersNewPlace($processing, $start_point);
         $this->updateSupervisorsPia($request, $processing);
@@ -939,6 +942,26 @@ class ProcessingController extends RestController
             // method_name, change pia as well
             call_user_func([$processing, $method], $user);
         }        
+    }
+
+    /**
+     * Check if processing updating or if it concerns evaluation and so notification.
+     */
+    private function canNotify($request, $processing): bool
+    {
+        $text_processing = ['name', 'author', 'designated_controller', 'context_of_implementation', 'controllers', 'standards',
+            'life_cycle', 'storage', 'concerned_people', 'processors', 'recipients', 'description', 'lawfulness',
+            'minimization', 'exactness', 'non_eu_transfer'];
+        foreach ($text_processing as $key) {
+            $to_call = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+            if (is_callable([$processing, $to_call])) {
+                if ($processing->$to_call() !== $request->get($key)) {
+                    // data processing is different from db: this is processing updating
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
