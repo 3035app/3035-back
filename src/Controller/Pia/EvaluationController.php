@@ -248,7 +248,9 @@ class EvaluationController extends PiaSubController
         $evaluation = $this->getResource($id, Evaluation::class);
         if (null !== $evaluation) {
             $this->trackingService->logActivityLastUpdate($evaluation->getPia()->getProcessing());
-            $this->notifyEvaluator($request, $evaluation);
+            if (!$this->getUser()->isEvaluator()) {
+                $this->notifyEvaluator($request, $evaluation);
+            }
             $this->notifyDpo($request, $evaluation->getPia());
             $this->notifyRedactor($request, $evaluation);
         }

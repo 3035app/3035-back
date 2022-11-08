@@ -479,6 +479,14 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     /**
      * @return bool
      */
+    public function isEvaluator(): bool
+    {
+        return $this->hasRole('ROLE_EVALUATOR');
+    }
+
+    /**
+     * @return bool
+     */
     public function isController(): bool
     {
         return $this->hasRole('ROLE_CONTROLLER') || $this->hasRole('ROLE_CONTROLLER_MULTI');
