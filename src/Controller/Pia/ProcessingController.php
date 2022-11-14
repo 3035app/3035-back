@@ -949,6 +949,7 @@ class ProcessingController extends RestController
      */
     private function canNotify($request, $processing): bool
     {
+        // check if 1 of the following fields has been changed: this is modification mode!
         $text_processing = ['name', 'author', 'designated_controller', 'context_of_implementation', 'controllers', 'standards',
             'life_cycle', 'storage', 'concerned_people', 'processors', 'recipients', 'description', 'lawfulness',
             'minimization', 'exactness', 'non_eu_transfer'];
@@ -961,6 +962,13 @@ class ProcessingController extends RestController
                 }
             }
         }
+        // check if processing has been moved
+        if (array_key_exists('id', $request->get('folder'))) {
+            if ($processing->getFolder()->getId() !== $request->get('folder')['id']) {
+                return false;
+            }
+        }
+        // this is notification mode!
         return true;
     }
 
