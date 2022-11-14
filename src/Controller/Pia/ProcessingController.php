@@ -428,8 +428,6 @@ class ProcessingController extends RestController
         // before merging!
         // check if update processing or not!
         if ($this->canNotify($request, $processing)) {
-throw new AccessDeniedHttpException('moving processing!');
-
             $this->notifyOrTrack($request, $processing);
         }
         $this->mergeFromRequest($processing, $updatableAttributes, $request);
