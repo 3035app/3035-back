@@ -217,6 +217,18 @@ class Evaluation implements Timestampable
     /**
      * @return bool
      */
+    public function isImprovable($request): bool
+    {
+        return
+            (self::EVALUATION_STATE_IMPROVABLE == $request->get('status') && $this->isSameReference($request))
+            ||
+            self::EVALUATION_STATE_IMPROVABLE == $this->getStatus()
+            ;
+    }
+
+    /**
+     * @return bool
+     */
     public function canEmitPiaEvaluatorEvaluation($request): bool
     {
         # add an evaluation

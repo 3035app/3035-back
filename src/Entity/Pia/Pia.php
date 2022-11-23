@@ -755,7 +755,7 @@ class Pia implements Timestampable
         }
         foreach ($this->getEvaluations() as $evaluation) {
             # status <=> acceptable
-            if (!$evaluation->isAcceptable($request)) {
+            if (!$evaluation->isAcceptable($request) && !$evaluation->isImprovable($request)) {
                 return false;
             }
         }
