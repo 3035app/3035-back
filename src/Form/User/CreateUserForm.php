@@ -88,6 +88,7 @@ class CreateUserForm extends BaseForm
             ])
             ->add('password', PasswordType::class, [
                 'label'    => 'pia.users.forms.create.password',
+                'required' => false,
             ])
             ->add('roles', RolesType::class, [
                 'required' => false,
