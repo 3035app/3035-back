@@ -175,9 +175,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }

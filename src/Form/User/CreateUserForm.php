@@ -110,6 +110,8 @@ class CreateUserForm extends BaseForm
                 ],
                 'label' => 'pia.users.forms.create.submit',
             ]);
+
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
