@@ -41,6 +41,7 @@ pia:
   flashes:
     a_functional_administrator_must_be_assigned_to_a_structure: Un administrateur fonctionnel doit être assigné à une structure
     user_emails_must_be_unique: Un utilisateur avec cette addresse email existe déjà. Les addresses emails doivent être uniques
+    you_need_to_set_password_or_scnf_id: Vous devez définir un mot de passe ou un identifiant SNCF"
 
   applications:
     title: Applications

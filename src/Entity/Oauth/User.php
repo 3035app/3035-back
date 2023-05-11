@@ -13,6 +13,8 @@ namespace PiaApi\Entity\Oauth;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\AttributeOverrides;
+use Doctrine\ORM\Mapping\AttributeOverride;
 use FOS\UserBundle\Model\User as BaseUser;
 use JMS\Serializer\Annotation as JMS;
 use PiaApi\Entity\Pia\Folder;
@@ -25,6 +27,14 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 /**
  * @ORM\Entity(repositoryClass="PiaApi\Repository\UserRepository")
  * @ORM\Table(name="pia_user")
+ * @AttributeOverrides({
+ *   @AttributeOverride(name="password",
+ *     column=@ORM\Column(
+ *         nullable=true
+ *     )
+ *   ),
+ * })
+ *
  */
 class User extends BaseUser implements AdvancedUserInterface, \Serializable
 {
@@ -64,7 +74,6 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
      * Encrypted password. Must be persisted.
      *
      * @JMS\Exclude()
-     *
      * @var string
      */
     protected $password;
@@ -166,9 +175,9 @@ class User extends BaseUser implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
