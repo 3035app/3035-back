@@ -115,7 +115,6 @@ class UserController extends BackOfficeAbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userData = $form->getData();
-
             $user = $this->userService->createUser(
                 $userData['email'],
                 $userData['password'],
@@ -129,6 +128,12 @@ class UserController extends BackOfficeAbstractController
 
             $user->setProfile($userData['profile']);
             $user->setUsernameForSncfConnect($userData['usernameForSncfConnect']);
+
+            if (strlen(trim($user->getPassword())) === 0 && strlen(trim($user->getUsernameForSncfConnect())) === 0) {
+                $this->addFlash('error', 'pia.flashes.you_need_to_set_password_or_scnf_id');
+
+                return $this->redirect($this->generateUrl('manage_users'));
+            }
 
             $this->getDoctrine()->getManager()->persist($user);
 

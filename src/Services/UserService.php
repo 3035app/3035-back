@@ -80,14 +80,16 @@ class UserService extends AbstractService
      */
     public function createUser(
         string $email,
-        string $password,
+        ?string $password,
         ?Structure $structure = null,
         ?ClientInterface $application = null,
         ?string $username = null
     ): User {
         $user = new User($email);
 
-        $this->encodePassword($user, $password);
+        if ($password !== null) {
+            $this->encodePassword($user, $password);
+        }
 
         $profile = new UserProfile();
         $profile->setUser($user);
