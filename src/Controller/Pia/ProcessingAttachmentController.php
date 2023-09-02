@@ -14,12 +14,10 @@ use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use Swagger\Annotations as Swg;
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use PiaApi\Entity\Pia\Processing;
 use PiaApi\Entity\Pia\ProcessingAttachment;
 
 class ProcessingAttachmentController extends RestController
@@ -60,7 +58,7 @@ class ProcessingAttachmentController extends RestController
      *     description="Returns all Attachments of given Processing",
      *     @Swg\Schema(
      *         type="array",
-     *         @Swg\Items(ref=@Nelmio\Model(type=Attachment::class, groups={"Default"}))
+     *         @Swg\Items(ref=@Nelmio\Model(type=ProcessingAttachment::class, groups={"List"}))
      *     )
      * )
      *
@@ -73,7 +71,9 @@ class ProcessingAttachmentController extends RestController
         $criteria = $this->extractCriteria($request, ['processing' => $processingId]);
         $collection = $this->getRepository()->findBy($criteria);
 
-        return $this->view($collection, Response::HTTP_OK);
+        $view = $this->view($collection, Response::HTTP_OK);
+        $view->getContext()->setGroups(['List']);
+        return $view;
     }
 
     /**
