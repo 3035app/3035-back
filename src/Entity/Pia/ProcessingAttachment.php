@@ -14,7 +14,6 @@ use Gedmo\Timestampable\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use PiaApi\Entity\Pia\Traits\ResourceTrait;
 
 /**
  * @ORM\Entity
@@ -22,12 +21,26 @@ use PiaApi\Entity\Pia\Traits\ResourceTrait;
  */
 class ProcessingAttachment implements Timestampable
 {
-    use ResourceTrait,
-        TimestampableEntity;
+    use TimestampableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     * @JMS\Groups({"Default", "List"})
+     *
+     * @var int
+     */
+    protected $id;
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @ORM\Column(type="string")
-     * @JMS\Groups({"Default", "Export"})
+     * @JMS\Groups({"Default", "Export", "List"})
      *
      * @var string
      */
@@ -35,7 +48,7 @@ class ProcessingAttachment implements Timestampable
 
     /**
      * @ORM\Column(type="string")
-     * @JMS\Groups({"Default", "Export"})
+     * @JMS\Groups({"Default", "Export", "List"})
      *
      * @var string
      */
