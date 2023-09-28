@@ -637,11 +637,28 @@ class Processing implements ObjectManagerAware, TrackingInterface
         $this->comments->removeElement($comment);
     }
 
+    public function setAttachments(Collection $attachments): void
+    {
+        $this->attachments = $attachments;
+    }
+
     /**
      * @return array|ProcessingAttachment[]
      */
-    public function getAttachments(): array
+    public function getAttachments($groupsSerialize = 'Default'): array
     {
+        if ($groupsSerialize == 'Default') {
+            return $this->attachments->getValues();
+        }
+        if ($groupsSerialize == 'List') {
+            $attachments = $this->attachments->getValues();
+            /** @var Attachment $attachment */
+            foreach ($attachments as $attachment) {
+                $attachment->clean();
+            }
+            return $attachments;
+        }
+
         return $this->attachments->getValues();
     }
 

@@ -73,6 +73,11 @@ class ProcessingAttachment implements Timestampable
      */
     protected $attachmentFile;
 
+    public function clean()
+    {
+        $this->attachmentFile = null;
+    }
+
     public function setFileFromBase64(string $base64)
     {
         $parts = \explode(',', $base64);
