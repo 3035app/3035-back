@@ -166,7 +166,9 @@ class ProcessingController extends RestController
      */
     public function showAction(Request $request, $id)
     {
-        return $this->showEntity($id);
+        $view = $this->showEntity($id);
+        $view->getData()->getAttachments('List');
+        return $view;
     }
 
     /**
